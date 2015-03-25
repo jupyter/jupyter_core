@@ -33,8 +33,9 @@ with open(pjoin(here, 'jupyter_core', 'version.py')) as f:
 
 setup_args = dict(
     name                = 'jupyter_core',
-    packages          = ['jupyter_core'],
     version             = version_ns['__version__'],
+    packages            = ['jupyter_core'],
+    scripts             = ['scripts/jupyter'],
     description         = "Jupyter core package. A base package on which Jupyter projects rely.",
     long_description    = """There is no reason to install this package on its own.""",
     author              = "Jupyter Development Team",
@@ -54,6 +55,9 @@ setup_args = dict(
         'Programming Language :: Python :: 3.4',
     ],
 )
+
+if any(arg.startswith('bdist') for arg in sys.argv):
+    import setuptools
 
 # setuptools requirements
 if 'setuptools' in sys.modules:
