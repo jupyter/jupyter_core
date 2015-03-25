@@ -49,7 +49,7 @@ def jupyter_data_dir():
 
     if sys.platform == 'darwin':
         return os.path.join(home, 'Library', 'Jupyter')
-    elif os.name() == 'nt':
+    elif os.name == 'nt':
         appdata = os.environ.get('APPDATA', None)
         if appdata:
             return pjoin(appdata, 'jupyter')
@@ -72,8 +72,8 @@ def jupyter_runtime_dir():
 
     if sys.platform == 'darwin':
         return pjoin(jupyter_data_dir(), 'runtime')
-    elif os.name() == 'nt':
-        return pjoin(jupyter_data_dir(), 'jupyter', 'runtime')
+    elif os.name == 'nt':
+        return pjoin(jupyter_data_dir(), 'runtime')
     else:
         # Linux, non-OS X Unix, AIX, etc.
         xdg = env.get("XDG_RUNTIME_HOME", None)
