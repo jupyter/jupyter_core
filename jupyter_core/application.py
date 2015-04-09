@@ -75,7 +75,7 @@ class JupyterApp(Application):
     
     data_dir = Unicode()
     
-    def _data_dir_default():
+    def _data_dir_default(self):
         return jupyter_data_dir()
     
     runtime_dir = Unicode()
