@@ -184,7 +184,7 @@ class JupyterApp(Application):
     @catch_config_error
     def initialize(self, argv=None):
         # don't hook up crash handler before parsing command-line
-        if not argv:
+        if argv is None:
             argv = sys.argv[1:]
         if argv:
             subc = self._find_subcommand(argv[0])
