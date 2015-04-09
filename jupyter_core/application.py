@@ -187,7 +187,6 @@ class JupyterApp(Application):
         if not argv:
             argv = sys.argv[1:]
         if argv:
-            print(argv)
             subc = self._find_subcommand(argv[0])
             if subc:
                 self.argv = argv
