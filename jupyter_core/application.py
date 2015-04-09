@@ -20,13 +20,14 @@ try:
 except ImportError:
     from .utils.shutil_which import which
 
-from IPython.config.application import Application, catch_config_error
-from IPython.config.loader import ConfigFileNotFound
-from IPython.utils.path import ensure_dir_exists
-from IPython.utils import py3compat
-from IPython.utils.traitlets import Unicode, Bool
+from traitlets.config.application import Application, catch_config_error
+from traitlets.config.loader import ConfigFileNotFound
+from traitlets import Unicode, Bool
 
-from .utils.path import jupyter_config_dir, jupyter_data_dir, jupyter_runtime_dir
+from ipython_genutils.path import ensure_dir_exists
+from ipython_genutils import py3compat
+
+from .paths import jupyter_config_dir, jupyter_data_dir, jupyter_runtime_dir
 
 
 if os.name == 'nt':

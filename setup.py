@@ -59,11 +59,15 @@ setup_args = dict(
 if any(arg.startswith('bdist') for arg in sys.argv):
     import setuptools
 
+setuptools_args = {}
+
+setuptools_args['install_requires'] = [
+    'traitlets',
+]
+
 # setuptools requirements
 if 'setuptools' in sys.modules:
-    setup_args['install_requires'] = install_requires = [
-        'ipython>=4.0'
-    ]
+    setup_args.update(setuptools_args)
 
 
 if __name__ == '__main__':
