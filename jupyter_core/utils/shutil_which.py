@@ -4,7 +4,7 @@
 
 import os, sys
 
-def shutil_which(cmd, mode=os.F_OK | os.X_OK, path=None):
+def which(cmd, mode=os.F_OK | os.X_OK, path=None):
     """Given a command, mode, and a PATH string, return the path which
     conforms to the given mode on the PATH, or None if there is no such
     file.
