@@ -96,7 +96,7 @@ class JupyterApp(Application):
     def _config_file_name_default(self):
         if not self.name:
             return ''
-        return self.name.replace('-','_') + u'_config.py'
+        return self.name.replace('-','_') + u'_config'
     
     @property
     def config_files(self):
