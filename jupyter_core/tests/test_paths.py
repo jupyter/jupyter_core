@@ -72,6 +72,13 @@ def test_config_dir_linux():
     assert config == jupyter_config_env
 
 
+def test_data_dir_env():
+    data_env = 'runtime-dir'
+    with patch.dict('os.environ', {'JUPYTER_DATA_DIR': data_env}):
+        data = jupyter_data_dir()
+    assert data == data_env
+
+
 def test_data_dir_darwin():
     with darwin:
         data = jupyter_data_dir()
@@ -102,6 +109,13 @@ def test_data_dir_linux():
     with linux, xdg:
         data = jupyter_data_dir()
     assert data == pjoin(xdg_env['XDG_DATA_HOME'], 'jupyter')
+
+
+def test_runtime_dir_env():
+    rtd_env = 'runtime-dir'
+    with patch.dict('os.environ', {'JUPYTER_RUNTIME_DIR': rtd_env}):
+        runtime = jupyter_runtime_dir()
+    assert runtime == rtd_env
 
 
 def test_runtime_dir_darwin():

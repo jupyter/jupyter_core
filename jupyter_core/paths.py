@@ -43,8 +43,14 @@ def jupyter_data_dir():
     """Get the config directory for Jupyter data files.
     
     These are non-transient, non-configuration files.
+    
+    Returns JUPYTER_DATA_DIR if defined, else a platform-appropriate path.
     """
     env = os.environ
+    
+    if env.get('JUPYTER_DATA_DIR'):
+        return env['JUPYTER_DATA_DIR']
+    
     home = get_home_dir()
 
     if sys.platform == 'darwin':
@@ -66,10 +72,16 @@ def jupyter_data_dir():
 def jupyter_runtime_dir():
     """Return the runtime dir for transient jupyter files.
     
-    Respects XDG_RUNTIME_HOME, falls back on data_dir/runtime otherwise.
+    Returns JUPYTER_RUNTIME_DIR if defined.
+    
+    Respects XDG_RUNTIME_HOME on non-OS X, non-Windows,
+    falls back on data_dir/runtime otherwise.
     """
     env = os.environ
-
+    
+    if env.get('JUPYTER_RUNTIME_DIR'):
+        return env['JUPYTER_RUNTIME_DIR']
+    
     if sys.platform == 'darwin':
         return pjoin(jupyter_data_dir(), 'runtime')
     elif os.name == 'nt':
