@@ -22,12 +22,15 @@ except ImportError:
 
 from traitlets.config.application import Application, catch_config_error
 from traitlets.config.loader import ConfigFileNotFound
-from traitlets import Unicode, Bool
+from traitlets import Unicode, Bool, List
 
 from ipython_genutils.path import ensure_dir_exists
 from ipython_genutils import py3compat
 
-from .paths import jupyter_config_dir, jupyter_data_dir, jupyter_runtime_dir
+from .paths import (
+    jupyter_config_dir, jupyter_data_dir, jupyter_runtime_dir,
+    jupyter_path,
+)
 
 
 if os.name == 'nt':
@@ -64,6 +67,10 @@ class JupyterApp(Application):
     aliases = base_aliases
     flags = base_flags
     
+    jupyter_path = List(Unicode)
+    def _jupyter_path_default(self):
+        return jupyter_path()
+    
     config_dir = Unicode()
     
     def _config_dir_default(self):
@@ -79,7 +86,6 @@ class JupyterApp(Application):
         d = jupyter_data_dir()
         ensure_dir_exists(d, mode=0o700)
         return d
-    
     runtime_dir = Unicode()
     
     def _runtime_dir_default(self):

@@ -10,7 +10,11 @@ try:
 except ImportError:
     from mock import patch # py2
 
-from jupyter_core.paths import jupyter_config_dir, jupyter_data_dir, jupyter_runtime_dir
+from jupyter_core import paths
+from jupyter_core.paths import (
+    jupyter_config_dir, jupyter_data_dir, jupyter_runtime_dir,
+    jupyter_path, ENV_JUPYTER_PATH,
+)
 from .mocking import darwin, windows, linux
 
 pjoin = os.path.join
@@ -30,7 +34,12 @@ no_xdg = patch.dict('os.environ', {
 
 appdata = patch.dict('os.environ', {'APPDATA': 'appdata'})
 
-no_config_env = patch.dict('os.environ', {'JUPYTER_CONFIG_DIR': ''})
+no_config_env = patch.dict('os.environ', {
+    'JUPYTER_CONFIG_DIR': '',
+    'JUPYTER_DATA_DIR': '',
+    'JUPYTER_RUNTIME_DIR': '',
+    'JUPYTER_PATH': '',
+})
 
 jupyter_config_env = '/jupyter-cfg'
 config_env = patch.dict('os.environ', {'JUPYTER_CONFIG_DIR': jupyter_config_env})
@@ -148,3 +157,35 @@ def test_runtime_dir_linux():
     with linux, xdg:
         runtime = jupyter_runtime_dir()
     assert runtime == pjoin(xdg_env['XDG_RUNTIME_HOME'], 'jupyter')
+
+
+def test_jupyter_path():
+    system_path = ['system', 'path']
+    with no_config_env, patch.object(paths, 'SYSTEM_JUPYTER_PATH', system_path):
+        path = jupyter_path()
+    assert path[0] == jupyter_data_dir()
+    assert path[-2:] == system_path
+
+
+def test_jupyter_path_env():
+    path_env = os.pathsep.join([
+        pjoin('foo', 'bar'),
+        pjoin('bar', 'baz', ''), # trailing /
+    ])
+    
+    with patch.dict('os.environ', {'JUPYTER_PATH': path_env}):
+        path = jupyter_path()
+    assert path[:2] == [pjoin('foo', 'bar'), pjoin('bar', 'baz')]
+
+
+def test_jupyter_path_sys_prefix():
+    with patch.object(paths, 'ENV_JUPYTER_PATH', ['sys_prefix']):
+        path = jupyter_path()
+    assert 'sys_prefix' in path
+
+
+def test_jupyter_path_subdir():
+    path = jupyter_path('sub1', 'sub2')
+    for p in path:
+        assert p.endswith(pjoin('', 'sub1', 'sub2'))
+

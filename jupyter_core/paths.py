@@ -94,3 +94,53 @@ def jupyter_runtime_dir():
         return pjoin(jupyter_data_dir(), 'runtime')
 
 
+if os.name == 'nt':
+    programdata = os.environ.get('PROGRAMDATA', None)
+    if programdata:
+        SYSTEM_JUPYTER_PATH = [pjoin(programdata, 'jupyter')]
+    else:  # PROGRAMDATA is not defined by default on XP.
+        SYSTEM_JUPYTER_PATH = []
+else:
+    SYSTEM_JUPYTER_PATH = [
+        "/usr/local/share/jupyter",
+        "/usr/share/jupyter",
+    ]
+
+ENV_JUPYTER_PATH = [os.path.join(sys.prefix, 'share', 'jupyter')]
+
+def jupyter_path(*subdirs):
+    """Return the list of directories to search
+    
+    JUPYTER_PATH environment variable has highest priority.
+    
+    If *subdirs are given, that subdirectory will be added to each element.
+    
+    Examples:
+    
+    >>> jupyter_path()
+    ['~/.local/jupyter', '/usr/local/share/jupyter']
+    >>> jupyter_path('kernels')
+    ['~/.local/jupyter/kernels', '/usr/local/share/jupyter/kernels']
+    """
+    
+    paths = []
+    # highest priority is env
+    if os.environ.get('JUPYTER_PATH'):
+        paths.extend(
+            p.rstrip(os.sep)
+            for p in os.environ['JUPYTER_PATH'].split(os.pathsep)
+        )
+    # then user dir
+    paths.append(jupyter_data_dir())
+    # then sys.prefix
+    for p in ENV_JUPYTER_PATH:
+        if p not in SYSTEM_JUPYTER_PATH:
+            paths.append(p)
+    # finally, system
+    paths.extend(SYSTEM_JUPYTER_PATH)
+    
+    # add subdir, if requested
+    if subdirs:
+        paths = [ pjoin(p, *subdirs) for p in paths ]
+    return paths
+
