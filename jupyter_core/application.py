@@ -50,6 +50,7 @@ else:
 
 base_aliases = {
     'log-level' : 'Application.log_level',
+    'config' : 'JupyterApp.config_file',
 }
 
 base_flags = {
@@ -98,15 +99,20 @@ class JupyterApp(Application):
     
     generate_config = Bool(False)
     
-    config_file_name = Unicode()
-    def _config_file_name_default(self):
+    config_file = Unicode(config=True,
+        help="Specify a config file to load."
+    )
+    def _config_file_default(self):
         if not self.name:
             return ''
         return self.name.replace('-','_') + u'_config'
     
     @property
     def config_files(self):
-        return [self.config_file_name]
+        if self.config_file:
+            return [self.config_file]
+        else:
+            return []
     
     def write_config_file(self):
         """Write our default config to a .py config file"""
@@ -159,7 +165,7 @@ class JupyterApp(Application):
             if not config_file_name or config_file_name == base_config:
                 continue
             self.log.debug("Attempting to load config file: %s" %
-                           self.config_file_name)
+                           self.config_file)
             try:
                 Application.load_config_file(
                     self,
@@ -173,7 +179,7 @@ class JupyterApp(Application):
                 if not suppress_errors:
                     raise
                 self.log.warn("Error loading config file: %s" %
-                              self.config_file_name, exc_info=True)
+                              self.config_file, exc_info=True)
     # subcommand-related
     def _find_subcommand(self, name):
         name = '{}-{}'.format(self.name, name)
