@@ -40,7 +40,7 @@ migrations = {
 }
 
 custom_src_t = pjoin('{profile}', 'static', 'custom')
-custom_dst_t = pjoin('{jupyter_config}', 'custom'),
+custom_dst_t = pjoin('{jupyter_config}', 'custom')
 
 for security_file in ('notebook_secret', 'notebook_cookie_secret', 'nbsignatures.db'):
     src = pjoin('{profile}', 'security', security_file)
@@ -49,6 +49,13 @@ for security_file in ('notebook_secret', 'notebook_cookie_secret', 'nbsignatures
 
 config_migrations = ['notebook', 'nbconvert', 'qtconsole']
 
+regex = re.compile
+
+config_substitutions = {
+    regex(r'\bIPythonQtConsoleApp\b'): 'JupyterQtConsoleApp',
+    regex(r'\bIPython\.html\b'): 'jupyter_notebook',
+    regex(r'\bIPython\.nbconvert\b'): 'jupyter_nbconvert',
+}
 
 def migrate_dir(src, dst):
     """Migrate a directory"""
@@ -65,7 +72,7 @@ def migrate_dir(src, dst):
     return True
 
 
-def migrate_file(src, dst):
+def migrate_file(src, dst, substitutions=None):
     """Migrate a single file"""
     if os.path.exists(dst):
         # already exists
@@ -74,6 +81,13 @@ def migrate_file(src, dst):
     print("Copying %s -> %s" % (src, dst))
     ensure_dir_exists(os.path.dirname(dst))
     shutil.copy(src, dst, follow_symlinks=False)
+    if substitutions:
+        with open(dst) as f:
+            text = f.read()
+        for pat, replacement in substitutions.items():
+            text = pat.sub(replacement, text)
+        with open(dst, 'w') as f:
+            f.write(text)
     return True
 
 
@@ -121,12 +135,18 @@ def migrate_static_custom(src, dst):
     ensure_dir_exists(dst)
     
     if not custom_js_empty or not custom_css_empty:
-        ensure_exists(dst)
+        ensure_dir_exists(dst)
+    
+    if not custom_js_empty:
+        migrate_file(custom_js, pjoin(dst, 'custom.js'))
+    if not custom_css_empty:
+        migrate_file(custom_css, pjoin(dst, 'custom.css'))
 
 
 def migrate_config(name, env):
     """Migrate a config file
     
+    Includes substitutions for updated configurable names.
     """
     src_base = pjoin('{profile}', 'ipython_{name}_config').format(name=name, **env)
     dst_base = pjoin('{jupyter_config}', 'jupyter_{name}_config').format(name=name, **env)
@@ -140,7 +160,7 @@ def migrate_config(name, env):
         if os.path.exists(src):
             cfg = loaders[ext](src).load_config()
             if cfg:
-                migrate_file(src, dst)
+                migrate_file(src, dst, substitutions=config_substitutions)
             else:
                 # don't migrate empty config files
                 print("Not migrating empty config file: %s" % src)
