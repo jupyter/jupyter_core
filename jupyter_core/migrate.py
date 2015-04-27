@@ -154,16 +154,19 @@ def migrate_config(name, env):
         '.py': PyFileConfigLoader,
         '.json': JSONFileConfigLoader,
     }
+    migrated = []
     for ext in ('.py', '.json'):
         src = src_base + ext
         dst = dst_base + ext
         if os.path.exists(src):
             cfg = loaders[ext](src).load_config()
             if cfg:
-                migrate_file(src, dst, substitutions=config_substitutions)
+                if migrate_file(src, dst, substitutions=config_substitutions):
+                    migrated.append(src)
             else:
                 # don't migrate empty config files
                 print("Not migrating empty config file: %s" % src)
+    return migrated
 
 
 def migrate():
