@@ -172,7 +172,7 @@ def migrate():
         'jupyter_data': jupyter_data_dir(),
         'jupyter_config': jupyter_config_dir(),
         'ipython_dir': get_ipython_dir(),
-        'profile': locate_profile(),
+        'profile': os.path.join(get_ipython_dir(), 'profile_default'),
     }
     for src_t, dst_t in migrations.items():
         src = src_t.format(**env)
