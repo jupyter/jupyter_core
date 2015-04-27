@@ -27,7 +27,12 @@ import shutil
 from traitlets.config import PyFileConfigLoader, JSONFileConfigLoader
 
 from ipython_genutils.path import ensure_dir_exists
-from IPython.paths import get_ipython_dir, locate_profile
+try:
+    from IPython.paths import get_ipython_dir, locate_profile
+except ImportError:
+    # IPython < 4
+    from IPython.utils.path import get_ipython_dir, locate_profile
+
 from .paths import jupyter_config_dir, jupyter_data_dir
 from .application import JupyterApp
 
