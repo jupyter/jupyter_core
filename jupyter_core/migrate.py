@@ -64,6 +64,9 @@ config_substitutions = {
 
 def migrate_dir(src, dst):
     """Migrate a directory"""
+    if not os.listdir(src):
+        print("No files in %s" % src)
+        return False
     if os.path.exists(dst):
         if os.listdir(dst):
             # already exists, non-empty
@@ -111,6 +114,12 @@ def migrate_one(src, dst):
 
 
 def migrate_static_custom(src, dst):
+    """Migrate non-empty custom.js,css from src to dst
+    
+    src, dst are 'custom' directories containing custom.{js,css}
+    """
+    migrated = False
+    
     custom_js = pjoin(src, 'custom.js')
     custom_css = pjoin(src, 'custom.css')
     # check if custom_js is empty:
@@ -136,16 +145,20 @@ def migrate_static_custom(src, dst):
     
     if custom_js_empty and custom_css_empty:
         # nothing to migrate
-        return
+        return False
     ensure_dir_exists(dst)
     
     if not custom_js_empty or not custom_css_empty:
         ensure_dir_exists(dst)
     
     if not custom_js_empty:
-        migrate_file(custom_js, pjoin(dst, 'custom.js'))
+        if migrate_file(custom_js, pjoin(dst, 'custom.js')):
+            migrated = True
     if not custom_css_empty:
-        migrate_file(custom_css, pjoin(dst, 'custom.css'))
+        if migrate_file(custom_css, pjoin(dst, 'custom.css')):
+            migrated = True
+    
+    return migrated
 
 
 def migrate_config(name, env):
