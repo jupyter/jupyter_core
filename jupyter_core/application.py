@@ -60,6 +60,9 @@ base_flags = {
         "generate default config file"),
 }
 
+class NoStart(Exception):
+    """Exception to raise when an application shouldn't start"""
+
 class JupyterApp(Application):
     """Base class for Jupyter applications"""
     name = 'jupyter' # override in subclasses
@@ -219,14 +222,22 @@ class JupyterApp(Application):
         """Start the whole thing"""
         if self.subcommand:
             os.execv(self.subcommand, [self.subcommand] + self.argv[1:])
-            return
+            raise NoStart()
         
         if self.subapp:
             self.subapp.start()
-            return
+            raise NoStart()
         
         if self.generate_config:
             self.write_config_file()
+            raise NoStart()
+    
+    @classmethod
+    def launch_instance(cls, argv=None):
+        """Launch an instance of a Jupyer Application"""
+        try:
+            return super(JupyterApp, cls).launch_instance(argv=argv)
+        except NoStart:
             return
 
 if __name__ == '__main__':
