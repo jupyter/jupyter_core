@@ -99,7 +99,7 @@ if os.name == 'nt':
     if programdata:
         SYSTEM_JUPYTER_PATH = [pjoin(programdata, 'jupyter')]
     else:  # PROGRAMDATA is not defined by default on XP.
-        SYSTEM_JUPYTER_PATH = []
+        SYSTEM_JUPYTER_PATH = [os.path.join(sys.prefix, 'share', 'jupyter')]
 else:
     SYSTEM_JUPYTER_PATH = [
         "/usr/local/share/jupyter",
@@ -107,6 +107,7 @@ else:
     ]
 
 ENV_JUPYTER_PATH = [os.path.join(sys.prefix, 'share', 'jupyter')]
+
 
 def jupyter_path(*subdirs):
     """Return the list of directories to search
