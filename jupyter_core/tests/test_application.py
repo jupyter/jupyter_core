@@ -4,8 +4,10 @@ from traitlets import Integer
 
 from jupyter_core.application import JupyterApp
 
+
 def test_basic():
     app = JupyterApp()
+
 
 def test_default_traits():
     app = JupyterApp()
@@ -27,3 +29,12 @@ def test_custom_config():
         app.initialize(['--config', f.name])
     assert app.config_file == f.name
     assert app.n == 10
+
+
+def test_cli_override():
+    app = DummyApp()
+    with NamedTemporaryFile(suffix='.py', mode='w') as f:
+        f.write(_dummy_config)
+        f.flush()
+        app.initialize(['--config', f.name, '--DummyApp.n=20'])
+    assert app.n == 20

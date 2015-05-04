@@ -207,9 +207,12 @@ class JupyterApp(Application):
                 self.subcommand = subc
                 return
         self.parse_command_line(argv)
+        cl_config = self.config
         if self._dispatching:
             return
         self.load_config_file()
+        # enforce cl-opts override configfile opts:
+        self.update_config(cl_config)
     
     
     def start(self):
