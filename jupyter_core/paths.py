@@ -74,7 +74,7 @@ def jupyter_runtime_dir():
     
     Returns JUPYTER_RUNTIME_DIR if defined.
     
-    Respects XDG_RUNTIME_HOME on non-OS X, non-Windows,
+    Respects XDG_RUNTIME_DIR on non-OS X, non-Windows,
     falls back on data_dir/runtime otherwise.
     """
     env = os.environ
@@ -88,7 +88,7 @@ def jupyter_runtime_dir():
         return pjoin(jupyter_data_dir(), 'runtime')
     else:
         # Linux, non-OS X Unix, AIX, etc.
-        xdg = env.get("XDG_RUNTIME_HOME", None)
+        xdg = env.get("XDG_RUNTIME_DIR", None)
         if xdg:
             return pjoin(xdg, 'jupyter')
         return pjoin(jupyter_data_dir(), 'runtime')

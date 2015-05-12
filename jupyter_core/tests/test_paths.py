@@ -23,13 +23,13 @@ pjoin = os.path.join
 xdg_env = {
     'XDG_CONFIG_HOME': '/tmp/xdg/config',
     'XDG_DATA_HOME': '/tmp/xdg/data',
-    'XDG_RUNTIME_HOME': '/tmp/xdg/runtime',
+    'XDG_RUNTIME_DIR': '/tmp/xdg/runtime',
 }
 xdg = patch.dict('os.environ', xdg_env)
 no_xdg = patch.dict('os.environ', {
     'XDG_CONFIG_HOME': '',
     'XDG_DATA_HOME': '',
-    'XDG_RUNTIME_HOME': '',
+    'XDG_RUNTIME_DIR': '',
 })
 
 appdata = patch.dict('os.environ', {'APPDATA': 'appdata'})
@@ -156,7 +156,7 @@ def test_runtime_dir_linux():
     
     with linux, xdg:
         runtime = jupyter_runtime_dir()
-    assert runtime == pjoin(xdg_env['XDG_RUNTIME_HOME'], 'jupyter')
+    assert runtime == pjoin(xdg_env['XDG_RUNTIME_DIR'], 'jupyter')
 
 
 def test_jupyter_path():
