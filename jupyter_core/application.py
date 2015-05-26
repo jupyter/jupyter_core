@@ -58,6 +58,8 @@ base_flags = {
             "set log level to logging.DEBUG (maximize logging output)"),
     'generate-config': ({'JupyterApp': {'generate_config': True}},
         "generate default config file"),
+    'y': ({'JupyterApp': {'answer_yes': True}},
+        "Answer yes to any questions instead of prompting."),
 }
 
 class NoStart(Exception):
@@ -100,15 +102,27 @@ class JupyterApp(Application):
     def _runtime_dir_changed(self, new):
         ensure_dir_exists(new, mode=0o700)
     
-    generate_config = Bool(False)
+    generate_config = Bool(False, config=True,
+        help="""Generate default config file."""
+    )
     
-    config_file = Unicode(config=True,
+    config_file_name = Unicode(config=True,
         help="Specify a config file to load."
     )
-    def _config_file_default(self):
+    def _config_file_name_default(self):
         if not self.name:
             return ''
         return self.name.replace('-','_') + u'_config'
+    
+    config_file = Unicode(config=True,
+        help="""Full path of a config file.""",
+    )
+    def _config_file_default(self):
+        return os.path.join(self.config_dir, self.config_file_name + '.py')
+    
+    answer_yes = Bool(False, config=True,
+        help="""Answer yes to any prompts."""
+    )
     
     @property
     def config_files(self):
@@ -117,7 +131,7 @@ class JupyterApp(Application):
         else:
             return []
     
-    def write_config_file(self):
+    def write_default_config(self):
         """Write our default config to a .py config file"""
         if os.path.exists(self.config_file) and not self.answer_yes:
             answer = ''
@@ -139,6 +153,7 @@ class JupyterApp(Application):
         if isinstance(config_text, bytes):
             config_text = config_text.decode('utf8')
         print("Writing default config to: %s" % self.config_file)
+        ensure_dir_exists(os.path.abspath(os.path.dirname(self.config_file)), 0o700)
         with open(self.config_file, mode='w') as f:
             f.write(config_text)
     
@@ -229,7 +244,7 @@ class JupyterApp(Application):
             raise NoStart()
         
         if self.generate_config:
-            self.write_config_file()
+            self.write_default_config()
             raise NoStart()
     
     @classmethod
