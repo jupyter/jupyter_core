@@ -49,6 +49,7 @@ def list_subcommands():
     Returns a list of jupyter's subcommand names, without the `jupyter-` prefix.
     Nested children (e.g. jupyter-sub-subsub) are not included.
     """
+    prefix = 'jupyter-'
     path = os.environ.get('PATH') or os.defpath
     subcommands = set()
     for d in path.split(os.pathsep):
@@ -57,8 +58,8 @@ def list_subcommands():
         except OSError:
             continue
         for name in names:
-            if name.startswith('jupyter-'):
-                subcommands.add(name.split('-')[1])
+            if name.startswith(prefix):
+                subcommands.add(name[len(prefix):])
     return subcommands
 
 def main():
