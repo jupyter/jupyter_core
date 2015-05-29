@@ -65,11 +65,6 @@ def test_help():
     output = get_jupyter_output('-h')
 
 
-def test_version():
-    output = get_jupyter_output('--version')
-    assert output == __version__
-
-
 def test_subcommand_not_found():
     with pytest.raises(CalledProcessError):
         output = get_jupyter_output('nonexistant-subcommand')
