@@ -1,6 +1,6 @@
 """The root `jupyter` command.
 
-This does nothing other than dispatch to subcommands.
+This does nothing other than dispatch to subcommands or output path info.
 """
 
 # Copyright (c) Jupyter Development Team.
@@ -84,8 +84,7 @@ def main():
         args, opts = parser.parse_known_args()
         subcommand = args.subcommand
         if args.json and not args.paths:
-            print("--json is only used with --paths", file=sys.stderr)
-            sys.exit(1)
+            sys.exit("--json is only used with --paths")
         if args.config_dir:
             print(paths.jupyter_config_dir())
             return
@@ -112,15 +111,13 @@ def main():
     
     if not subcommand:
         parser.print_usage(file=sys.stderr)
-        print("subcommand is required", file=sys.stderr)
-        sys.exit(1)
+        sys.exit("subcommand is required")
     
     command = 'jupyter-' + subcommand
     try:
         os.execvp(command, sys.argv[1:])
     except OSError:
-        print("jupyter: %r is not a Jupyter command" % subcommand, file=sys.stderr)
-        sys.exit(1)
+        sys.exit("jupyter: %r is not a Jupyter command" % subcommand)
 
 
 if __name__ == '__main__':
