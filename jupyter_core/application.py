@@ -29,22 +29,8 @@ from ipython_genutils import py3compat
 
 from .paths import (
     jupyter_config_dir, jupyter_data_dir, jupyter_runtime_dir,
-    jupyter_path,
+    jupyter_path, jupyter_config_path,
 )
-
-
-if os.name == 'nt':
-    programdata = os.environ.get('PROGRAMDATA', None)
-    if programdata:
-        SYSTEM_CONFIG_DIRS = [os.path.join(programdata, 'jupyter')]
-    else:  # PROGRAMDATA is not defined by default on XP.
-        SYSTEM_CONFIG_DIRS = []
-else:
-    SYSTEM_CONFIG_DIRS = [
-        "/usr/local/etc/jupyter",
-        "/etc/jupyter",
-    ]
-
 
 # aliases and flags
 
@@ -84,7 +70,7 @@ class JupyterApp(Application):
     
     @property
     def config_file_paths(self):
-        return [py3compat.getcwd(), self.config_dir] + SYSTEM_CONFIG_DIRS
+        return [py3compat.getcwd()] + jupyter_config_path()
     
     data_dir = Unicode()
     
