@@ -145,3 +145,27 @@ def jupyter_path(*subdirs):
         paths = [ pjoin(p, *subdirs) for p in paths ]
     return paths
 
+
+if os.name == 'nt':
+    programdata = os.environ.get('PROGRAMDATA', None)
+    if programdata:
+        SYSTEM_CONFIG_PATH = [os.path.join(programdata, 'jupyter')]
+    else:  # PROGRAMDATA is not defined by default on XP.
+        SYSTEM_CONFIG_PATH = []
+else:
+    SYSTEM_CONFIG_PATH = [
+        "/usr/local/etc/jupyter",
+        "/etc/jupyter",
+    ]
+
+ENV_CONFIG_PATH = [os.path.join(sys.prefix, 'etc', 'jupyter')]
+
+
+def jupyter_config_path():
+    """Return the search path for Jupyter config files as a list."""
+    paths = [jupyter_config_dir()]
+    for p in ENV_CONFIG_PATH:
+        if p not in SYSTEM_CONFIG_PATH:
+            paths.append(p)
+    paths.extend(SYSTEM_CONFIG_PATH)
+    return paths

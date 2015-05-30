@@ -1,6 +1,6 @@
 """The root `jupyter` command.
 
-This does nothing other than dispatch to subcommands.
+This does nothing other than dispatch to subcommands or output path info.
 """
 
 # Copyright (c) Jupyter Development Team.
@@ -9,14 +9,12 @@ This does nothing other than dispatch to subcommands.
 from __future__ import print_function
 
 import argparse
+import json
 import os
 import sys
 
-try:
-    # py3
-    from shutil import which
-except ImportError:
-    from .utils.shutil_which import which
+from . import paths
+from .version import __version__
 
 class JupyterParser(argparse.ArgumentParser):
     
@@ -36,9 +34,24 @@ class JupyterParser(argparse.ArgumentParser):
 
 def jupyter_parser():
     parser = JupyterParser(
-        description="Jupyter: Interactive Computing"
+        description="Jupyter: Interactive Computing",
     )
-    parser.add_argument('subcommand', type=str, help='The subcommand to launch')
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('--version', action='version', version=__version__)
+    group.add_argument('subcommand', type=str, nargs='?', help='the subcommand to launch')
+    
+    # p = group.add_group('paths')
+    group.add_argument('--config-dir', action='store_true',
+        help="show Jupyter config dir")
+    group.add_argument('--data-dir', action='store_true',
+        help="show Jupyter data dir")
+    group.add_argument('--runtime-dir', action='store_true',
+        help="show Jupyter runtime dir")
+    group.add_argument('--paths', action='store_true',
+        help="show all Jupyter paths. Add --json for machine-readable format.")
+    parser.add_argument('--json', action='store_true',
+        help="output paths as machine-readable json")
+    
     return parser
 
 def list_subcommands():
@@ -70,13 +83,41 @@ def main():
         parser = jupyter_parser()
         args, opts = parser.parse_known_args()
         subcommand = args.subcommand
+        if args.json and not args.paths:
+            sys.exit("--json is only used with --paths")
+        if args.config_dir:
+            print(paths.jupyter_config_dir())
+            return
+        if args.data_dir:
+            print(paths.jupyter_data_dir())
+            return
+        if args.runtime_dir:
+            print(paths.jupyter_runtime_dir())
+            return
+        if args.paths:
+            data = {}
+            data['runtime'] = [paths.jupyter_runtime_dir()]
+            data['config'] = paths.jupyter_config_path()
+            data['data'] = paths.jupyter_path()
+            if args.json:
+                print(json.dumps(data))
+            else:
+                for name in sorted(data):
+                    path = data[name]
+                    print('%s:' % name)
+                    for p in path:
+                        print('    ' + p)
+            return
+    
+    if not subcommand:
+        parser.print_usage(file=sys.stderr)
+        sys.exit("subcommand is required")
     
     command = 'jupyter-' + subcommand
     try:
         os.execvp(command, sys.argv[1:])
     except OSError:
-        print("jupyter: %r is not a Jupyter command" % subcommand, file=sys.stderr)
-        sys.exit(1)
+        sys.exit("jupyter: %r is not a Jupyter command" % subcommand)
 
 
 if __name__ == '__main__':
