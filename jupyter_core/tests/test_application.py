@@ -1,6 +1,13 @@
 import os
 import shutil
 from tempfile import mkdtemp
+from ipython_genutils import py3compat
+
+try:
+    from unittest.mock import patch
+except ImportError:
+    # py2
+    from mock import patch
 
 import pytest
 from traitlets import Integer
@@ -21,6 +28,7 @@ def test_default_traits():
 
 class DummyApp(JupyterApp):
     name = "dummy-app"
+    m = Integer(0, config=True)
     n = Integer(0, config=True)
 
 _dummy_config = """
@@ -59,4 +67,30 @@ def test_generate_config():
         app.start()
     
     assert os.path.exists(os.path.join(td, 'dummy_app_config.py'))
+
+
+def test_load_config():
+    config_dir = mkdtemp()
+    wd = mkdtemp()
+    with open(pjoin(config_dir, 'dummy_app_config.py'), 'w') as f:
+        f.write('c.DummyApp.m = 1\n')
+        f.write('c.DummyApp.n = 1')
+    with patch.object(py3compat, 'getcwd', lambda : wd):
+        app = DummyApp(config_dir=config_dir)
+        app.initialize()
+
+    assert app.n == 1, "Loaded config from config dir"
+    
+    with open(pjoin(wd, 'dummy_app_config.py'), 'w') as f:
+        f.write('c.DummyApp.n = 2')
+
+    with patch.object(py3compat, 'getcwd', lambda : wd):
+        app = DummyApp(config_dir=config_dir)
+        app.initialize()
+
+    assert app.m == 1, "Loaded config from config dir"
+    assert app.n == 2, "Loaded config from CWD"
+    
+    shutil.rmtree(config_dir)
+    shutil.rmtree(wd)
 
