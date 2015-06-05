@@ -70,7 +70,11 @@ class JupyterApp(Application):
     
     @property
     def config_file_paths(self):
-        return [py3compat.getcwd()] + jupyter_config_path()
+        path = jupyter_config_path()
+        if self.config_dir not in path:
+            path.insert(0, self.config_dir)
+        path.insert(0, py3compat.getcwd())
+        return path
     
     data_dir = Unicode()
     
@@ -103,8 +107,6 @@ class JupyterApp(Application):
     config_file = Unicode(config=True,
         help="""Full path of a config file.""",
     )
-    def _config_file_default(self):
-        return os.path.join(self.config_dir, self.config_file_name + '.py')
     
     answer_yes = Bool(False, config=True,
         help="""Answer yes to any prompts."""
@@ -115,14 +117,19 @@ class JupyterApp(Application):
         if self.config_file:
             return [self.config_file]
         else:
-            return []
+            return [self.config_file_name]
     
     def write_default_config(self):
         """Write our default config to a .py config file"""
-        if os.path.exists(self.config_file) and not self.answer_yes:
+        if self.config_file:
+            config_file = self.config_file
+        else:
+            config_file = os.path.join(self.config_dir, self.config_file_name + '.py')
+        
+        if os.path.exists(config_file) and not self.answer_yes:
             answer = ''
             def ask():
-                prompt = "Overwrite %s with default config? [y/N]" % self.config_file
+                prompt = "Overwrite %s with default config? [y/N]" % config_file
                 try:
                     return input(prompt).lower() or 'n'
                 except KeyboardInterrupt:
@@ -138,9 +145,9 @@ class JupyterApp(Application):
         config_text = self.generate_config_file()
         if isinstance(config_text, bytes):
             config_text = config_text.decode('utf8')
-        print("Writing default config to: %s" % self.config_file)
-        ensure_dir_exists(os.path.abspath(os.path.dirname(self.config_file)), 0o700)
-        with open(self.config_file, mode='w') as f:
+        print("Writing default config to: %s" % config_file)
+        ensure_dir_exists(os.path.abspath(os.path.dirname(config_file)), 0o700)
+        with open(config_file, mode='w') as f:
             f.write(config_text)
     
     def load_config_file(self, suppress_errors=True):
@@ -155,14 +162,13 @@ class JupyterApp(Application):
         try:
             super(JupyterApp, self).load_config_file(
                 base_config,
-                path=self.config_file_paths
+                path=self.config_file_paths,
             )
         except ConfigFileNotFound:
             # ignore errors loading parent
             self.log.debug("Config file %s not found", base_config)
             pass
-        from itertools import chain
-        for config_file_name in chain(self.config_file_name, self.config_files):
+        for config_file_name in self.config_files:
             if not config_file_name or config_file_name == base_config:
                 continue
             try:
