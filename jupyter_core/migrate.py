@@ -91,7 +91,7 @@ def migrate_file(src, dst, substitutions=None):
         return False
     print("Copying %s -> %s" % (src, dst))
     ensure_dir_exists(os.path.dirname(dst))
-    shutil.copy(src, dst, follow_symlinks=False)
+    shutil.copy(src, dst)
     if substitutions:
         with open(dst) as f:
             text = f.read()
