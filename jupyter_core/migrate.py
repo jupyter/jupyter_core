@@ -63,7 +63,7 @@ config_substitutions = {
 }
 
 def migrate_dir(src, dst):
-    """Migrate a directory"""
+    """Migrate a directory from src to dst"""
     if not os.listdir(src):
         print("No files in %s" % src)
         return False
@@ -81,7 +81,10 @@ def migrate_dir(src, dst):
 
 
 def migrate_file(src, dst, substitutions=None):
-    """Migrate a single file"""
+    """Migrate a single file from src to dst
+    
+    substitutions is an optional dict of {regex: replacement} for performing replacements on the file.
+    """
     if os.path.exists(dst):
         # already exists
         print("%s already exists" % dst)
@@ -188,7 +191,7 @@ def migrate_config(name, env):
 
 
 def migrate():
-    """Perform migrations"""
+    """Migrate IPython configuration to Jupyter"""
     env = {
         'jupyter_data': jupyter_data_dir(),
         'jupyter_config': jupyter_config_dir(),
