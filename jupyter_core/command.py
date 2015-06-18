@@ -9,6 +9,7 @@ This does nothing other than dispatch to subcommands or output path info.
 from __future__ import print_function
 
 import argparse
+import errno
 import json
 import os
 import sys
@@ -116,8 +117,10 @@ def main():
     command = 'jupyter-' + subcommand
     try:
         os.execvp(command, sys.argv[1:])
-    except OSError:
-        sys.exit("jupyter: %r is not a Jupyter command" % subcommand)
+    except OSError as e:
+        if e.errno == errno.ENOENT:
+            sys.exit("jupyter: %r is not a Jupyter command" % subcommand)
+        raise
 
 
 if __name__ == '__main__':
