@@ -58,8 +58,8 @@ regex = re.compile
 
 config_substitutions = {
     regex(r'\bIPythonQtConsoleApp\b'): 'JupyterQtConsoleApp',
-    regex(r'\bIPython\.html\b'): 'jupyter_notebook',
-    regex(r'\bIPython\.nbconvert\b'): 'jupyter_nbconvert',
+    regex(r'\bIPython\.html\b'): 'notebook',
+    regex(r'\bIPython\.nbconvert\b'): 'nbconvert',
 }
 
 def migrate_dir(src, dst):
