@@ -23,6 +23,7 @@ Migrations:
 import os
 import re
 import shutil
+from datetime import datetime
 
 from traitlets.config import PyFileConfigLoader, JSONFileConfigLoader
 
@@ -213,6 +214,10 @@ def migrate():
     
     if os.path.exists(custom_src):
         migrate_static_custom(custom_src, custom_dst)
+    # write a marker to avoid re-running migration checks
+    ensure_dir_exists(env['jupyter_config'])
+    with open(os.path.join(env['jupyter_config'], 'migrated'), 'w') as f:
+        f.write(datetime.now().isoformat())
 
 
 class MigrateApp(JupyterApp):

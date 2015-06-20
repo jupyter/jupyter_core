@@ -143,6 +143,20 @@ class JupyterApp(Application):
         with open(config_file, mode='w') as f:
             f.write(config_text)
     
+    def migrate_config(self):
+        """Migrate config/data from IPython 3"""
+        if os.path.exists(os.path.join(self.config_dir, 'migrated')):
+            # already migrated
+            return
+
+        ipdir = os.environ.get('IPYTHONDIR') or os.path.expanduser('~/.ipython')
+        # No IPython dir, nothing to migrate
+        if not os.path.exists(ipdir):
+            return
+
+        from .migrate import migrate
+        migrate()
+
     def load_config_file(self, suppress_errors=True):
         """Load the config file.
 
@@ -215,6 +229,7 @@ class JupyterApp(Application):
         cl_config = self.config
         if self._dispatching:
             return
+        self.migrate_config()
         self.load_config_file()
         # enforce cl-opts override configfile opts:
         self.update_config(cl_config)
