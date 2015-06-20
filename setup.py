@@ -11,6 +11,7 @@ from __future__ import print_function
 
 import os
 import sys
+from glob import glob
 
 v = sys.version_info
 if v[:2] < (2,7) or (v[:2] > (3,) and v[:2] < (3,3)):
@@ -35,7 +36,7 @@ setup_args = dict(
     name                = 'jupyter_core',
     version             = version_ns['__version__'],
     packages            = ['jupyter_core'],
-    scripts             = ['scripts/jupyter'],
+    scripts             = glob(pjoin('scripts', '*')),
     description         = "Jupyter core package. A base package on which Jupyter projects rely.",
     long_description    = """There is no reason to install this package on its own.""",
     author              = "Jupyter Development Team",
