@@ -59,6 +59,9 @@ class JupyterApp(Application):
     aliases = base_aliases
     flags = base_flags
     
+    def _log_level_default(self):
+        return logging.INFO
+    
     jupyter_path = List(Unicode)
     def _jupyter_path_default(self):
         return jupyter_path()
