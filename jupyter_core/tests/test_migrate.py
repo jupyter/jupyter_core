@@ -199,14 +199,14 @@ def test_migrate_custom_default(td):
 
 def test_migrate_nothing(env):
     migrate()
-    assert not os.path.exists(env['JUPYTER_CONFIG_DIR'])
+    assert os.listdir(env['JUPYTER_CONFIG_DIR']) == ['migrated']
     assert not os.path.exists(env['JUPYTER_DATA_DIR'])
 
 
 def test_migrate_default(env):
     shutil.copytree(dotipython_empty, env['IPYTHONDIR'])
     migrate()
-    assert not os.path.exists(env['JUPYTER_CONFIG_DIR'])
+    assert os.listdir(env['JUPYTER_CONFIG_DIR']) == ['migrated']
     assert not os.path.exists(env['JUPYTER_DATA_DIR'])
 
 
