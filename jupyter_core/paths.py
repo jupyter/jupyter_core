@@ -110,7 +110,7 @@ ENV_JUPYTER_PATH = [os.path.join(sys.prefix, 'share', 'jupyter')]
 
 
 def jupyter_path(*subdirs):
-    """Return the list of directories to search
+    """Return a list of directories to search for data files
     
     JUPYTER_PATH environment variable has highest priority.
     
