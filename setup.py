@@ -35,7 +35,9 @@ with open(pjoin(here, 'jupyter_core', 'version.py')) as f:
 setup_args = dict(
     name                = 'jupyter_core',
     version             = version_ns['__version__'],
-    packages            = ['jupyter_core'],
+    packages            = ['jupyter_core',
+                           'jupyter_core.utils',
+                           'jupyter_core.tests'],
     scripts             = glob(pjoin('scripts', '*')),
     description         = "Jupyter core package. A base package on which Jupyter projects rely.",
     long_description    = """There is no reason to install this package on its own.""",
