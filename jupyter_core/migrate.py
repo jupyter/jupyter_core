@@ -231,7 +231,7 @@ def migrate():
     # write a marker to avoid re-running migration checks
     ensure_dir_exists(env['jupyter_config'])
     with open(os.path.join(env['jupyter_config'], 'migrated'), 'w') as f:
-        f.write(datetime.now().isoformat())
+        f.write(datetime.utcnow().isoformat())
     
     return migrated
 
