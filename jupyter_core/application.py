@@ -152,12 +152,13 @@ class JupyterApp(Application):
             # already migrated
             return
 
-        ipdir = os.environ.get('IPYTHONDIR') or os.path.expanduser('~/.ipython')
+        from .migrate import get_ipython_dir, migrate
+        
+        ipdir = get_ipython_dir()
         # No IPython dir, nothing to migrate
         if not os.path.exists(ipdir):
             return
 
-        from .migrate import migrate
         migrate()
 
     def load_config_file(self, suppress_errors=True):
