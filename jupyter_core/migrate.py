@@ -23,15 +23,21 @@ Migrations:
 import os
 import re
 import shutil
+from datetime import datetime
 
 from traitlets.config import PyFileConfigLoader, JSONFileConfigLoader
+from traitlets.log import get_logger
 
 from ipython_genutils.path import ensure_dir_exists
 try:
-    from IPython.paths import get_ipython_dir, locate_profile
+    from IPython.paths import get_ipython_dir
 except ImportError:
     # IPython < 4
-    from IPython.utils.path import get_ipython_dir, locate_profile
+    try:
+        from IPython.utils.path import get_ipython_dir
+    except ImportError:
+        def get_ipython_dir():
+            return os.environ.get('IPYTHONDIR', os.path.expanduser('~/.ipython'))
 
 from .paths import jupyter_config_dir, jupyter_data_dir
 from .application import JupyterApp
@@ -64,17 +70,18 @@ config_substitutions = {
 
 def migrate_dir(src, dst):
     """Migrate a directory from src to dst"""
+    log = get_logger()
     if not os.listdir(src):
-        print("No files in %s" % src)
+        log.debug("No files in %s" % src)
         return False
     if os.path.exists(dst):
         if os.listdir(dst):
             # already exists, non-empty
-            print("%s already exists" % dst)
+            log.debug("%s already exists" % dst)
             return False
         else:
             os.rmdir(dst)
-    print("Copying %s -> %s" % (src, dst))
+    log.info("Copying %s -> %s" % (src, dst))
     ensure_dir_exists(os.path.dirname(dst))
     shutil.copytree(src, dst, symlinks=True)
     return True
@@ -85,11 +92,12 @@ def migrate_file(src, dst, substitutions=None):
     
     substitutions is an optional dict of {regex: replacement} for performing replacements on the file.
     """
+    log = get_logger()
     if os.path.exists(dst):
         # already exists
-        print("%s already exists" % dst)
+        log.debug("%s already exists" % dst)
         return False
-    print("Copying %s -> %s" % (src, dst))
+    log.info("Copying %s -> %s" % (src, dst))
     ensure_dir_exists(os.path.dirname(dst))
     shutil.copy(src, dst)
     if substitutions:
@@ -107,12 +115,13 @@ def migrate_one(src, dst):
     
     dispatches to migrate_dir/_file
     """
+    log = get_logger()
     if os.path.isfile(src):
         return migrate_file(src, dst)
     elif os.path.isdir(src):
         return migrate_dir(src, dst)
     else:
-        print("Nothing to migrate for %s" % src)
+        log.debug("Nothing to migrate for %s" % src)
         return False
 
 
@@ -121,6 +130,7 @@ def migrate_static_custom(src, dst):
     
     src, dst are 'custom' directories containing custom.{js,css}
     """
+    log = get_logger()
     migrated = False
     
     custom_js = pjoin(src, 'custom.js')
@@ -142,9 +152,9 @@ def migrate_static_custom(src, dst):
         custom_css_empty = css.startswith('/*') and css.endswith('*/')
     
     if custom_js_empty:
-        print("Ignoring empty %s" % custom_js)
+        log.debug("Ignoring empty %s" % custom_js)
     if custom_css_empty:
-        print("Ignoring empty %s" % custom_css)
+        log.debug("Ignoring empty %s" % custom_css)
     
     if custom_js_empty and custom_css_empty:
         # nothing to migrate
@@ -169,6 +179,7 @@ def migrate_config(name, env):
     
     Includes substitutions for updated configurable names.
     """
+    log = get_logger()
     src_base = pjoin('{profile}', 'ipython_{name}_config').format(name=name, **env)
     dst_base = pjoin('{jupyter_config}', 'jupyter_{name}_config').format(name=name, **env)
     loaders = {
@@ -186,7 +197,7 @@ def migrate_config(name, env):
                     migrated.append(src)
             else:
                 # don't migrate empty config files
-                print("Not migrating empty config file: %s" % src)
+                log.debug("Not migrating empty config file: %s" % src)
     return migrated
 
 
@@ -198,24 +209,35 @@ def migrate():
         'ipython_dir': get_ipython_dir(),
         'profile': os.path.join(get_ipython_dir(), 'profile_default'),
     }
+    migrated = False
     for src_t, dst_t in migrations.items():
         src = src_t.format(**env)
         dst = dst_t.format(**env)
         if os.path.exists(src):
             if migrate_one(src, dst):
-                pass
+                migrated = True
     
     for name in config_migrations:
-        migrate_config(name, env)
+        if migrate_config(name, env):
+            migrated = True
     
     custom_src = custom_src_t.format(**env)
     custom_dst = custom_dst_t.format(**env)
     
     if os.path.exists(custom_src):
-        migrate_static_custom(custom_src, custom_dst)
+        if migrate_static_custom(custom_src, custom_dst):
+            migrated = True
+    
+    # write a marker to avoid re-running migration checks
+    ensure_dir_exists(env['jupyter_config'])
+    with open(os.path.join(env['jupyter_config'], 'migrated'), 'w') as f:
+        f.write(datetime.utcnow().isoformat())
+    
+    return migrated
 
 
-class MigrateApp(JupyterApp):
+
+class JupyterMigrate(JupyterApp):
     name = 'jupyter-migrate'
     description = """
     Migrate configuration and data from .ipython prior to 4.0 to Jupyter locations.
@@ -234,10 +256,11 @@ class MigrateApp(JupyterApp):
     """
     
     def start(self):
-        migrate()
+        if not migrate():
+            self.log.info("Found nothing to migrate.")
 
 
-main = MigrateApp.launch_instance
+main = JupyterMigrate.launch_instance
 
 
 if __name__ == '__main__':

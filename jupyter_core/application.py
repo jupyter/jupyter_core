@@ -59,6 +59,9 @@ class JupyterApp(Application):
     aliases = base_aliases
     flags = base_flags
     
+    def _log_level_default(self):
+        return logging.INFO
+    
     jupyter_path = List(Unicode)
     def _jupyter_path_default(self):
         return jupyter_path()
@@ -143,6 +146,21 @@ class JupyterApp(Application):
         with open(config_file, mode='w') as f:
             f.write(config_text)
     
+    def migrate_config(self):
+        """Migrate config/data from IPython 3"""
+        if os.path.exists(os.path.join(self.config_dir, 'migrated')):
+            # already migrated
+            return
+
+        from .migrate import get_ipython_dir, migrate
+        
+        ipdir = get_ipython_dir()
+        # No IPython dir, nothing to migrate
+        if not os.path.exists(ipdir):
+            return
+
+        migrate()
+
     def load_config_file(self, suppress_errors=True):
         """Load the config file.
 
@@ -215,6 +233,7 @@ class JupyterApp(Application):
         cl_config = self.config
         if self._dispatching:
             return
+        self.migrate_config()
         self.load_config_file()
         # enforce cl-opts override configfile opts:
         self.update_config(cl_config)
