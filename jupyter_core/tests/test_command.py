@@ -1,12 +1,19 @@
 """Test the Jupyter command-line"""
 
 import json
+import os
 import sys
 from subprocess import check_output, CalledProcessError
 
 import pytest
+try:
+    from unitteset.mock import patch
+except ImportError:
+    # py2
+    from mock import patch
 
 from jupyter_core import __version__
+from jupyter_core.command import list_subcommands
 from jupyter_core.paths import (
     jupyter_config_dir, jupyter_data_dir, jupyter_runtime_dir,
     jupyter_path, jupyter_config_path,
@@ -69,3 +76,25 @@ def test_subcommand_not_found():
     with pytest.raises(CalledProcessError):
         output = get_jupyter_output('nonexistant-subcommand')
 
+def test_subcommand_list(tmpdir):
+    a = tmpdir.mkdir("a")
+    for cmd in ('jupyter-foo-bar',
+                'jupyter-xyz',
+                'jupyter-babel-fish'):
+        a.join(cmd).write('')
+    b = tmpdir.mkdir("b")
+    for cmd in ('jupyter-foo',
+                'jupyterstuff',
+                'jupyter-yo-eyropa-ganymyde-callysto'):
+        b.join(cmd).write('')
+    
+    path = os.pathsep.join(map(str, [a, b]))
+    
+    with patch.dict('os.environ', {'PATH': path}):
+        subcommands = list_subcommands()
+        assert subcommands == [
+            'babel-fish',
+            'foo',
+            'xyz',
+            'yo-eyropa-ganymyde-callysto',
+        ]
