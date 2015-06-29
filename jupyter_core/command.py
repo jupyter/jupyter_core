@@ -64,7 +64,8 @@ def list_subcommands():
     Nested children (e.g. jupyter-sub-subsub) are not included.
     """
     path = os.environ.get('PATH') or os.defpath
-    subcommands = set()
+    subcommand_tuples = set()
+    # construct a set of `('foo', 'bar') from `jupyter-foo-bar`
     for d in path.split(os.pathsep):
         try:
             names = os.listdir(d)
@@ -72,8 +73,14 @@ def list_subcommands():
             continue
         for name in names:
             if name.startswith('jupyter-'):
-                subcommands.add(name.split('-')[1])
-    return subcommands
+                subcommand_tuples.add(tuple(name.split('-')[1:]))
+    # build a set of subcommand strings, excluding subcommands whose parents are defined
+    subcommands = set()
+    # Only include `jupyter-foo-bar` if `jupyter-foo` is not already present
+    for sub_tup in subcommand_tuples:
+        if not any(sub_tup[:i] in subcommand_tuples for i in range(1, len(sub_tup))):
+            subcommands.add('-'.join(sub_tup))
+    return sorted(subcommands)
 
 def main():
     if len(sys.argv) > 1 and not sys.argv[1].startswith('-'):
