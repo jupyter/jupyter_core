@@ -76,12 +76,9 @@ def list_subcommands():
                 subcommand_tuples.add(tuple(name.split('-')[1:]))
     # build a set of subcommand strings, excluding subcommands whose parents are defined
     subcommands = set()
+    # Only include `jupyter-foo-bar` if `jupyter-foo` is not already present
     for sub_tup in subcommand_tuples:
-        for i in range(1, len(sub_tup)):
-            # Only include `jupyter-foo-bar` if `jupyter-foo` is not already present
-            if sub_tup[:i] in subcommand_tuples:
-                break
-        else:
+        if not any(sub_tup[:i] in subcommand_tuples for i in range(1, len(sub_tup))):
             subcommands.add('-'.join(sub_tup))
     return sorted(subcommands)
 
