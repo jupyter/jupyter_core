@@ -10,6 +10,7 @@ All Jupyter applications should inherit from this.
 
 from __future__ import print_function
 
+from copy import deepcopy
 import logging
 import os
 import sys
@@ -230,7 +231,7 @@ class JupyterApp(Application):
                 self.subcommand = subc
                 return
         self.parse_command_line(argv)
-        cl_config = self.config
+        cl_config = deepcopy(self.config)
         if self._dispatching:
             return
         self.migrate_config()
