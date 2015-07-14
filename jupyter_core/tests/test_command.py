@@ -24,7 +24,7 @@ def get_jupyter_output(cmd):
     """Get output of a jupyter command"""
     if not isinstance(cmd, list):
         cmd = [cmd]
-    return check_output(['jupyter'] + cmd).decode('utf8').strip()
+    return check_output([sys.executable, '-m', 'jupyter_core'] + cmd).decode('utf8').strip()
 
 
 def assert_output(cmd, expected):
