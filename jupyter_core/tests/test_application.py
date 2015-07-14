@@ -77,7 +77,7 @@ def test_load_config():
         f.write('c.DummyApp.n = 1')
     with patch.object(py3compat, 'getcwd', lambda : wd):
         app = DummyApp(config_dir=config_dir)
-        app.initialize()
+        app.initialize([])
 
     assert app.n == 1, "Loaded config from config dir"
     
@@ -86,7 +86,7 @@ def test_load_config():
 
     with patch.object(py3compat, 'getcwd', lambda : wd):
         app = DummyApp(config_dir=config_dir)
-        app.initialize()
+        app.initialize([])
 
     assert app.m == 1, "Loaded config from config dir"
     assert app.n == 2, "Loaded config from CWD"
