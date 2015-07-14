@@ -1,0 +1,17 @@
+include COPYING.md
+include CONTRIBUTING.md
+include README.md
+include dev-requirements.txt
+
+# Documentation
+graft docs
+
+# docs subdirs we want to skip
+prune docs/_build
+
+# Patterns to exclude from any directory
+global-exclude *~
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude .git
+global-exclude .ipynb_checkpoints
