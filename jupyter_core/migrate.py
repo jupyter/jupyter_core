@@ -64,6 +64,8 @@ regex = re.compile
 
 config_substitutions = {
     regex(r'\bIPythonQtConsoleApp\b'): 'JupyterQtConsoleApp',
+    regex(r'\bIPythonWidget\b'): 'JupyterWidget',
+    regex(r'\bRichIPythonWidget\b'): 'RichJupyterWidget',
     regex(r'\bIPython\.html\b'): 'notebook',
     regex(r'\bIPython\.nbconvert\b'): 'nbconvert',
 }
