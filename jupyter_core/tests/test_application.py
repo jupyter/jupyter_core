@@ -28,8 +28,8 @@ def test_default_traits():
 
 class DummyApp(JupyterApp):
     name = "dummy-app"
-    m = Integer(0, config=True)
-    n = Integer(0, config=True)
+    m = Integer(0).tag(config=True)
+    n = Integer(0).tag(config=True)
 
 _dummy_config = """
 c.DummyApp.n = 10
