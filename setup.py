@@ -68,9 +68,17 @@ setuptools_args['install_requires'] = [
     'traitlets',
 ]
 
+setuptools_args['entry_points'] = {
+    'console_scripts': [
+        'jupyter = jupyter_core.command:main',
+        'jupyter-migrate = jupyter_core.migrate:main',
+    ]
+}
+
 # setuptools requirements
 if 'setuptools' in sys.modules:
     setup_args.update(setuptools_args)
+    setup_args.pop('scripts', None)
 
 
 if __name__ == '__main__':
