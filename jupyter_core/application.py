@@ -21,6 +21,12 @@ try:
 except ImportError:
     from .utils.shutil_which import which
 
+try:
+    raw_input
+except NameError:
+    # py3
+    raw_input = input
+
 from traitlets.config.application import Application, catch_config_error
 from traitlets.config.loader import ConfigFileNotFound
 from traitlets import Unicode, Bool, List
@@ -128,7 +134,7 @@ class JupyterApp(Application):
             def ask():
                 prompt = "Overwrite %s with default config? [y/N]" % config_file
                 try:
-                    return input(prompt).lower() or 'n'
+                    return raw_input(prompt).lower() or 'n'
                 except KeyboardInterrupt:
                     print('') # empty line
                     return 'n'
