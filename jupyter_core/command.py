@@ -41,7 +41,6 @@ def jupyter_parser():
     group.add_argument('--version', action='version', version=__version__)
     group.add_argument('subcommand', type=str, nargs='?', help='the subcommand to launch')
     
-    # p = group.add_group('paths')
     group.add_argument('--config-dir', action='store_true',
         help="show Jupyter config dir")
     group.add_argument('--data-dir', action='store_true',
@@ -73,6 +72,9 @@ def list_subcommands():
             continue
         for name in names:
             if name.startswith('jupyter-'):
+                if sys.platform.startswith('win'):
+                    # remove file-extension on Windows
+                    name = os.path.splitext(name)[0]
                 subcommand_tuples.add(tuple(name.split('-')[1:]))
     # build a set of subcommand strings, excluding subcommands whose parents are defined
     subcommands = set()
