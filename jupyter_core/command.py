@@ -32,13 +32,14 @@ class JupyterParser(argparse.ArgumentParser):
         """Ignore epilog set in Parser.__init__"""
         pass
 
-
 def jupyter_parser():
     parser = JupyterParser(
         description="Jupyter: Interactive Computing",
     )
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument('--version', action='version', version=__version__)
+    # don't use argparse's version action because it prints to stderr on py2
+    group.add_argument('--version', action='store_true',
+        help="show the jupyter command's version and exit")
     group.add_argument('subcommand', type=str, nargs='?', help='the subcommand to launch')
     
     group.add_argument('--config-dir', action='store_true',
@@ -93,6 +94,9 @@ def main():
         parser = jupyter_parser()
         args, opts = parser.parse_known_args()
         subcommand = args.subcommand
+        if args.version:
+            print(__version__)
+            return
         if args.json and not args.paths:
             sys.exit("--json is only used with --paths")
         if args.config_dir:
