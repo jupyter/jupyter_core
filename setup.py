@@ -31,6 +31,19 @@ version_ns = {}
 with open(pjoin(here, 'jupyter_core', 'version.py')) as f:
     exec(f.read(), {}, version_ns)
 
+def find_package_data():
+    """Find package data (testing support files)"""
+    package_data = {}
+    package_data['jupyter_core.tests'] = test_files = []
+    test_dir = pjoin('jupyter_core', 'tests')
+    prefix_len = len(test_dir) + len(os.sep)
+    for parent, dirs, files in os.walk(test_dir):
+        if files:
+            test_files.append(pjoin(parent[prefix_len:], '*.*'))
+    
+    return package_data
+
+package_data = find_package_data()
 
 setup_args = dict(
     name                = 'jupyter_core',
@@ -38,6 +51,7 @@ setup_args = dict(
     packages            = ['jupyter_core',
                            'jupyter_core.utils',
                            'jupyter_core.tests'],
+    package_data        = package_data,
     scripts             = glob(pjoin('scripts', '*')),
     description         = "Jupyter core package. A base package on which Jupyter projects rely.",
     long_description    = """There is no reason to install this package on its own.""",
