@@ -139,19 +139,21 @@ def migrate_static_custom(src, dst):
     custom_css = pjoin(src, 'custom.css')
     # check if custom_js is empty:
     custom_js_empty = True
-    with open(custom_js) as f:
-        js = f.read().strip()
-        for line in js.splitlines():
-            if not (
-                line.isspace()
-                or line.strip().startswith(('/*', '*', '//'))
-            ):
-                custom_js_empty = False
-                break
+    if os.path.isfile(custom_js):
+        with open(custom_js) as f:
+            js = f.read().strip()
+            for line in js.splitlines():
+                if not (
+                    line.isspace()
+                    or line.strip().startswith(('/*', '*', '//'))
+                ):
+                    custom_js_empty = False
+                    break
     
-    with open(custom_css) as f:
-        css = f.read().strip()
-        custom_css_empty = css.startswith('/*') and css.endswith('*/')
+    if os.path.isfile(custom_css):
+        with open(custom_css) as f:
+            css = f.read().strip()
+            custom_css_empty = css.startswith('/*') and css.endswith('*/')
     
     if custom_js_empty:
         log.debug("Ignoring empty %s" % custom_js)
