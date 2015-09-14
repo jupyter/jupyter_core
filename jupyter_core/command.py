@@ -94,6 +94,10 @@ def _execvp(cmd, argv):
     """
     if sys.platform.startswith('win'):
         p = Popen([cmd] + argv[1:])
+        # Don't raise KeyboardInterrupt in the parent process.
+        # Set this after spawning, to avoid subprocess inheriting handler.
+        import signal
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
         p.wait()
         sys.exit(p.returncode)
     else:
