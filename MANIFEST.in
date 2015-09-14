@@ -5,6 +5,7 @@ include dev-requirements.txt
 
 # Documentation
 graft docs
+graft examples
 
 # docs subdirs we want to skip
 prune docs/_build
