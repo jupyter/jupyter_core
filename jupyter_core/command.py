@@ -13,6 +13,7 @@ import errno
 import json
 import os
 import sys
+from subprocess import Popen
 
 from . import paths
 from .version import __version__
@@ -85,6 +86,24 @@ def list_subcommands():
             subcommands.add('-'.join(sub_tup))
     return sorted(subcommands)
 
+
+def _execvp(cmd, argv):
+    """execvp, except on Windows where it uses Popen
+    
+    Python provides execvp on Windows, but its behavior is problematic (Python bug#9148).
+    """
+    if sys.platform.startswith('win'):
+        p = Popen([cmd] + argv[1:])
+        # Don't raise KeyboardInterrupt in the parent process.
+        # Set this after spawning, to avoid subprocess inheriting handler.
+        import signal
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
+        p.wait()
+        sys.exit(p.returncode)
+    else:
+        os.execvp(cmd, argv)
+
+
 def main():
     if len(sys.argv) > 1 and not sys.argv[1].startswith('-'):
         # Don't parse if a subcommand is given
@@ -129,7 +148,7 @@ def main():
     
     command = 'jupyter-' + subcommand
     try:
-        os.execvp(command, sys.argv[1:])
+        _execvp(command, sys.argv[1:])
     except OSError as e:
         if e.errno == errno.ENOENT:
             sys.exit("jupyter: %r is not a Jupyter command" % subcommand)
