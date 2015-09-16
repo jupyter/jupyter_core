@@ -11,6 +11,7 @@ Contents:
    :maxdepth: 2
 
    paths
+   changelog
 
 
 Indices and tables
