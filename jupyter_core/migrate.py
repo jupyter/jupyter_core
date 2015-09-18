@@ -150,6 +150,8 @@ def migrate_static_custom(src, dst):
                     custom_js_empty = False
                     break
     
+    # check if custom_css is empty:
+    custom_css_empty = True
     if os.path.isfile(custom_css):
         with open(custom_css) as f:
             css = f.read().strip()
