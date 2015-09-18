@@ -4,6 +4,14 @@ Changes in jupyter-core
 4.0
 ---
 
+4.0.6
+~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.0.6>`__
+
+-  fix typo preventing migration when custom.css is missing
+
 4.0.5
 ~~~~~
 
