@@ -7,7 +7,7 @@ from subprocess import check_output, CalledProcessError
 
 import pytest
 try:
-    from unitteset.mock import patch
+    from unittest.mock import patch
 except ImportError:
     # py2
     from mock import patch
