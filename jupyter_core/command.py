@@ -93,7 +93,7 @@ def _execvp(cmd, argv):
     Python provides execvp on Windows, but its behavior is problematic (Python bug#9148).
     """
     if sys.platform.startswith('win'):
-        p = Popen([cmd] + argv[1:])
+        p = Popen([cmd] + argv[1:], shell=True)
         # Don't raise KeyboardInterrupt in the parent process.
         # Set this after spawning, to avoid subprocess inheriting handler.
         import signal
