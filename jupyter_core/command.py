@@ -56,6 +56,7 @@ def jupyter_parser():
     
     return parser
 
+
 def list_subcommands():
     """List all jupyter subcommands
     
@@ -64,10 +65,9 @@ def list_subcommands():
     Returns a list of jupyter's subcommand names, without the `jupyter-` prefix.
     Nested children (e.g. jupyter-sub-subsub) are not included.
     """
-    path = os.environ.get('PATH') or os.defpath
     subcommand_tuples = set()
     # construct a set of `('foo', 'bar') from `jupyter-foo-bar`
-    for d in path.split(os.pathsep):
+    for d in _path_with_self():
         try:
             names = os.listdir(d)
         except OSError:
@@ -104,7 +104,24 @@ def _execvp(cmd, argv):
         os.execvp(cmd, argv)
 
 
+def _path_with_self():
+    """Ensure `jupyter`'s dir is on PATH"""
+    script = sys.argv[0]
+    bindir = os.path.dirname(script)
+    path_list = (os.environ.get('PATH') or os.defpath).split(os.pathsep)
+    if (os.path.isdir(bindir)
+        and bindir not in path_list
+        and os.access(script, os.X_OK) # only if it's a script
+    ):
+        # ensure executable's dir is on PATH
+        # avoids missing subcommands when jupyter is run via absolute path
+        path_list.append(bindir)
+        os.environ['PATH'] = os.pathsep.join(path_list)
+    return path_list
+
+
 def main():
+    _path_with_self() # ensure executable is on PATH
     if len(sys.argv) > 1 and not sys.argv[1].startswith('-'):
         # Don't parse if a subcommand is given
         # Avoids argparse gobbling up args passed to subcommand, such as `-h`.

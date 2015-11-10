@@ -76,6 +76,7 @@ def test_subcommand_not_found():
     with pytest.raises(CalledProcessError):
         output = get_jupyter_output('nonexistant-subcommand')
 
+@patch.object(sys, 'argv', [__file__] + sys.argv[1:])
 def test_subcommand_list(tmpdir):
     a = tmpdir.mkdir("a")
     for cmd in ('jupyter-foo-bar',
@@ -98,3 +99,19 @@ def test_subcommand_list(tmpdir):
             'xyz',
             'yo-eyropa-ganymyde-callysto',
         ]
+
+def test_not_on_path(tmpdir):
+    a = tmpdir.mkdir("a")
+    jupyter = a.join('jupyter')
+    jupyter.write(
+        'from jupyter_core import command; command.main()'
+    )
+    jupyter.chmod(0o700)
+    witness_cmd = 'jupyter-witness'
+    if sys.platform == 'win32':
+        witness_cmd += '.py'
+    witness = a.join(witness_cmd)
+    witness.write('#!%s\n%s\n' % (sys.executable, 'print("WITNESS ME")'))
+    witness.chmod(0o700)
+    out = check_output([sys.executable, str(jupyter), 'witness'], env={'PATH': ''})
+    assert b'WITNESS' in out
