@@ -1,4 +1,5 @@
 """Test config file migration"""
+# coding: utf-8
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
@@ -36,7 +37,7 @@ dotipython_empty = pjoin(here, 'dotipython_empty')
 @pytest.fixture
 def td(request):
     """Fixture for a temporary directory"""
-    td = mkdtemp()
+    td = mkdtemp(u'μnïcø∂e')
     request.addfinalizer(lambda : shutil.rmtree(td))
     return td
 
@@ -215,5 +216,3 @@ def test_migrate(env):
     migrate()
     assert os.path.exists(env['JUPYTER_CONFIG_DIR'])
     assert os.path.exists(env['JUPYTER_DATA_DIR'])
-
-
