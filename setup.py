@@ -51,6 +51,7 @@ setup_args = dict(
     packages            = ['jupyter_core',
                            'jupyter_core.utils',
                            'jupyter_core.tests'],
+    py_modules          = ['jupyter'],
     package_data        = package_data,
     scripts             = glob(pjoin('scripts', '*')),
     description         = "Jupyter core package. A base package on which Jupyter projects rely.",
