@@ -9,7 +9,9 @@
 # Distributed under the terms of the Modified BSD License.
 
 
+import itertools
 import os
+import site
 import sys
 
 pjoin = os.path.join
@@ -54,7 +56,7 @@ def jupyter_data_dir():
     home = get_home_dir()
 
     if sys.platform == 'darwin':
-        return os.path.join(home, 'Library', 'Jupyter')
+        return pjoin(home, 'Library', 'Jupyter')
     elif os.name == 'nt':
         appdata = os.environ.get('APPDATA', None)
         if appdata:
@@ -99,14 +101,55 @@ if os.name == 'nt':
     if programdata:
         SYSTEM_JUPYTER_PATH = [pjoin(programdata, 'jupyter')]
     else:  # PROGRAMDATA is not defined by default on XP.
-        SYSTEM_JUPYTER_PATH = [os.path.join(sys.prefix, 'share', 'jupyter')]
+        SYSTEM_JUPYTER_PATH = [pjoin(sys.prefix, 'share', 'jupyter')]
 else:
     SYSTEM_JUPYTER_PATH = [
         "/usr/local/share/jupyter",
         "/usr/share/jupyter",
     ]
 
-ENV_JUPYTER_PATH = [os.path.join(sys.prefix, 'share', 'jupyter')]
+def _get_data_prefix(user):
+    """Ask distutils where data_files would go
+    
+    This is *usually* sys.prefix for user=False
+    
+    Ensures that support files installed as part of Python packages will be found.
+    """
+    from distutils.core import Distribution
+    dist = Distribution()
+    if not user:
+        # load config files for default system install prefix
+        dist.parse_config_files()
+    installer = dist.get_command_obj('install')
+    installer.user = user
+    installer.ensure_finalized()
+    data_prefix = os.path.abspath(installer.install_data)
+    if not user and sys.platform == 'darwin' and data_prefix.startswith('/System/'):
+        # System Python on OS X still lies about where this stuff should go
+        # Should we handle that, or not, since nobody should be using OS X System Python, anyway?
+        data_prefix = '/usr/local'
+    return data_prefix
+
+try:
+    _user_prefix = _get_data_prefix(user=True)
+except Exception as e:
+    # suppress failure to get user prefix (e.g. distutils option conflict)
+    warnings.warn("Failed to get user data prefix: %s" % e, RuntimeWarning)
+
+try:
+    _sys_prefix = _get_data_prefix(user=False)
+except Exception as e:
+    # fallback on sys.prefix, which is usually right, anyhow
+    _sys_prefix = sys.prefix
+
+USER_DATA_JUPYTER_PATH = []
+if site.ENABLE_USER_SITE and _user_prefix:
+    USER_DATA_JUPYTER_PATH.append(pjoin(_user_prefix, 'share', 'jupyter'))
+
+ENV_JUPYTER_PATH = [pjoin(_sys_prefix, 'share', 'jupyter')]
+if _sys_prefix != sys.prefix:
+    ENV_JUPYTER_PATH.append(pjoin(sys.prefix, 'share', 'jupyter'))
+
 
 
 def jupyter_path(*subdirs):
@@ -133,12 +176,11 @@ def jupyter_path(*subdirs):
         )
     # then user dir
     paths.append(jupyter_data_dir())
+    # load user-data, env, and system paths
     # then sys.prefix
-    for p in ENV_JUPYTER_PATH:
-        if p not in SYSTEM_JUPYTER_PATH:
+    for p in itertools.chain(USER_DATA_JUPYTER_PATH, ENV_JUPYTER_PATH, SYSTEM_JUPYTER_PATH):
+        if p not in paths:
             paths.append(p)
-    # finally, system
-    paths.extend(SYSTEM_JUPYTER_PATH)
     
     # add subdir, if requested
     if subdirs:
@@ -149,7 +191,7 @@ def jupyter_path(*subdirs):
 if os.name == 'nt':
     programdata = os.environ.get('PROGRAMDATA', None)
     if programdata:
-        SYSTEM_CONFIG_PATH = [os.path.join(programdata, 'jupyter')]
+        SYSTEM_CONFIG_PATH = [pjoin(programdata, 'jupyter')]
     else:  # PROGRAMDATA is not defined by default on XP.
         SYSTEM_CONFIG_PATH = []
 else:
@@ -158,14 +200,19 @@ else:
         "/etc/jupyter",
     ]
 
-ENV_CONFIG_PATH = [os.path.join(sys.prefix, 'etc', 'jupyter')]
+USER_DATA_CONFIG_PATH = []
+if site.ENABLE_USER_SITE and _user_prefix:
+    USER_DATA_CONFIG_PATH.append(pjoin(_user_prefix, 'etc', 'jupyter'))
+
+ENV_CONFIG_PATH = [pjoin(_sys_prefix, 'etc', 'jupyter')]
+if _sys_prefix != sys.prefix:
+    ENV_CONFIG_PATH.append(pjoin(sys.prefix, 'etc', 'jupyter'))
 
 
 def jupyter_config_path():
     """Return the search path for Jupyter config files as a list."""
     paths = [jupyter_config_dir()]
-    for p in ENV_CONFIG_PATH:
-        if p not in SYSTEM_CONFIG_PATH:
+    for p in itertools.chain(USER_DATA_CONFIG_PATH, ENV_CONFIG_PATH, SYSTEM_CONFIG_PATH):
+        if p not in paths:
             paths.append(p)
-    paths.extend(SYSTEM_CONFIG_PATH)
     return paths
