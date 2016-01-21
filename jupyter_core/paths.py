@@ -150,6 +150,25 @@ ENV_JUPYTER_PATH = [pjoin(_sys_prefix, 'share', 'jupyter')]
 if _sys_prefix != sys.prefix:
     ENV_JUPYTER_PATH.append(pjoin(sys.prefix, 'share', 'jupyter'))
 
+def install_data_path(relative_path, user=False, prefix=None):
+    """Get install path for data files
+    
+    Installing tools, such as nbextension/kernelspec should use this to determine the install dir.
+    
+    if user=True: return JUPYTER_DATA_DIR
+    else: return default path for Python data files (*usually* sys.prefix/share/jupyter)
+    
+    .. versionadded:: 4.1
+    """
+    if user and prefix:
+        raise ValueError("Cannot specify both user and prefix")
+    if user:
+        data_dir = jupyter_data_dir()
+    else:
+        if prefix is None:
+            prefix = ENV_JUPYTER_PATH[0]
+        data_dir = pjoin(prefix, 'share', 'jupyter')
+    return pjoin(data_dir, relative_path)
 
 
 def jupyter_path(*subdirs):
