@@ -23,7 +23,7 @@ def subs(cmd):
     """
     try:
         stdout = subprocess.check_output(cmd)
-        return stdout.decode('utf-8')
+        return stdout.decode('utf-8').strip()
     except subprocess.CalledProcessError:
         return None
 
