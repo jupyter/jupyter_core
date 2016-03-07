@@ -1,6 +1,21 @@
 Changes in jupyter-core
 =======================
 
+4.1
+---
+
+4.1.0
+~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.1>`__
+
+- Add ``jupyter.py`` module, so that :command:`python -m jupyter` always works.
+- Add prototype ``jupyter troubleshoot`` command for displaying environment info.
+- Ensure directory containing ``jupyter`` executable is included when dispatching subcommands.
+- Unicode fixes for Legacy Python.
+
+
 4.0
 ---
 
