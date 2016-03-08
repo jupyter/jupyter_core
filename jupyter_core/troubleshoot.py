@@ -23,7 +23,7 @@ def subs(cmd):
     """
     try:
         stdout = subprocess.check_output(cmd)
-        return stdout.decode('utf-8').strip()
+        return stdout.decode('utf-8', 'replace').strip()
     except (OSError, subprocess.CalledProcessError):
         return None
 
@@ -39,7 +39,12 @@ def get_data():
     env['sys_version'] = sys.version
     env['platform'] = platform.platform()
     # FIXME: which on Windows?
-    env['which'] = subs(['which', '-a', 'jupyter'])
+    if sys.platform == 'win32':
+        env['where'] = subs(['where', 'jupyter'])
+        env['which'] = None
+    else:
+        env['which'] = subs(['which', '-a', 'jupyter'])
+        env['where'] = None
     env['pip'] = subs(['pip', 'list'])
     env['conda'] = subs(['conda', 'list'])
     return env
@@ -77,6 +82,11 @@ def main():
     if environment_data['which']:
         print('\n' + 'which -a jupyter:')
         for line in environment_data['which'].split('\n'):
+            print('\t' + line)
+
+    if environment_data['where']:
+        print('\n' + 'where jupyter:')
+        for line in environment_data['where'].split('\n'):
             print('\t' + line)
 
     if environment_data['pip']:
