@@ -1,7 +1,7 @@
-"""Test config file migration"""
 # coding: utf-8
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+"""Test config file migration"""
 
 import os
 import re
