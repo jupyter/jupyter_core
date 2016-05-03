@@ -106,17 +106,20 @@ def _execvp(cmd, argv):
 
 def _path_with_self():
     """Ensure `jupyter`'s dir is on PATH"""
-    script = sys.argv[0]
-    bindir = os.path.dirname(script)
+    scripts = [sys.argv[0]]
+    if os.path.islink(scripts[0]):
+        scripts.append(os.path.realpath(scripts[0]))
+    bindirs = [os.path.dirname(script) for script in scripts]
     path_list = (os.environ.get('PATH') or os.defpath).split(os.pathsep)
-    if (os.path.isdir(bindir)
-        and bindir not in path_list
-        and os.access(script, os.X_OK) # only if it's a script
-    ):
-        # ensure executable's dir is on PATH
-        # avoids missing subcommands when jupyter is run via absolute path
-        path_list.append(bindir)
-        os.environ['PATH'] = os.pathsep.join(path_list)
+    for bindir, script in zip(bindirs, scripts):
+        if (os.path.isdir(bindir)
+            and bindir not in path_list
+            and os.access(script, os.X_OK) # only if it's a script
+        ):
+            # ensure executable's dir is on PATH
+            # avoids missing subcommands when jupyter is run via absolute path
+            path_list.append(bindir)
+            os.environ['PATH'] = os.pathsep.join(path_list)
     return path_list
 
 
