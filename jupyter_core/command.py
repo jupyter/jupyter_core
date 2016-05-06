@@ -109,9 +109,9 @@ def _path_with_self():
     scripts = [sys.argv[0]]
     if os.path.islink(scripts[0]):
         scripts.append(os.path.realpath(scripts[0]))
-    bindirs = [os.path.dirname(script) for script in scripts]
     path_list = (os.environ.get('PATH') or os.defpath).split(os.pathsep)
-    for bindir, script in zip(bindirs, scripts):
+    for script in scripts:
+        bindir = os.path.dirname(script)
         if (os.path.isdir(bindir)
             and bindir not in path_list
             and os.access(script, os.X_OK) # only if it's a script
@@ -119,7 +119,7 @@ def _path_with_self():
             # ensure executable's dir is on PATH
             # avoids missing subcommands when jupyter is run via absolute path
             path_list.append(bindir)
-            os.environ['PATH'] = os.pathsep.join(path_list)
+    os.environ['PATH'] = os.pathsep.join(path_list)
     return path_list
 
 
