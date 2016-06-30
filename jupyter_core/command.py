@@ -105,20 +105,26 @@ def _execvp(cmd, argv):
 
 
 def _path_with_self():
-    """Ensure `jupyter`'s dir is on PATH"""
+    """Put `jupyter`'s dir at the front of PATH
+    
+    Ensures that /path/to/jupyter subcommand
+    will do /path/to/jupyter-subcommand
+    even if /other/jupyter-subcommand is ahead of it on PATH
+    """
     scripts = [sys.argv[0]]
     if os.path.islink(scripts[0]):
+        # include realpath, if `jupyter` is a symlink
         scripts.append(os.path.realpath(scripts[0]))
+
     path_list = (os.environ.get('PATH') or os.defpath).split(os.pathsep)
     for script in scripts:
         bindir = os.path.dirname(script)
         if (os.path.isdir(bindir)
-            and bindir not in path_list
             and os.access(script, os.X_OK) # only if it's a script
         ):
             # ensure executable's dir is on PATH
             # avoids missing subcommands when jupyter is run via absolute path
-            path_list.append(bindir)
+            path_list.insert(0, bindir)
     os.environ['PATH'] = os.pathsep.join(path_list)
     return path_list
 
