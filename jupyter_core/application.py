@@ -262,7 +262,7 @@ class JupyterApp(Application):
     
     @classmethod
     def launch_instance(cls, argv=None, **kwargs):
-        """Launch an instance of a Jupyer Application"""
+        """Launch an instance of a Jupyter Application"""
         try:
             return super(JupyterApp, cls).launch_instance(argv=argv, **kwargs)
         except NoStart:
