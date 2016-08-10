@@ -4,6 +4,15 @@ Changes in jupyter-core
 4.1
 ---
 
+4.1.1
+~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.1.1>`__
+
+- Include symlink directory and real location on subcommand PATH when :file:`jupyter` is a symlink.
+
+
 4.1.0
 ~~~~~
 
