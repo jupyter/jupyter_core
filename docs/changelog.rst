@@ -1,6 +1,19 @@
 Changes in jupyter-core
 =======================
 
+4.2
+---
+
+4.2.0
+~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.2.0>`__
+
+- Make :command:`jupyter` directory top priority in search path for subcommands,
+  so that :command:`jupyter-subcommand` next to :command:`jupyter` will always be picked if present.
+- Avoid using ``shell=True`` for subcommand dispatch on Windows.
+
 4.1
 ---
 
