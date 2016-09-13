@@ -115,3 +115,26 @@ def test_not_on_path(tmpdir):
     witness.chmod(0o700)
     out = check_output([sys.executable, str(jupyter), 'witness'], env={'PATH': ''})
     assert b'WITNESS' in out
+
+
+def test_path_priority(tmpdir):
+    a = tmpdir.mkdir("a")
+    jupyter = a.join('jupyter')
+    jupyter.write(
+        'from jupyter_core import command; command.main()'
+    )
+    jupyter.chmod(0o700)
+    witness_cmd = 'jupyter-witness'
+    if sys.platform == 'win32':
+        witness_cmd += '.py'
+    witness_a = a.join(witness_cmd)
+    witness_a.write('#!%s\n%s\n' % (sys.executable, 'print("WITNESS A")'))
+    witness_a.chmod(0o700)
+
+    b = tmpdir.mkdir("b")
+    witness_b = b.join(witness_cmd)
+    witness_b.write('#!%s\n%s\n' % (sys.executable, 'print("WITNESS B")'))
+    witness_b.chmod(0o700)
+
+    out = check_output([sys.executable, str(jupyter), 'witness'], env={'PATH': str(b)})
+    assert b'WITNESS A' in out
