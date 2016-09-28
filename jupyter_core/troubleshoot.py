@@ -59,7 +59,7 @@ def main():
     environment_data = get_data()
 
     print('$PATH:')
-    for directory in environment_data['path'].split(':'):
+    for directory in environment_data['path'].split(os.pathsep):
         print('\t' + directory)
 
     print('\n' + 'sys.path:')
