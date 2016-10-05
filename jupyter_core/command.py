@@ -99,10 +99,10 @@ def _execvp(cmd, argv):
             from shutil import which
         except ImportError:
             from .utils.shutil_which import which
-        cmd = which(cmd)
-        if cmd is None:
+        cmd_path = which(cmd)
+        if cmd_path is None:
             raise OSError('%r not found' % cmd, errno.ENOENT)
-        p = Popen([cmd] + argv[1:])
+        p = Popen([cmd_path] + argv[1:])
         # Don't raise KeyboardInterrupt in the parent process.
         # Set this after spawning, to avoid subprocess inheriting handler.
         import signal
