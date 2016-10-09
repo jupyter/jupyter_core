@@ -3,7 +3,7 @@ jupyter_core |version|
 
 This documentation only describes the public API in the ``jupyter_core``
 package. For overview information about using Jupyter, see the `main Jupyter
-docs <http://jupyter.readthedocs.org/en/latest/>`__.
+docs <https://jupyter.readthedocs.io/en/latest/>`__.
 
 Contents:
 
