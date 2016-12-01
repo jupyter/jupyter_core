@@ -4,6 +4,15 @@ Changes in jupyter-core
 4.2
 ---
 
+4.2.1
+~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.2.1>`__
+
+- Fix error message on Windows when subcommand not found.
+- Correctly display PATH in ``jupyter troubleshoot`` on Windows.
+
 4.2.0
 ~~~~~
 
