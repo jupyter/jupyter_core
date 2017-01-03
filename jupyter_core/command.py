@@ -167,14 +167,22 @@ def main():
             data['runtime'] = [paths.jupyter_runtime_dir()]
             data['config'] = paths.jupyter_config_path()
             data['data'] = paths.jupyter_path()
+            data['install_data'] = {
+                'user': paths.install_data_path('', user=True),
+                'default': paths.install_data_path('', user=False),
+            }
             if args.json:
                 print(json.dumps(data))
             else:
                 for name in sorted(data):
                     path = data[name]
                     print('%s:' % name)
-                    for p in path:
-                        print('    ' + p)
+                    if isinstance(path, dict):
+                        for key in sorted(path):
+                            print('    %7s: %s' % (key, path[key]))
+                    else:
+                        for p in path:
+                            print('    ' + p)
             return
     
     if not subcommand:
