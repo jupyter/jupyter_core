@@ -11,6 +11,7 @@
 
 import os
 import sys
+import sysconfig
 
 pjoin = os.path.join
 
@@ -99,9 +100,10 @@ if os.name == 'nt':
     if programdata:
         SYSTEM_JUPYTER_PATH = [pjoin(programdata, 'jupyter')]
     else:  # PROGRAMDATA is not defined by default on XP.
-        SYSTEM_JUPYTER_PATH = [os.path.join(sys.prefix, 'share', 'jupyter')]
+        SYSTEM_JUPYTER_PATH = [pjoin(sysconfig.get_config_var("datarootdir"), 'jupyter')]
 else:
     SYSTEM_JUPYTER_PATH = [
+        pjoin(sysconfig.get_config_var("datarootdir"), 'jupyter'),
         "/usr/local/share/jupyter",
         "/usr/share/jupyter",
     ]
