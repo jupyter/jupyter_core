@@ -11,6 +11,7 @@
 
 import os
 import sys
+import tempfile
 
 pjoin = os.path.join
 
@@ -32,6 +33,9 @@ def jupyter_config_dir():
 
     env = os.environ
     home_dir = get_home_dir()
+
+    if env.get('JUPYTER_NO_CONFIG'):
+        return tempfile.mkdtemp(prefix='jupyter-clean-cfg-')
 
     if env.get('JUPYTER_CONFIG_DIR'):
         return env['JUPYTER_CONFIG_DIR']
@@ -164,6 +168,9 @@ ENV_CONFIG_PATH = [os.path.join(sys.prefix, 'etc', 'jupyter')]
 def jupyter_config_path():
     """Return the search path for Jupyter config files as a list."""
     paths = [jupyter_config_dir()]
+    if os.environ.get('JUPYTER_NO_CONFIG'):
+        return paths
+
     for p in ENV_CONFIG_PATH:
         if p not in SYSTEM_CONFIG_PATH:
             paths.append(p)
