@@ -1,6 +1,19 @@
 Changes in jupyter-core
 =======================
 
+4.3
+---
+
+4.3.0
+~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.3.0>`__
+
+- Add `JUPYTER_NO_CONFIG` environment variable for disabling all Jupyter configuration.
+- More detailed error message when failing to launch subcommands.
+
+
 4.2
 ---
 
