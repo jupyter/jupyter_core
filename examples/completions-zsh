@@ -186,7 +186,7 @@ _notebook_cmds() {
     'help:Print help about subcommand.'
     'list:List currently running notebook servers in this profile.'
   )
-  _describe -t commands 'nbextension command' commands "$@"
+  _describe -t commands 'notebook command' commands "$@"
 }
 
 _jupyter "$@"
