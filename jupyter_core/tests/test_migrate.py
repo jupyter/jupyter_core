@@ -16,10 +16,6 @@ except ImportError:
 import pytest
 
 from ipython_genutils.path import ensure_dir_exists
-try:
-    from IPython.paths import locate_profile
-except ImportError:
-    from IPython.utils.path import locate_profile
 
 from jupyter_core.paths import jupyter_data_dir
 from jupyter_core.migrate import (
