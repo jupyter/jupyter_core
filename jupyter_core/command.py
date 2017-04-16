@@ -167,6 +167,7 @@ def main():
             data['runtime'] = [paths.jupyter_runtime_dir()]
             data['config'] = paths.jupyter_config_path()
             data['data'] = paths.jupyter_path()
+            data['kernels'] = paths.jupyter_path("kernels")
             if args.json:
                 print(json.dumps(data))
             else:
