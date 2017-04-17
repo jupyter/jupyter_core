@@ -102,25 +102,25 @@ class JupyterApp(Application):
     def _runtime_dir_changed(self, new):
         ensure_dir_exists(new, mode=0o700)
     
-    generate_config = Bool(False, config=True,
+    generate_config = Bool(False, 
         help="""Generate default config file."""
-    )
+    ).tag(config=True)
     
-    config_file_name = Unicode(config=True,
+    config_file_name = Unicode(
         help="Specify a config file to load."
-    )
+    ).tag(config=True)
     def _config_file_name_default(self):
         if not self.name:
             return ''
         return self.name.replace('-','_') + u'_config'
     
-    config_file = Unicode(config=True,
+    config_file = Unicode(
         help="""Full path of a config file.""",
-    )
+    ).tag(config=True)
     
-    answer_yes = Bool(False, config=True,
+    answer_yes = Bool(False, 
         help="""Answer yes to any prompts."""
-    )
+    ).tag(config=True)
     
     def write_default_config(self):
         """Write our default config to a .py config file"""
