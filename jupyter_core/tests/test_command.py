@@ -27,6 +27,26 @@ def get_jupyter_output(cmd):
     return check_output([sys.executable, '-m', 'jupyter_core'] + cmd).decode('utf8').strip()
 
 
+def write_executable(path, source):
+    if sys.platform == 'win32':
+        script = path.dirpath() / path.purebasename + '-script.py'
+        exe = path.dirpath() / path.purebasename + '.exe'
+    else:
+        script = path
+
+    script.write(source)
+    script.chmod(0o700)
+
+    if sys.platform == 'win32':
+        try:
+            import pkg_resources
+            w = pkg_resources.resource_string('setuptools', 'cli-32.exe')
+        except (ImportError, FileNotFoundError):
+            pytest.skip('Need pkg_resources/setuptools to make scripts executable on Windows')
+        exe.write(w, 'wb')
+        exe.chmod(0o700)
+
+
 def assert_output(cmd, expected):
     assert get_jupyter_output(cmd) == expected
 
@@ -107,13 +127,17 @@ def test_not_on_path(tmpdir):
         'from jupyter_core import command; command.main()'
     )
     jupyter.chmod(0o700)
-    witness_cmd = 'jupyter-witness'
+    witness = a.join('jupyter-witness')
+    witness_src = '#!%s\n%s\n' % (sys.executable, 'print("WITNESS ME")')
+    write_executable(witness, witness_src)
+
+    env = {'PATH': ''}
+    if 'SYSTEMROOT' in os.environ:  # Windows http://bugs.python.org/issue20614
+        env[str('SYSTEMROOT')] = os.environ['SYSTEMROOT']
     if sys.platform == 'win32':
-        witness_cmd += '.py'
-    witness = a.join(witness_cmd)
-    witness.write('#!%s\n%s\n' % (sys.executable, 'print("WITNESS ME")'))
-    witness.chmod(0o700)
-    out = check_output([sys.executable, str(jupyter), 'witness'], env={'PATH': ''})
+        env[str('PATHEXT')] = '.EXE'
+    # This won't work on windows unless
+    out = check_output([sys.executable, str(jupyter), 'witness'], env=env)
     assert b'WITNESS' in out
 
 
@@ -124,17 +148,19 @@ def test_path_priority(tmpdir):
         'from jupyter_core import command; command.main()'
     )
     jupyter.chmod(0o700)
-    witness_cmd = 'jupyter-witness'
-    if sys.platform == 'win32':
-        witness_cmd += '.py'
-    witness_a = a.join(witness_cmd)
-    witness_a.write('#!%s\n%s\n' % (sys.executable, 'print("WITNESS A")'))
-    witness_a.chmod(0o700)
+    witness_a = a.join('jupyter-witness')
+    witness_a_src = '#!%s\n%s\n' % (sys.executable, 'print("WITNESS A")')
+    write_executable(witness_a, witness_a_src)
 
     b = tmpdir.mkdir("b")
-    witness_b = b.join(witness_cmd)
-    witness_b.write('#!%s\n%s\n' % (sys.executable, 'print("WITNESS B")'))
-    witness_b.chmod(0o700)
+    witness_b = b.join('jupyter-witness')
+    witness_b_src = '#!%s\n%s\n' % (sys.executable, 'print("WITNESS B")')
+    write_executable(witness_b, witness_b_src)
 
-    out = check_output([sys.executable, str(jupyter), 'witness'], env={'PATH': str(b)})
+    env = {'PATH':  str(b)}
+    if 'SYSTEMROOT' in os.environ:  # Windows http://bugs.python.org/issue20614
+        env[str('SYSTEMROOT')] = os.environ['SYSTEMROOT']
+    if sys.platform == 'win32':
+        env[str('PATHEXT')] = '.EXE'
+    out = check_output([sys.executable, str(jupyter), 'witness'], env=env)
     assert b'WITNESS A' in out
