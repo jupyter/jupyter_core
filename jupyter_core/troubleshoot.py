@@ -45,7 +45,7 @@ def get_data():
     else:
         env['which'] = subs(['which', '-a', 'jupyter'])
         env['where'] = None
-    env['pip'] = subs(['pip', 'list'])
+    env['pip'] = subs([sys.executable, '-m', 'pip', 'list'])
     env['conda'] = subs(['conda', 'list'])
     return env
 

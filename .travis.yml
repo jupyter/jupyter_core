@@ -2,13 +2,15 @@
 language: python
 sudo: false
 python:
-    - 3.5
-    - 3.4
-    - 3.3
-    - 2.7
+  - nightly
+  - 3.6
+  - 3.5
+  - 3.4
+  - 3.3
+  - 2.7
 before_install:
-    - git clone --quiet --depth 1 https://github.com/minrk/travis-wheels travis-wheels
+  - pip install --upgrade setuptools pip
 install:
-    - pip install -f travis-wheels/wheelhouse -r dev-requirements.txt .
+  - pip install -r dev-requirements.txt .
 script:
-    - py.test jupyter_core
+  - py.test jupyter_core
