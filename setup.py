@@ -58,7 +58,7 @@ setup_args = dict(
     long_description    = """There is no reason to install this package on its own.""",
     author              = "Jupyter Development Team",
     author_email        = "jupyter@googlegroups.org",
-    url                 = "http://jupyter.org",
+    url                 = "https://jupyter.org",
     license             = "BSD",
     classifiers         = [
         'Intended Audience :: Developers',
