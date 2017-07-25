@@ -52,7 +52,7 @@ GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.1.1>`__
 ~~~~~
 
 `on
-GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.1>`__
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.1.0>`__
 
 - Add ``jupyter.py`` module, so that :command:`python -m jupyter` always works.
 - Add prototype ``jupyter troubleshoot`` command for displaying environment info.
