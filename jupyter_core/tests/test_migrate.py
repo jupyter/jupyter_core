@@ -15,7 +15,7 @@ except ImportError:
 
 import pytest
 
-from ipython_genutils.path import ensure_dir_exists
+from jupyter_core.utils import ensure_dir_exists
 
 from jupyter_core.paths import jupyter_data_dir
 from jupyter_core.migrate import (
