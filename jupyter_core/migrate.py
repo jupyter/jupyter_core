@@ -30,7 +30,7 @@ from datetime import datetime
 from traitlets.config import PyFileConfigLoader, JSONFileConfigLoader
 from traitlets.log import get_logger
 
-from ipython_genutils.path import ensure_dir_exists
+from .utils import ensure_dir_exists
 try:
     from IPython.paths import get_ipython_dir
 except ImportError:
