@@ -174,7 +174,10 @@ else:
         "/etc/jupyter",
     ]
 
-ENV_CONFIG_PATH = [os.path.join(sys.prefix, 'etc', 'jupyter')]
+if os.name != 'nt' and sys.prefix == '/usr':
+    ENV_CONFIG_PATH = SYSTEM_CONFIG_PATH
+else:
+    ENV_CONFIG_PATH = [os.path.join(sys.prefix, 'etc', 'jupyter')]
 
 
 def jupyter_config_path():
