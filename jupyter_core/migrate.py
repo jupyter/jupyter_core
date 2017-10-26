@@ -31,15 +31,6 @@ from traitlets.config import PyFileConfigLoader, JSONFileConfigLoader
 from traitlets.log import get_logger
 
 from .utils import ensure_dir_exists
-try:
-    from IPython.paths import get_ipython_dir
-except ImportError:
-    # IPython < 4
-    try:
-        from IPython.utils.path import get_ipython_dir
-    except ImportError:
-        def get_ipython_dir():
-            return os.environ.get('IPYTHONDIR', os.path.expanduser('~/.ipython'))
 
 from .paths import jupyter_config_dir, jupyter_data_dir
 from .application import JupyterApp
@@ -71,6 +62,21 @@ config_substitutions = {
     regex(r'\bIPython\.html\b'): 'notebook',
     regex(r'\bIPython\.nbconvert\b'): 'nbconvert',
 }
+
+
+def get_ipython_dir():
+    """Return the IPython directory location.
+
+    Not imported from IPython because the IPython implementation
+    ensures that a writable directory exists,
+    creating a temporary directory if not.
+    We don't want to trigger that when checking if migration should happen.
+
+    We only need to support the IPython < 4 behavior for migration,
+    so importing for forward-compatibility and edge cases is not important.
+    """
+    return os.environ.get('IPYTHONDIR', os.path.expanduser('~/.ipython'))
+
 
 def migrate_dir(src, dst):
     """Migrate a directory from src to dst"""
