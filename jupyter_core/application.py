@@ -160,10 +160,9 @@ class JupyterApp(Application):
             return
 
         from .migrate import get_ipython_dir, migrate
-        
-        ipdir = get_ipython_dir()
+
         # No IPython dir, nothing to migrate
-        if not os.path.exists(ipdir):
+        if not os.path.exists(get_ipython_dir()):
             return
 
         migrate()
