@@ -1,6 +1,27 @@
 Changes in jupyter-core
 =======================
 
+4.4
+---
+
+4.4.0
+~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.4.0>`__
+
+- ``jupyter troubleshoot`` gets the list of packages from the Python environment
+  it's in, by using ``sys.executable`` to call ``pip list`` (:ghpull:`104`).
+- Added utility function ``ensure_dir_exists``, and switched to using it over
+  the one from ipython_genutils, which does permissions wrong (:ghpull:`113`).
+- Avoid creating the ``~/.ipython`` directory when checking if it exists for
+  config migration (:ghpull:`118`).
+- Fix mistaken description in zsh completions (:ghpull:`98`).
+- Fix subcommand tests on Windows (:ghpull:`103`).
+- The README now describes how to work on ``jupyter_core`` and build the docs
+  (:ghpull:`110`).
+- Fix a broken link to a release in the docs (:ghpull:`109`).
+
 4.3
 ---
 
