@@ -82,6 +82,8 @@ _jupyter()
             local sub=$(echo $subcommands | sed -e "s/ / \t/g")
             COMPREPLY=( $(compgen -W "${sub}" -- ${cur}) )
         else
+            local IFS=$'\n'
+            compopt -o filenames
             COMPREPLY=( $(compgen -f -- ${cur}) )
         fi
     fi
