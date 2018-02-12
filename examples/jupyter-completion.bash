@@ -13,9 +13,14 @@ _jupyter_get_flags()
         opts=$__jupyter_complete_last_res
         return
     fi
+
+    if [ -z $1 ]; then
+        opts=$(jupyter --help | sed -n  's/^  -/-/p' |sed -e 's/, /\n/' |sed -e 's/\(-[[:alnum:]_-]*\).*/\1/')
+    else
     # matplotlib and profile don't need the = and the
     # version without simplifies the special cased completion
-    opts=$(jupyter ${url} --help-all | grep -E "^-{1,2}[^-]" | sed -e "s/<.*//" -e "s/[^=]$/& /" -e "$ s/^/\n-h\n--help\n--help-all\n/")
+        opts=$(jupyter ${url} --help-all | grep -E "^-{1,2}[^-]" | sed -e "s/<.*//" -e "s/[^=]$/& /" -e "$ s/^/\n-h\n--help\n--help-all\n/")
+    fi
     __jupyter_complete_last="$url $var"
     __jupyter_complete_last_res="$opts"
 }
@@ -26,11 +31,6 @@ _jupyter()
     local prev=${COMP_WORDS[COMP_CWORD - 1]}
     local subcommands="notebook qtconsole console nbconvert kernelspec trust "
     local opts="help"
-    if [ -z "$__jupyter_complete_baseopts" ]; then
-        _jupyter_get_flags baseopts
-        __jupyter_complete_baseopts="${opts}"
-    fi
-    local baseopts="$__jupyter_complete_baseopts"
     local mode=""
     for i in "${COMP_WORDS[@]}"; do
         [ "$cur" = "$i" ] && break
@@ -48,7 +48,7 @@ _jupyter()
         case $mode in
             "notebook" | "qtconsole" | "console" | "nbconvert")
                 _jupyter_get_flags $mode
-                opts=$"${opts} ${baseopts}"
+                opts=$"${opts}"
                 ;;
             "kernelspec")
                 if [[ $COMP_CWORD -ge 3 ]]; then
@@ -61,7 +61,7 @@ _jupyter()
                 opts=$"${opts}"
                 ;;
             *)
-                opts=$baseopts
+                _jupyter_get_flags
         esac
         # don't drop the trailing space
         local IFS=$'\t\n'
@@ -82,6 +82,8 @@ _jupyter()
             local sub=$(echo $subcommands | sed -e "s/ / \t/g")
             COMPREPLY=( $(compgen -W "${sub}" -- ${cur}) )
         else
+            local IFS=$'\n'
+            compopt -o filenames
             COMPREPLY=( $(compgen -f -- ${cur}) )
         fi
     fi
