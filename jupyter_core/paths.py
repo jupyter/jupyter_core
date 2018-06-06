@@ -12,6 +12,7 @@
 import os
 import sys
 import tempfile
+from ipython_genutils import py3compat
 
 pjoin = os.path.join
 
@@ -21,7 +22,7 @@ def get_home_dir():
     homedir = os.path.expanduser('~')
     # Next line will make things work even when /home/ is a symlink to
     # /usr/home as it is on FreeBSD, for example
-    homedir = os.path.realpath(homedir)
+    home = py3compat.str_to_unicode(os.path.expanduser('~'), encoding=sys.getfilesystemencoding()) 
     return homedir
 
 _dtemps = {}
