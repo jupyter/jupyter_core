@@ -183,6 +183,14 @@ def jupyter_config_path():
     if os.environ.get('JUPYTER_NO_CONFIG'):
         return paths
 
+    # highest priority is env
+    if os.environ.get('JUPYTER_CONFIG_PATH'):
+        paths.extend(
+            p.rstrip(os.sep)
+            for p in os.environ['JUPYTER_CONFIG_PATH'].split(os.pathsep)
+        )
+
+    # then sys.prefix
     for p in ENV_CONFIG_PATH:
         if p not in SYSTEM_CONFIG_PATH:
             paths.append(p)
