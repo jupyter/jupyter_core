@@ -39,8 +39,10 @@ def find_package_data():
     prefix_len = len(test_dir) + len(os.sep)
     for parent, dirs, files in os.walk(test_dir):
         if files:
-            test_files.append(pjoin(parent[prefix_len:], '*.*'))
-    
+            test_files.append(pjoin(parent[prefix_len:], '*.py'))
+            test_files.append(pjoin(parent[prefix_len:], '*.js'))
+            test_files.append(pjoin(parent[prefix_len:], '*.css'))
+
     return package_data
 
 package_data = find_package_data()
