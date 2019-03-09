@@ -21,7 +21,7 @@ if v[:2] < (2,7) or (v[:2] > (3,) and v[:2] < (3,3)):
 
 # At least we're on the python version we need, move on.
 
-from distutils.core import setup
+from setuptools import setup
 
 pjoin = os.path.join
 here = os.path.abspath(os.path.dirname(__file__))
@@ -53,7 +53,6 @@ setup_args = dict(
                            'jupyter_core.tests'],
     py_modules          = ['jupyter'],
     package_data        = package_data,
-    scripts             = glob(pjoin('scripts', '*')),
     description         = "Jupyter core package. A base package on which Jupyter projects rely.",
     long_description    = """There is no reason to install this package on its own.""",
     author              = "Jupyter Development Team",
@@ -72,29 +71,15 @@ setup_args = dict(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
     ],
-)
-
-if any(arg.startswith('bdist') for arg in sys.argv):
-    import setuptools
-
-setuptools_args = {}
-
-setuptools_args['install_requires'] = [
-    'traitlets',
-]
-
-setuptools_args['entry_points'] = {
-    'console_scripts': [
+    install_requires    = [
+        'traitlets',
+    ],
+    console_scripts     = [
         'jupyter = jupyter_core.command:main',
         'jupyter-migrate = jupyter_core.migrate:main',
         'jupyter-troubleshoot = jupyter_core.troubleshoot:main',
-    ]
-}
-
-# setuptools requirements
-if 'setuptools' in sys.modules:
-    setup_args.update(setuptools_args)
-    setup_args.pop('scripts', None)
+    ],
+)
 
 
 if __name__ == '__main__':
