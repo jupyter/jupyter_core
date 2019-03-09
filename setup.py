@@ -11,7 +11,6 @@ from __future__ import print_function
 
 import os
 import sys
-from glob import glob
 
 v = sys.version_info
 if v[:2] < (2,7) or (v[:2] > (3,) and v[:2] < (3,3)):
@@ -31,20 +30,6 @@ version_ns = {}
 with open(pjoin(here, 'jupyter_core', 'version.py')) as f:
     exec(f.read(), {}, version_ns)
 
-def find_package_data():
-    """Find package data (testing support files)"""
-    package_data = {}
-    package_data['jupyter_core.tests'] = test_files = []
-    test_dir = pjoin('jupyter_core', 'tests')
-    prefix_len = len(test_dir) + len(os.sep)
-    for parent, dirs, files in os.walk(test_dir):
-        if files:
-            test_files.append(pjoin(parent[prefix_len:], '*.*'))
-    
-    return package_data
-
-package_data = find_package_data()
-
 setup_args = dict(
     name                = 'jupyter_core',
     version             = version_ns['__version__'],
@@ -52,7 +37,6 @@ setup_args = dict(
                            'jupyter_core.utils',
                            'jupyter_core.tests'],
     py_modules          = ['jupyter'],
-    package_data        = package_data,
     description         = "Jupyter core package. A base package on which Jupyter projects rely.",
     long_description    = """There is no reason to install this package on its own.""",
     author              = "Jupyter Development Team",
@@ -79,6 +63,7 @@ setup_args = dict(
         'jupyter-migrate = jupyter_core.migrate:main',
         'jupyter-troubleshoot = jupyter_core.troubleshoot:main',
     ],
+    include_package_data = True,
 )
 
 
