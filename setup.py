@@ -3,56 +3,7 @@
 
 # Copyright (c) Juptyer Development Team.
 # Distributed under the terms of the Modified BSD License.
-
-import os
-
 from setuptools import setup
 
-pjoin = os.path.join
-here = os.path.abspath(os.path.dirname(__file__))
-
-# Get the current package version.
-version_ns = {}
-with open(pjoin(here, 'jupyter_core', 'version.py')) as f:
-    exec(f.read(), {}, version_ns)
-
-setup_args = dict(
-    name                = 'jupyter_core',
-    version             = version_ns['__version__'],
-    packages            = ['jupyter_core',
-                           'jupyter_core.utils',
-                           'jupyter_core.tests'],
-    py_modules          = ['jupyter'],
-    description         = "Jupyter core package. A base package on which Jupyter projects rely.",
-    long_description    = """There is no reason to install this package on its own.""",
-    author              = "Jupyter Development Team",
-    author_email        = "jupyter@googlegroups.org",
-    url                 = "https://jupyter.org",
-    license             = "BSD",
-    classifiers         = [
-        'Intended Audience :: Developers',
-        'Intended Audience :: System Administrators',
-        'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: BSD License',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-    ],
-    python_requires     = '>=2.7, !=3.0, !=3.1, !=3.2',
-    install_requires    = [
-        'traitlets',
-    ],
-    console_scripts     = [
-        'jupyter = jupyter_core.command:main',
-        'jupyter-migrate = jupyter_core.migrate:main',
-        'jupyter-troubleshoot = jupyter_core.troubleshoot:main',
-    ],
-    include_package_data = True,
-)
-
-
-if __name__ == '__main__':
-    setup(**setup_args)
+# Loads metadata and options from setup.cfg:
+setup()
