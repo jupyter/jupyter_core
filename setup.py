@@ -4,21 +4,7 @@
 # Copyright (c) Juptyer Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-#-----------------------------------------------------------------------------
-# Minimal Python version sanity check (from IPython)
-#-----------------------------------------------------------------------------
-from __future__ import print_function
-
 import os
-import sys
-
-v = sys.version_info
-if v[:2] < (2,7) or (v[:2] > (3,) and v[:2] < (3,3)):
-    error = "ERROR: Jupyter requires Python version 2.7 or 3.3 or above."
-    print(error, file=sys.stderr)
-    sys.exit(1)
-
-# At least we're on the python version we need, move on.
 
 from setuptools import setup
 
@@ -55,6 +41,7 @@ setup_args = dict(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
     ],
+    python_requires     = '>=2.7, !=3.0, !=3.1, !=3.2',
     install_requires    = [
         'traitlets',
     ],
