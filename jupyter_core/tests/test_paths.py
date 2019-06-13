@@ -156,7 +156,7 @@ def test_runtime_dir_linux():
     
     with linux, xdg:
         runtime = jupyter_runtime_dir()
-    assert runtime == pjoin(xdg_env['XDG_RUNTIME_DIR'], 'jupyter')
+    assert runtime == pjoin(xdg_env['XDG_DATA_HOME'], 'jupyter', 'runtime')
 
 
 def test_jupyter_path():
