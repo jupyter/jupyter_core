@@ -205,7 +205,7 @@ class JupyterApp(Application):
         except Exception:
             # Reraise errors for testing purposes, or if set in
             # self.raise_config_file_errors
-            if not suppress_errors or self.raise_config_file_errors:
+            if (not suppress_errors) or self.raise_config_file_errors:
                 raise
             self.log.warning("Error loading config file: %s" %
                             config_file_name, exc_info=True)
