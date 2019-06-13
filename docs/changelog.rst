@@ -1,6 +1,29 @@
 Changes in jupyter-core
 =======================
 
+4.5
+---
+
+4.5.0
+~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.5.0>`__
+
+- ``jupyter --version`` now tries to show the version number of various other
+  installed Jupyter packages, not just ``jupyter_core`` (:ghpull:`136`).
+  This will hopefully make it clearer that there are various packages with
+  their own version numbers.
+- Allow a :envvar:`JUPYTER_CONFIG_PATH` environment variable to specify a
+  search path of additional locations for config (:ghpull:`139`).
+- Jupyter's 'runtime' directory no longer uses ``XDG_RUNTIME_DIR``
+  (:ghpull:`143`). While it has some attractive properties, it has led to
+  various problems; see the pull request for details.
+- Various improvements to the bash completion scripts in this repository
+  (:ghpull:`125`, :ghpull:`126`).
+- The ``setup.py`` script now always uses setuptools, like most other Jupyter
+  projects (:ghpull:`147`).
+
 4.4
 ---
 
