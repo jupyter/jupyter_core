@@ -19,6 +19,8 @@ GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.5.0>`__
 - Jupyter's 'runtime' directory no longer uses ``XDG_RUNTIME_DIR``
   (:ghpull:`143`). While it has some attractive properties, it has led to
   various problems; see the pull request for details.
+- Fix ``JupyterApp`` to respect the ``raise_config_file_errors`` traitlet
+  (:ghpull:`149`).
 - Various improvements to the bash completion scripts in this repository
   (:ghpull:`125`, :ghpull:`126`).
 - The ``setup.py`` script now always uses setuptools, like most other Jupyter
