@@ -121,7 +121,7 @@ def jupyter_path(*subdirs):
     
     JUPYTER_PATH environment variable has highest priority.
     
-    If *subdirs are given, that subdirectory will be added to each element.
+    If ``*subdirs`` are given, that subdirectory will be added to each element.
     
     Examples:
     
