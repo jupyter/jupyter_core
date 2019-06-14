@@ -94,3 +94,17 @@ def test_load_config():
     shutil.rmtree(config_dir)
     shutil.rmtree(wd)
 
+def test_load_bad_config():
+    config_dir = mkdtemp()
+    wd = mkdtemp()
+    with open(pjoin(config_dir, 'dummy_app_config.py'), 'w') as f:
+        f.write('c.DummyApp.m = "a\n') # Syntax error
+    with patch.object(py3compat, 'getcwd', lambda : wd):
+        with pytest.raises(SyntaxError):
+            app = DummyApp(config_dir=config_dir)
+            app.raise_config_file_errors=True
+            app.initialize([])
+
+    shutil.rmtree(config_dir)
+    shutil.rmtree(wd)
+
