@@ -15,7 +15,11 @@ import os
 import sys
 from subprocess import Popen
 
-from .utils.shutil_which import which
+try:
+     # py3
+     from shutil import which
+except ImportError:
+     from .utils.shutil_which import which
 
 from . import paths
 from .version import __version__
