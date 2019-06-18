@@ -119,12 +119,12 @@ def _execvp(cmd, argv):
         os.execvp(cmd, argv)
 
 
-def _jupyter_abspath(path, subcommand):
+def _jupyter_abspath(subcommand):
     """This method get the abspath of jupyter with no changes on ENV."""
     # get env PATH with self
     search_path = os.pathsep.join(_path_with_self())
     # get the abs path for the jupyter-<subcommand>
-    jupyter_subcommand = '{}-{}'.format(path, subcommand)
+    jupyter_subcommand = 'jupyter-{}'.format(subcommand)
     abs_path = which(jupyter_subcommand, path=search_path)
     if abs_path is None:
         raise Exception(
@@ -225,7 +225,7 @@ def main():
         parser.print_usage(file=sys.stderr)
         sys.exit("subcommand is required")
 
-    command = _jupyter_abspath('jupyter', subcommand)
+    command = _jupyter_abspath(subcommand)
 
     try:
         _execvp(command, sys.argv[1:])
