@@ -120,7 +120,9 @@ def _execvp(cmd, argv):
 
 
 def _jupyter_abspath(subcommand):
-    """This method get the abspath of jupyter with no changes on ENV."""
+    """This method get the abspath of a specified jupyter-subcommand with no 
+    changes on ENV.
+    """
     # get env PATH with self
     search_path = os.pathsep.join(_path_with_self())
     # get the abs path for the jupyter-<subcommand>
