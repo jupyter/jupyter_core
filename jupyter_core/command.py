@@ -225,7 +225,7 @@ def main():
         parser.print_usage(file=sys.stderr)
         sys.exit("subcommand is required")
 
-    command = _jupyter_abspath(sys.argv[0], subcommand)
+    command = _jupyter_abspath('jupyter', subcommand)
 
     try:
         _execvp(command, sys.argv[1:])
