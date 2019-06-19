@@ -16,6 +16,8 @@ GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.5.0>`__
   their own version numbers.
 - Allow a :envvar:`JUPYTER_CONFIG_PATH` environment variable to specify a
   search path of additional locations for config (:ghpull:`139`).
+- ``jupyter subcommand`` no longer modifies the :envvar:`PATH` environment
+  variable when it runs ``jupyter-subcommand`` (:ghpull:`148`).
 - Jupyter's 'runtime' directory no longer uses ``XDG_RUNTIME_DIR``
   (:ghpull:`143`). While it has some attractive properties, it has led to
   various problems; see the pull request for details.
@@ -25,6 +27,7 @@ GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.5.0>`__
   (:ghpull:`125`, :ghpull:`126`).
 - The ``setup.py`` script now always uses setuptools, like most other Jupyter
   projects (:ghpull:`147`).
+- The LICENSE file is included in wheels (:ghpull:`133`).
 
 4.4
 ---
