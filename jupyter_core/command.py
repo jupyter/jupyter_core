@@ -15,19 +15,25 @@ import os
 import sys
 from subprocess import Popen
 
+try:
+     # py3
+     from shutil import which
+except ImportError:
+     from .utils.shutil_which import which
+
 from . import paths
 from .version import __version__
 
 class JupyterParser(argparse.ArgumentParser):
-    
+
     @property
     def epilog(self):
         """Add subcommands to epilog on request
-        
+
         Avoids searching PATH for subcommands unless help output is requested.
         """
         return 'Available subcommands: %s' % ' '.join(list_subcommands())
-    
+
     @epilog.setter
     def epilog(self, x):
         """Ignore epilog set in Parser.__init__"""
@@ -42,7 +48,7 @@ def jupyter_parser():
     group.add_argument('--version', action='store_true',
         help="show the jupyter command's version and exit")
     group.add_argument('subcommand', type=str, nargs='?', help='the subcommand to launch')
-    
+
     group.add_argument('--config-dir', action='store_true',
         help="show Jupyter config dir")
     group.add_argument('--data-dir', action='store_true',
@@ -53,15 +59,15 @@ def jupyter_parser():
         help="show all Jupyter paths. Add --json for machine-readable format.")
     parser.add_argument('--json', action='store_true',
         help="output paths as machine-readable json")
-    
+
     return parser
 
 
 def list_subcommands():
     """List all jupyter subcommands
-    
+
     searches PATH for `jupyter-name`
-    
+
     Returns a list of jupyter's subcommand names, without the `jupyter-` prefix.
     Nested children (e.g. jupyter-sub-subsub) are not included.
     """
@@ -89,7 +95,7 @@ def list_subcommands():
 
 def _execvp(cmd, argv):
     """execvp, except on Windows where it uses Popen
-    
+
     Python provides execvp on Windows, but its behavior is problematic (Python bug#9148).
     """
     if sys.platform.startswith('win'):
@@ -113,9 +119,31 @@ def _execvp(cmd, argv):
         os.execvp(cmd, argv)
 
 
+def _jupyter_abspath(subcommand):
+    """This method get the abspath of a specified jupyter-subcommand with no 
+    changes on ENV.
+    """
+    # get env PATH with self
+    search_path = os.pathsep.join(_path_with_self())
+    # get the abs path for the jupyter-<subcommand>
+    jupyter_subcommand = 'jupyter-{}'.format(subcommand)
+    abs_path = which(jupyter_subcommand, path=search_path)
+    if abs_path is None:
+        raise Exception(
+            'Jupyter command `{}` not found.'.format(jupyter_subcommand)
+        )
+
+    if not os.access(abs_path, os.X_OK):
+        raise Exception(
+            'Jupyter command `{}` is not executable.'.format(jupyter_subcommand)
+        )
+
+    return abs_path
+
+
 def _path_with_self():
     """Put `jupyter`'s dir at the front of PATH
-    
+
     Ensures that /path/to/jupyter subcommand
     will do /path/to/jupyter-subcommand
     even if /other/jupyter-subcommand is ahead of it on PATH
@@ -128,18 +156,17 @@ def _path_with_self():
     path_list = (os.environ.get('PATH') or os.defpath).split(os.pathsep)
     for script in scripts:
         bindir = os.path.dirname(script)
-        if (os.path.isdir(bindir)
-            and os.access(script, os.X_OK) # only if it's a script
+        if (
+            os.path.isdir(bindir)
+            and os.access(script, os.X_OK)  # only if it's a script
         ):
             # ensure executable's dir is on PATH
             # avoids missing subcommands when jupyter is run via absolute path
             path_list.insert(0, bindir)
-    os.environ['PATH'] = os.pathsep.join(path_list)
     return path_list
 
 
 def main():
-    _path_with_self() # ensure executable is on PATH
     if len(sys.argv) > 1 and not sys.argv[1].startswith('-'):
         # Don't parse if a subcommand is given
         # Avoids argparse gobbling up args passed to subcommand, such as `-h`.
@@ -150,7 +177,7 @@ def main():
         subcommand = args.subcommand
         if args.version:
             print('{:<17}:'.format('jupyter core'), __version__)
-            for  package, name in [
+            for package, name in [
                 ('notebook', 'jupyter-notebook'),
                 ('qtconsole', 'qtconsole'),
                 ('IPython', 'ipython'),
@@ -169,8 +196,6 @@ def main():
                 except ImportError:
                     version = 'not installed'
                 print('{:<17}:'.format(name), version)
-
-
             return
         if args.json and not args.paths:
             sys.exit("--json is only used with --paths")
@@ -197,12 +222,13 @@ def main():
                     for p in path:
                         print('    ' + p)
             return
-    
+
     if not subcommand:
         parser.print_usage(file=sys.stderr)
         sys.exit("subcommand is required")
-    
-    command = 'jupyter-' + subcommand
+
+    command = _jupyter_abspath(subcommand)
+
     try:
         _execvp(command, sys.argv[1:])
     except OSError as e:
