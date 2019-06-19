@@ -7,6 +7,10 @@ include dev-requirements.txt
 graft docs
 graft examples
 
+# Test files
+graft jupyter_core/tests/dotipython
+graft jupyter_core/tests/dotipython_empty
+
 # docs subdirs we want to skip
 prune docs/_build
 
