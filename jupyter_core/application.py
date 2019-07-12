@@ -29,7 +29,7 @@ except NameError:
 
 from traitlets.config.application import Application, catch_config_error
 from traitlets.config.loader import ConfigFileNotFound
-from traitlets import Unicode, Bool, List
+from traitlets import Unicode, Bool, List, observe
 
 from .utils import ensure_dir_exists
 from ipython_genutils import py3compat
@@ -98,10 +98,11 @@ class JupyterApp(Application):
         rd = jupyter_runtime_dir()
         ensure_dir_exists(rd, mode=0o700)
         return rd
-    
-    def _runtime_dir_changed(self, new):
-        ensure_dir_exists(new, mode=0o700)
-    
+
+    @observe('runtime_dir')
+    def _runtime_dir_changed(self, change):
+        ensure_dir_exists(change['new'], mode=0o700)
+
     generate_config = Bool(False, config=True,
         help="""Generate default config file."""
     )
