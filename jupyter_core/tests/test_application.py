@@ -94,6 +94,7 @@ def test_load_config():
     shutil.rmtree(config_dir)
     shutil.rmtree(wd)
 
+
 def test_load_bad_config():
     config_dir = mkdtemp()
     wd = mkdtemp()
@@ -108,3 +109,11 @@ def test_load_bad_config():
     shutil.rmtree(config_dir)
     shutil.rmtree(wd)
 
+
+def test_runtime_dir_changed():
+    app = DummyApp()
+    td = mkdtemp()
+    shutil.rmtree(td)
+    app.runtime_dir = td
+    assert os.path.isdir(td)
+    shutil.rmtree(td)
