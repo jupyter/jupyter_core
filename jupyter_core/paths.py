@@ -404,5 +404,8 @@ def secure_write(fname, binary=False):
     with os.fdopen(os.open(fname, open_flag, 0o600), mode) as f:
         if os.name != 'nt':
             # Enforce that the file got the requested permissions before writing
-            assert '0600' == oct(stat.S_IMODE(os.stat(fname).st_mode)).replace('0o', '0')
+            if '0600' != oct(stat.S_IMODE(os.stat(fname).st_mode)).replace('0o', '0'):
+                raise RuntimeError("Permissions assignment failed for secure file: '{file}'."
+                    "Got '{permissions}' instead of '600'"
+                    .format(file=fname, permissions=os.stat(fname).st_mode))
         yield f
