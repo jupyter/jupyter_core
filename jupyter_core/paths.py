@@ -14,6 +14,7 @@ import sys
 import stat
 import errno
 import tempfile
+from ipython_genutils import py3compat
 
 from contextlib import contextmanager
 from ipython_genutils import py3compat
@@ -31,6 +32,7 @@ def get_home_dir():
     # Next line will make things work even when /home/ is a symlink to
     # /usr/home as it is on FreeBSD, for example
     homedir = os.path.realpath(homedir)
+    homedir = py3compat.str_to_unicode(homedir, encoding=sys.getfilesystemencoding()) 
     return homedir
 
 _dtemps = {}
