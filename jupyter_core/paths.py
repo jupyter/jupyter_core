@@ -22,7 +22,8 @@ def get_home_dir():
     homedir = os.path.expanduser('~')
     # Next line will make things work even when /home/ is a symlink to
     # /usr/home as it is on FreeBSD, for example
-    home = py3compat.str_to_unicode(os.path.expanduser('~'), encoding=sys.getfilesystemencoding()) 
+    homedir = os.path.realpath(homedir)
+    homedir = py3compat.str_to_unicode(homedir, encoding=sys.getfilesystemencoding()) 
     return homedir
 
 _dtemps = {}
