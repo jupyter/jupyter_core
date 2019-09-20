@@ -1,6 +1,26 @@
 Changes in jupyter-core
 =======================
 
+4.6
+---
+
+4.6.0
+~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.6.0>`__
+
+- Unicode characters existing in the user's home directory name are properly
+  handled (:ghpull:`131`).
+- ``mock`` is now only required for testing on Python 2 (:ghpull:`157`).
+- Deprecation warnings relative to ``_runtime_dir_changed`` are no longer
+  produced (:ghpull:`158`).
+- The ``scripts`` directory relative to the current python environment is
+  now appended to the search directory for subcommands (:ghpull:`162`).
+- Some utility functions (``exists()``, ``is_hidden()``, ``secure_write()``)
+  have been moved from ``jupyter_client`` and ``jupyter_server`` to
+  ``jupyter_core`` (:ghpull:`163`).
+
 4.5
 ---
 
