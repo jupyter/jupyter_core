@@ -83,8 +83,7 @@ _jupyter()
             COMPREPLY=( $(compgen -W "${sub}" -- ${cur}) )
         else
             local IFS=$'\n'
-            compopt -o filenames
-            COMPREPLY=( $(compgen -f -- ${cur}) )
+            COMPREPLY=( $(compgen -o filenames -f -- ${cur}) )
         fi
     fi
 
