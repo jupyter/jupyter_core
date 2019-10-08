@@ -20,6 +20,7 @@ GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.6.0>`__
 - Some utility functions (``exists()``, ``is_hidden()``, ``secure_write()``)
   have been moved from ``jupyter_client`` and ``jupyter_server`` to
   ``jupyter_core`` (:ghpull:`163`).
+- Fix error on Windows when setting private permissions (:ghpull:`166`).
 
 4.5
 ---
