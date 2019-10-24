@@ -4,6 +4,15 @@ Changes in jupyter-core
 4.6
 ---
 
+4.6.1
+~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.6.1>`__
+
+- Tolerate execute bit in owner permissions when validating secure writes (:ghpull:`173`).
+- Fix project name typo in copyright (:ghpull:`171`).
+
 4.6.0
 ~~~~~
 
