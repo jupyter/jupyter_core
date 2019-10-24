@@ -374,10 +374,27 @@ def win32_restrict_file_to_user(fname):
     sd.SetSecurityDescriptorDacl(1, dacl, 0)
     win32security.SetFileSecurity(fname, win32security.DACL_SECURITY_INFORMATION, sd)
 
+
+def get_file_mode(fname):
+    """Retrieves the file mode corresponding to fname in a filesystem-tolerant manner.
+
+    Parameters
+    ----------
+
+    fname : unicode
+        The path to the file to get mode from
+
+    """
+    # Some filesystems (e.g., CIFS) auto-enable the execute bit on files.  As a result, we
+    # should tolerate the execute bit on the file's owner when validating permissions - thus
+    # the missing one's bit on the third octet.
+    return stat.S_IMODE(os.stat(fname).st_mode) & 0o7677  # Use 4 octets since S_IMODE does the same
+
+
 @contextmanager
 def secure_write(fname, binary=False):
     """Opens a file in the most restricted pattern available for
-    writing content. This limits the file mode to `600` and yields
+    writing content. This limits the file mode to `0o0600` and yields
     the resulting opened filed handle.
 
     Parameters
@@ -385,6 +402,9 @@ def secure_write(fname, binary=False):
 
     fname : unicode
         The path to the file to write
+
+    binary: boolean
+        Indicates that the file is binary
     """
     mode = 'wb' if binary else 'w'
     open_flag = os.O_CREAT | os.O_WRONLY | os.O_TRUNC
@@ -398,16 +418,17 @@ def secure_write(fname, binary=False):
         # Python on windows does not respect the group and public bits for chmod, so we need
         # to take additional steps to secure the contents.
         # Touch file pre-emptively to avoid editing permissions in open files in Windows
-        fd = os.open(fname, os.O_CREAT | os.O_WRONLY | os.O_TRUNC, 0o600)
+        fd = os.open(fname, os.O_CREAT | os.O_WRONLY | os.O_TRUNC, 0o0600)
         os.close(fd)
         open_flag = os.O_WRONLY | os.O_TRUNC
         win32_restrict_file_to_user(fname)
 
-    with os.fdopen(os.open(fname, open_flag, 0o600), mode) as f:
+    with os.fdopen(os.open(fname, open_flag, 0o0600), mode) as f:
         if os.name != 'nt':
             # Enforce that the file got the requested permissions before writing
-            if '0600' != oct(stat.S_IMODE(os.stat(fname).st_mode)).replace('0o', '0'):
+            file_mode = get_file_mode(fname)
+            if 0o0600 != file_mode:
                 raise RuntimeError("Permissions assignment failed for secure file: '{file}'."
-                    "Got '{permissions}' instead of '600'"
-                    .format(file=fname, permissions=os.stat(fname).st_mode))
+                    "Got '{permissions}' instead of '0o0600'"
+                    .format(file=fname, permissions=oct(file_mode)))
         yield f
