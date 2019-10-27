@@ -1,11 +1,11 @@
 # http://travis-ci.org/#!/jupyter/jupyter_core
 language: python
-sudo: false
 python:
   - nightly
+  - "3.8"
+  - "3.7"
   - "3.6"
   - "3.5"
-  - "3.4"
   - "2.7"
 before_install:
   - pip install --upgrade pip
