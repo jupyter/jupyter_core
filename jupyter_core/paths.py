@@ -388,7 +388,7 @@ def get_file_mode(fname):
     # Some filesystems (e.g., CIFS) auto-enable the execute bit on files.  As a result, we
     # should tolerate the execute bit on the file's owner when validating permissions - thus
     # the missing one's bit on the third octet.
-    return stat.S_IMODE(os.stat(fname).st_mode) & 0o7677  # Use 4 octets since S_IMODE does the same
+    return stat.S_IMODE(os.stat(fname).st_mode) & 0o6677  # Use 4 octets since S_IMODE does the same
 
 
 @contextmanager
