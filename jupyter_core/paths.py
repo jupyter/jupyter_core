@@ -386,8 +386,9 @@ def get_file_mode(fname):
 
     """
     # Some filesystems (e.g., CIFS) auto-enable the execute bit on files.  As a result, we
-    # should tolerate the execute bit on the file's owner when validating permissions - thus
-    # the missing one's bit on the third octet.
+    # should tolerate the execute bit on the file's owner when validating permissions - thus 
+    # the missing least significant bit on the third octet. In addition, we also tolerate 
+    # the sticky bit being set, so the lsb from the fourth octet is also removed.
     return stat.S_IMODE(os.stat(fname).st_mode) & 0o6677  # Use 4 octets since S_IMODE does the same
 
 
@@ -429,6 +430,6 @@ def secure_write(fname, binary=False):
             file_mode = get_file_mode(fname)
             if 0o0600 != file_mode:
                 raise RuntimeError("Permissions assignment failed for secure file: '{file}'."
-                    "Got '{permissions}' instead of '0o0600'"
+                    " Got '{permissions}' instead of '0o0600'."
                     .format(file=fname, permissions=oct(file_mode)))
         yield f
