@@ -14,6 +14,7 @@ import sys
 import stat
 import errno
 import tempfile
+import warnings
 from ipython_genutils import py3compat
 
 from contextlib import contextmanager
@@ -432,8 +433,21 @@ def secure_write(fname, binary=False):
         if os.name != 'nt':
             # Enforce that the file got the requested permissions before writing
             file_mode = get_file_mode(fname)
-            if 0o0600 != file_mode and not allow_insecure_writes:
-                raise RuntimeError("Permissions assignment failed for secure file: '{file}'."
-                    " Got '{permissions}' instead of '0o0600'."
-                    .format(file=fname, permissions=oct(file_mode)))
+            if 0o0600 != file_mode:
+                if allow_insecure_writes:
+                    issue_insecure_write_warning()
+                else:
+                    raise RuntimeError("Permissions assignment failed for secure file: '{file}'."
+                        " Got '{permissions}' instead of '0o0600'."
+                        .format(file=fname, permissions=oct(file_mode)))
         yield f
+        
+
+def issue_insecure_write_warning():
+    def format_warning(msg, *args, **kwargs):
+        return str(msg) + '\n'
+
+    warnings.formatwarning = format_warning
+    warnings.warn("WARNING: Insecure writes have been enabled via environment variable "
+                  "'JUPYTER_ALLOW_INSECURE_WRITES'! If this is not intended, remove the "
+                  "variable or set its value to 'False'.")

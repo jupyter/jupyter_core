@@ -36,7 +36,8 @@ from ipython_genutils import py3compat
 
 from .paths import (
     jupyter_config_dir, jupyter_data_dir, jupyter_runtime_dir,
-    jupyter_path, jupyter_config_path,
+    jupyter_path, jupyter_config_path, allow_insecure_writes,
+    issue_insecure_write_warning
 )
 
 # aliases and flags
@@ -245,8 +246,9 @@ class JupyterApp(Application):
         self.load_config_file()
         # enforce cl-opts override configfile opts:
         self.update_config(cl_config)
-    
-    
+        if allow_insecure_writes:
+            issue_insecure_write_warning()
+
     def start(self):
         """Start the whole thing"""
         if self.subcommand:
