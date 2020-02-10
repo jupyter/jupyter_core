@@ -14,9 +14,11 @@ import sys
 import stat
 import errno
 import tempfile
+import warnings
 from ipython_genutils import py3compat
 
 from contextlib import contextmanager
+from distutils.util import strtobool
 from ipython_genutils import py3compat
 
 pjoin = os.path.join
@@ -392,6 +394,9 @@ def get_file_mode(fname):
     return stat.S_IMODE(os.stat(fname).st_mode) & 0o6677  # Use 4 octal digits since S_IMODE does the same
 
 
+allow_insecure_writes = strtobool(os.getenv('JUPYTER_ALLOW_INSECURE_WRITES', 'false'))
+
+
 @contextmanager
 def secure_write(fname, binary=False):
     """Opens a file in the most restricted pattern available for
@@ -429,7 +434,20 @@ def secure_write(fname, binary=False):
             # Enforce that the file got the requested permissions before writing
             file_mode = get_file_mode(fname)
             if 0o0600 != file_mode:
-                raise RuntimeError("Permissions assignment failed for secure file: '{file}'."
-                    " Got '{permissions}' instead of '0o0600'."
-                    .format(file=fname, permissions=oct(file_mode)))
+                if allow_insecure_writes:
+                    issue_insecure_write_warning()
+                else:
+                    raise RuntimeError("Permissions assignment failed for secure file: '{file}'."
+                        " Got '{permissions}' instead of '0o0600'."
+                        .format(file=fname, permissions=oct(file_mode)))
         yield f
+        
+
+def issue_insecure_write_warning():
+    def format_warning(msg, *args, **kwargs):
+        return str(msg) + '\n'
+
+    warnings.formatwarning = format_warning
+    warnings.warn("WARNING: Insecure writes have been enabled via environment variable "
+                  "'JUPYTER_ALLOW_INSECURE_WRITES'! If this is not intended, remove the "
+                  "variable or set its value to 'False'.")
