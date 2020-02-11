@@ -4,6 +4,16 @@ Changes in jupyter-core
 4.6
 ---
 
+4.6.2
+~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.6.2>`__
+
+- Add ability to allow insecure writes with JUPYTER_ALLOW_INSECURE_WRITES environement variable (:ghpull:`182`).
+- Docs typo and build fixes
+- Added python 3.7 and 3.8 builds to testing
+
 4.6.1
 ~~~~~
 
