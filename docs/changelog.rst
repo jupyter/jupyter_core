@@ -4,6 +4,16 @@ Changes in jupyter-core
 4.6
 ---
 
+4.6.3
+~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.6.3>`__
+
+- Changed windows secure_write path to skip all filesystem permission checks when running in insecure mode.
+  Too many exception paths existed for mounted file systems to reliably try to set them before opting out with the insecure write pattern.
+
+
 4.6.2
 ~~~~~
 
