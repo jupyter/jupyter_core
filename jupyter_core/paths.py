@@ -34,7 +34,7 @@ def get_home_dir():
     # Next line will make things work even when /home/ is a symlink to
     # /usr/home as it is on FreeBSD, for example
     homedir = os.path.realpath(homedir)
-    homedir = py3compat.str_to_unicode(homedir, encoding=sys.getfilesystemencoding()) 
+    homedir = py3compat.str_to_unicode(homedir, encoding=sys.getfilesystemencoding())
     return homedir
 
 _dtemps = {}
@@ -388,8 +388,8 @@ def get_file_mode(fname):
 
     """
     # Some filesystems (e.g., CIFS) auto-enable the execute bit on files.  As a result, we
-    # should tolerate the execute bit on the file's owner when validating permissions - thus 
-    # the missing least significant bit on the third octal digit. In addition, we also tolerate 
+    # should tolerate the execute bit on the file's owner when validating permissions - thus
+    # the missing least significant bit on the third octal digit. In addition, we also tolerate
     # the sticky bit being set, so the lsb from the fourth octal digit is also removed.
     return stat.S_IMODE(os.stat(fname).st_mode) & 0o6677  # Use 4 octal digits since S_IMODE does the same
 
@@ -421,13 +421,18 @@ def secure_write(fname, binary=False):
         pass
 
     if os.name == 'nt':
-        # Python on windows does not respect the group and public bits for chmod, so we need
-        # to take additional steps to secure the contents.
-        # Touch file pre-emptively to avoid editing permissions in open files in Windows
-        fd = os.open(fname, os.O_CREAT | os.O_WRONLY | os.O_TRUNC, 0o0600)
-        os.close(fd)
-        open_flag = os.O_WRONLY | os.O_TRUNC
-        win32_restrict_file_to_user(fname)
+        if allow_insecure_writes:
+            # Mounted file systems can have a number of failure modes inside this block.
+            # For windows machines in insecure mode we simply skip this to avoid failures :/
+            issue_insecure_write_warning()
+        else:
+            # Python on windows does not respect the group and public bits for chmod, so we need
+            # to take additional steps to secure the contents.
+            # Touch file pre-emptively to avoid editing permissions in open files in Windows
+            fd = os.open(fname, open_flag, 0o0600)
+            os.close(fd)
+            open_flag = os.O_WRONLY | os.O_TRUNC
+            win32_restrict_file_to_user(fname)
 
     with os.fdopen(os.open(fname, open_flag, 0o0600), mode) as f:
         if os.name != 'nt':
@@ -441,7 +446,7 @@ def secure_write(fname, binary=False):
                         " Got '{permissions}' instead of '0o0600'."
                         .format(file=fname, permissions=oct(file_mode)))
         yield f
-        
+
 
 def issue_insecure_write_warning():
     def format_warning(msg, *args, **kwargs):
