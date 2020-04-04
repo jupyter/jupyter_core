@@ -53,7 +53,8 @@ def _mkdtemp_once(name):
 def jupyter_config_dir():
     """Get the Jupyter config directory for this platform and user.
 
-    Returns JUPYTER_CONFIG_DIR if defined, else ~/.jupyter
+    Returns the first valid path from JUPYTER_CONFIG_DIR if defined, ~/.jupyter
+    if it exists, and XDG_CONFIG_HOME if defined, falling back to ~/.jupyter.
     """
 
     env = os.environ
@@ -65,8 +66,16 @@ def jupyter_config_dir():
     if env.get('JUPYTER_CONFIG_DIR'):
         return env['JUPYTER_CONFIG_DIR']
 
-    return pjoin(home_dir, '.jupyter')
+    default = pjoin(home_dir, '.jupyter')
+    xdg = env.get('XDG_CONFIG_HOME')
 
+    # Check XDG_CONFIG_HOME if and only if .jupyter doesn't exist.
+    # This ensures that existing installs keep working until explicit opt-in.
+    if not exists(default) and xdg:
+        return pjoin(xdg, 'jupyter')
+
+    return default
+    
 
 def jupyter_data_dir():
     """Get the config directory for Jupyter data files.
