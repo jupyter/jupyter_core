@@ -90,21 +90,26 @@ def jupyter_data_dir():
         return env['JUPYTER_DATA_DIR']
 
     home = get_home_dir()
+    xdg = env.get('XDG_DATA_HOME')
 
     if sys.platform == 'darwin':
-        return os.path.join(home, 'Library', 'Jupyter')
-    elif os.name == 'nt':
+        default = pjoin(home, 'Library', 'Jupyter')
+
+        # Use XDG_DATA_HOME if and only if the default doesn't exist.
+        if not exists(default) and xdg:
+            return pjoin(xdg, 'jupyter')
+        return default
+
+    if os.name == 'nt':
         appdata = os.environ.get('APPDATA', None)
         if appdata:
             return pjoin(appdata, 'jupyter')
-        else:
-            return pjoin(jupyter_config_dir(), 'data')
-    else:
-        # Linux, non-OS X Unix, AIX, etc.
-        xdg = env.get("XDG_DATA_HOME", None)
-        if not xdg:
-            xdg = pjoin(home, '.local', 'share')
-        return pjoin(xdg, 'jupyter')
+        return pjoin(jupyter_config_dir(), 'data')
+
+    # Linux, non-OS X Unix, AIX, etc.
+    if not xdg:
+        xdg = pjoin(home, '.local', 'share')
+    return pjoin(xdg, 'jupyter')
 
 
 def jupyter_runtime_dir():
