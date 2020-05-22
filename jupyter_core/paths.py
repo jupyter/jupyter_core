@@ -228,17 +228,28 @@ def is_file_hidden_win(abs_path, stat_res=None):
     if os.path.basename(abs_path).startswith('.'):
         return True
 
-    win32_FILE_ATTRIBUTE_HIDDEN = 0x02
-    import ctypes
+    if not hasattr(stat, "FILE_ATTRIBUTE_HIDDEN"):
+        win32_FILE_ATTRIBUTE_HIDDEN = 0x02
+        import ctypes
+        try:
+            attrs = ctypes.windll.kernel32.GetFileAttributesW(
+                py3compat.cast_unicode(abs_path)
+            )
+        except AttributeError:
+            pass
+        else:
+            if attrs > 0 and attrs & win32_FILE_ATTRIBUTE_HIDDEN:
+                return True
+
     try:
-        attrs = ctypes.windll.kernel32.GetFileAttributesW(
-            py3compat.cast_unicode(abs_path)
-        )
-    except AttributeError:
-        pass
+        stat_res = os.stat(abs_path)
+    except OSError as e:
+        if e.errno == errno.ENOENT:
+            return False
+        raise
     else:
-        if attrs > 0 and attrs & win32_FILE_ATTRIBUTE_HIDDEN:
-            return True
+        stat_fa = stat_res.st_file_attributes
+        return stat_fa & stat.FILE_ATTRIBUTE_HIDDEN
 
     return False
 
