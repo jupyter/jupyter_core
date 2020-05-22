@@ -242,7 +242,8 @@ def is_file_hidden_win(abs_path, stat_res=None):
                 return True
 
     try:
-        stat_res = os.stat(abs_path)
+        if stat_res is None:
+            stat_res = os.stat(abs_path)
     except OSError as e:
         if e.errno == errno.ENOENT:
             return False
