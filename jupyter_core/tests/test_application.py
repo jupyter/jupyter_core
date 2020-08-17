@@ -1,13 +1,7 @@
 import os
 import shutil
 from tempfile import mkdtemp
-from ipython_genutils import py3compat
-
-try:
-    from unittest.mock import patch
-except ImportError:
-    # py2
-    from mock import patch
+from unittest.mock import patch
 
 import pytest
 from traitlets import Integer
@@ -75,7 +69,7 @@ def test_load_config():
     with open(pjoin(config_dir, 'dummy_app_config.py'), 'w') as f:
         f.write('c.DummyApp.m = 1\n')
         f.write('c.DummyApp.n = 1')
-    with patch.object(py3compat, 'getcwd', lambda : wd):
+    with patch.object(os, 'getcwd', lambda : wd):
         app = DummyApp(config_dir=config_dir)
         app.initialize([])
 
@@ -84,7 +78,7 @@ def test_load_config():
     with open(pjoin(wd, 'dummy_app_config.py'), 'w') as f:
         f.write('c.DummyApp.n = 2')
 
-    with patch.object(py3compat, 'getcwd', lambda : wd):
+    with patch.object(os, 'getcwd', lambda : wd):
         app = DummyApp(config_dir=config_dir)
         app.initialize([])
 
@@ -100,7 +94,7 @@ def test_load_bad_config():
     wd = mkdtemp()
     with open(pjoin(config_dir, 'dummy_app_config.py'), 'w') as f:
         f.write('c.DummyApp.m = "a\n') # Syntax error
-    with patch.object(py3compat, 'getcwd', lambda : wd):
+    with patch.object(os, 'getcwd', lambda : wd):
         with pytest.raises(SyntaxError):
             app = DummyApp(config_dir=config_dir)
             app.raise_config_file_errors=True

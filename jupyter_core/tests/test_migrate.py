@@ -1,4 +1,3 @@
-# coding: utf-8
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 """Test config file migration"""
@@ -8,10 +7,7 @@ import re
 import shutil
 from subprocess import check_call
 from tempfile import mkdtemp
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch
+from unittest.mock import patch
 
 import pytest
 

@@ -6,21 +6,14 @@ This does nothing other than dispatch to subcommands or output path info.
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from __future__ import print_function
-
 import argparse
 import errno
 import json
 import os
+from shutil import which
 import sys
 import sysconfig
 from subprocess import Popen
-
-try:
-     # py3
-     from shutil import which
-except ImportError:
-     from .utils.shutil_which import which
 
 from . import paths
 from .version import __version__
@@ -102,10 +95,6 @@ def _execvp(cmd, argv):
     if sys.platform.startswith('win'):
         # PATH is ignored when shell=False,
         # so rely on shutil.which
-        try:
-            from shutil import which
-        except ImportError:
-            from .utils.shutil_which import which
         cmd_path = which(cmd)
         if cmd_path is None:
             raise OSError('%r not found' % cmd, errno.ENOENT)

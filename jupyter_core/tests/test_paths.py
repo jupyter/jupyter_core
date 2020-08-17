@@ -8,11 +8,7 @@ import re
 import stat
 import shutil
 import tempfile
-
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch # py2
+from unittest.mock import patch
 
 from jupyter_core import paths
 from jupyter_core.paths import (

@@ -5,11 +5,7 @@
 
 import os
 import sys
-
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch # py2
+from unittest.mock import patch
 
 
 class MultiPatch(object):
