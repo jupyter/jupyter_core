@@ -1,6 +1,7 @@
 # http://travis-ci.org/#!/jupyter/jupyter_core
 language: python
 dist: xenial
+
 jobs:
   include:
     - name: "python nightly on xenial linux"
@@ -19,6 +20,9 @@ jobs:
       os: osx
       osx_image: xcode11.6
       language: shell
+  allow_failures:
+    - name: "python nightly on xenial linux"
+      python: "nightly"
 
 before_install:
   - pip install --upgrade pip
@@ -27,6 +31,3 @@ install:
   - pip install -r dev-requirements.txt .
 script:
   - py.test jupyter_core
-matrix:
-  allow_failures:
-    - python: nightly
