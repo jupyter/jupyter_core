@@ -29,7 +29,7 @@ dotipython_empty = pjoin(here, 'dotipython_empty')
 @pytest.fixture
 def td(request):
     """Fixture for a temporary directory"""
-    td = mkdtemp(u'μnïcø∂e')
+    td = mkdtemp('μnïcø∂e')
     request.addfinalizer(lambda : shutil.rmtree(td))
     return td
 

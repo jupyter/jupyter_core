@@ -226,7 +226,7 @@ def test_is_hidden_win32():
     import ctypes
     with TemporaryDirectory() as root:
         root = cast_unicode(root)
-        subdir1 = os.path.join(root, u'subdir')
+        subdir1 = os.path.join(root, 'subdir')
         os.makedirs(subdir1)
         assert not is_hidden(subdir1, root)
         r = ctypes.windll.kernel32.SetFileAttributesW(subdir1, 0x02)

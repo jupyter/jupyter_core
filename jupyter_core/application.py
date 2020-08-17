@@ -99,7 +99,7 @@ class JupyterApp(Application):
     def _config_file_name_default(self):
         if not self.name:
             return ''
-        return self.name.replace('-','_') + u'_config'
+        return self.name.replace('-','_') + '_config'
     
     config_file = Unicode(config=True,
         help="""Full path of a config file.""",
