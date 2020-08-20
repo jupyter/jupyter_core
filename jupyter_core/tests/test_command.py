@@ -5,13 +5,9 @@ import os
 import sys
 import sysconfig
 from subprocess import check_output, CalledProcessError
+from unittest.mock import patch
 
 import pytest
-try:
-    from unittest.mock import patch
-except ImportError:
-    # py2
-    from mock import patch
 
 from jupyter_core import __version__
 from jupyter_core.command import list_subcommands

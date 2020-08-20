@@ -1,4 +1,3 @@
-# encoding: utf-8
 """Path utility functions."""
 
 # Copyright (c) Jupyter Development Team.
@@ -15,7 +14,6 @@ import stat
 import errno
 import tempfile
 import warnings
-from ipython_genutils import py3compat
 
 from contextlib import contextmanager
 from distutils.util import strtobool

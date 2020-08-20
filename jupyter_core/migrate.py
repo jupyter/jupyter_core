@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 """Migrating IPython < 4.0 to Jupyter
 
 This *copies* configuration and resources to their new locations in Jupyter

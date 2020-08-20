@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # jupyter_core documentation build configuration file, created by
 # sphinx-quickstart on Wed Jun 24 11:51:36 2015.

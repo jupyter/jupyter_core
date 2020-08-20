@@ -8,11 +8,7 @@ import re
 import stat
 import shutil
 import tempfile
-
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch # py2
+from unittest.mock import patch
 
 from jupyter_core import paths
 from jupyter_core.paths import (
@@ -230,7 +226,7 @@ def test_is_hidden_win32():
     import ctypes
     with TemporaryDirectory() as root:
         root = cast_unicode(root)
-        subdir1 = os.path.join(root, u'subdir')
+        subdir1 = os.path.join(root, 'subdir')
         os.makedirs(subdir1)
         assert not is_hidden(subdir1, root)
         r = ctypes.windll.kernel32.SetFileAttributesW(subdir1, 0x02)

@@ -1,4 +1,3 @@
-# encoding: utf-8
 """
 A base Application class for Jupyter applications.
 
@@ -8,31 +7,17 @@ All Jupyter applications should inherit from this.
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from __future__ import print_function
-
 from copy import deepcopy
 import logging
 import os
+from shutil import which
 import sys
-
-try:
-    # py3
-    from shutil import which
-except ImportError:
-    from .utils.shutil_which import which
-
-try:
-    raw_input
-except NameError:
-    # py3
-    raw_input = input
 
 from traitlets.config.application import Application, catch_config_error
 from traitlets.config.loader import ConfigFileNotFound
 from traitlets import Unicode, Bool, List, observe
 
 from .utils import ensure_dir_exists
-from ipython_genutils import py3compat
 
 from .paths import (
     jupyter_config_dir, jupyter_data_dir, jupyter_runtime_dir,
@@ -84,7 +69,7 @@ class JupyterApp(Application):
         path = jupyter_config_path()
         if self.config_dir not in path:
             path.insert(0, self.config_dir)
-        path.insert(0, py3compat.getcwd())
+        path.insert(0, os.getcwd())
         return path
     
     data_dir = Unicode()
@@ -114,7 +99,7 @@ class JupyterApp(Application):
     def _config_file_name_default(self):
         if not self.name:
             return ''
-        return self.name.replace('-','_') + u'_config'
+        return self.name.replace('-','_') + '_config'
     
     config_file = Unicode(config=True,
         help="""Full path of a config file.""",
@@ -136,7 +121,7 @@ class JupyterApp(Application):
             def ask():
                 prompt = "Overwrite %s with default config? [y/N]" % config_file
                 try:
-                    return raw_input(prompt).lower() or 'n'
+                    return input(prompt).lower() or 'n'
                 except KeyboardInterrupt:
                     print('') # empty line
                     return 'n'
