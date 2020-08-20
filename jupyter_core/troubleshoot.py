@@ -47,6 +47,7 @@ def get_data():
         env['where'] = None
     env['pip'] = subs([sys.executable, '-m', 'pip', 'list'])
     env['conda'] = subs(['conda', 'list'])
+    env['conda-env'] = subs(['conda', 'env', 'export'])
     return env
 
 
@@ -99,6 +100,10 @@ def main():
         for package in environment_data['conda'].split('\n'):
             print('\t' + package)
 
+    if environment_data['conda-env']:
+        print('\n' + 'conda env:')
+        for package in environment_data['conda-env'].split('\n'):
+            print('\t' + package)
 
 if __name__ == '__main__':
     main()
