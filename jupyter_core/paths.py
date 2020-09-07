@@ -16,7 +16,6 @@ import tempfile
 import warnings
 
 from contextlib import contextmanager
-from distutils.util import strtobool
 from ipython_genutils import py3compat
 
 pjoin = os.path.join
@@ -392,7 +391,7 @@ def get_file_mode(fname):
     return stat.S_IMODE(os.stat(fname).st_mode) & 0o6677  # Use 4 octal digits since S_IMODE does the same
 
 
-allow_insecure_writes = strtobool(os.getenv('JUPYTER_ALLOW_INSECURE_WRITES', 'false'))
+allow_insecure_writes = os.getenv('JUPYTER_ALLOW_INSECURE_WRITES', 'false').lower() in ('true', '1')
 
 
 @contextmanager
