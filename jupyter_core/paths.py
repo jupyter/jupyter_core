@@ -190,8 +190,8 @@ ENV_CONFIG_PATH = [os.path.join(sys.prefix, 'etc', 'jupyter')]
 def jupyter_config_path():
     """Return the search path for Jupyter config files as a list.
     
-    If JUPYTER_ENV_PRIORITY is set, the environment-level directories
-    will have priority over user-level directories.
+    If the JUPYTER_ENV_PRIORITY environment variable is set, the environment-level
+    directories will have priority over user-level directories.
     """
     if os.environ.get('JUPYTER_NO_CONFIG'):
         return [jupyter_config_dir()]
