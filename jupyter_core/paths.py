@@ -222,35 +222,22 @@ def is_file_hidden_win(abs_path, stat_res=None):
     abs_path : unicode
         The absolute path to check.
     stat_res : os.stat_result, optional
-        Ignored on Windows, exists for compatibility with POSIX version of the
-        function.
+        The result of calling stat() on abs_path. If not passed, this function
+        will call stat() internally.
     """
     if os.path.basename(abs_path).startswith('.'):
         return True
 
-    if not hasattr(stat, "FILE_ATTRIBUTE_HIDDEN"):
-        win32_FILE_ATTRIBUTE_HIDDEN = 0x02
-        import ctypes
+    if stat_res is None:
         try:
-            attrs = ctypes.windll.kernel32.GetFileAttributesW(
-                py3compat.cast_unicode(abs_path)
-            )
-        except AttributeError:
-            pass
-        else:
-            if attrs > 0 and attrs & win32_FILE_ATTRIBUTE_HIDDEN:
-                return True
-
-    try:
-        if stat_res is None:
             stat_res = os.stat(abs_path)
-    except OSError as e:
-        if e.errno == errno.ENOENT:
-            return False
-        raise
-    else:
-        stat_fa = stat_res.st_file_attributes
-        return stat_fa & stat.FILE_ATTRIBUTE_HIDDEN
+        except OSError as e:
+            if e.errno == errno.ENOENT:
+                return False
+            raise
+
+    if stat_res.st_file_attributes & stat.FILE_ATTRIBUTE_HIDDEN:
+        return True
 
     return False
 
