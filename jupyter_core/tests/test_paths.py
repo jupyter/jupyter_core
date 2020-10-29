@@ -15,7 +15,7 @@ import sys
 from jupyter_core import paths
 from jupyter_core.paths import (
     jupyter_config_dir, jupyter_data_dir, jupyter_runtime_dir,
-    jupyter_path, ENV_JUPYTER_PATH,
+    jupyter_path, jupyter_config_path, ENV_JUPYTER_PATH,
     secure_write, is_hidden, is_file_hidden
 )
 from tempfile import TemporaryDirectory
@@ -171,6 +171,12 @@ def test_jupyter_path():
     assert path[0] == jupyter_data_dir()
     assert path[-2:] == system_path
 
+def test_jupyter_path():
+    with patch.object(paths, 'JUPYTER_ENV_PRIORITY', True):
+        print(os.environ.get('JUPYTER_ENV_PRIORITY'))
+        path = jupyter_path()
+    assert path[0] == paths.ENV_JUPYTER_PATH[0]
+    assert path[1] == jupyter_data_dir()
 
 def test_jupyter_path_env():
     path_env = os.pathsep.join([
@@ -194,6 +200,22 @@ def test_jupyter_path_subdir():
     for p in path:
         assert p.endswith(pjoin('', 'sub1', 'sub2'))
 
+def test_jupyter_config_path():
+    with patch.object(paths, 'JUPYTER_ENV_PRIORITY', True):
+        print(os.environ.get('JUPYTER_ENV_PRIORITY'))
+        path = jupyter_config_path()
+    assert path[0] == paths.ENV_CONFIG_PATH[0]
+    assert path[1] == jupyter_config_dir()
+
+def test_jupyter_config_path_env():
+    path_env = os.pathsep.join([
+        pjoin('foo', 'bar'),
+        pjoin('bar', 'baz', ''), # trailing /
+    ])
+
+    with patch.dict('os.environ', {'JUPYTER_CONFIG_PATH': path_env}):
+        path = jupyter_config_path()
+    assert path[:2] == [pjoin('foo', 'bar'), pjoin('bar', 'baz')]
 
 def test_is_hidden():
     with TemporaryDirectory() as root:
