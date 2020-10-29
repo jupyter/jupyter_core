@@ -24,7 +24,7 @@ pjoin = os.path.join
 # It is used by BSD to indicate hidden files.
 UF_HIDDEN = getattr(stat, 'UF_HIDDEN', 32768)
 
-JUPYTER_ENV_PRIORITY = bool(os.environ.get('JUPYTER_ENV_PRIORITY'))
+JUPYTER_ENV_PRIORITY = os.environ.get('JUPYTER_ENV_PRIORITY', 'n').lower() not in ['no', 'n', 'false', 'off', '0', '0.0']
 
 
 def get_home_dir():
