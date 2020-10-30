@@ -16,6 +16,7 @@ import tempfile
 import warnings
 
 from contextlib import contextmanager
+from ipython_genutils import py3compat
 
 pjoin = os.path.join
 
