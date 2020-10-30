@@ -16,8 +16,7 @@ from jupyter_core.paths import (
     jupyter_path, ENV_JUPYTER_PATH,
     secure_write, is_hidden, is_file_hidden
 )
-from ipython_genutils.tempdir import TemporaryDirectory
-from ipython_genutils.py3compat import cast_unicode
+from tempfile import TemporaryDirectory
 from ipython_genutils.testing.decorators import skip_if_not_win32, skip_win32
 from .mocking import darwin, windows, linux
 
@@ -221,11 +220,10 @@ def test_is_hidden():
         assert not is_file_hidden(subdir56, os.stat(subdir56))
 
 
-@skip_if_not_win32
+@pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
 def test_is_hidden_win32():
     import ctypes
     with TemporaryDirectory() as root:
-        root = cast_unicode(root)
         subdir1 = os.path.join(root, 'subdir')
         os.makedirs(subdir1)
         assert not is_hidden(subdir1, root)
@@ -235,7 +233,7 @@ def test_is_hidden_win32():
         assert is_file_hidden(subdir1)
 
 
-@skip_if_not_win32
+@pytest.mark.skipif(sys.platform != "win32", reason="only runs on windows")
 def test_secure_write_win32():
     def fetch_win32_permissions(filename):
         '''Extracts file permissions on windows using icacls'''
@@ -278,7 +276,7 @@ def test_secure_write_win32():
         shutil.rmtree(directory)
 
 
-@skip_win32
+@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
 def test_secure_write_unix():
     directory = tempfile.mkdtemp()
     fname = os.path.join(directory, 'check_perms')
