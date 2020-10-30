@@ -19,6 +19,7 @@ from jupyter_core.paths import (
 from tempfile import TemporaryDirectory
 from ipython_genutils.testing.decorators import skip_if_not_win32, skip_win32
 from .mocking import darwin, windows, linux
+import pytest
 
 pjoin = os.path.join
 
