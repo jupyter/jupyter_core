@@ -147,13 +147,15 @@ def jupyter_path(*subdirs):
     """
 
     paths = []
-    # highest priority is env
+
+    # highest priority is explicit environment variable
     if os.environ.get('JUPYTER_PATH'):
         paths.extend(
             p.rstrip(os.sep)
             for p in os.environ['JUPYTER_PATH'].split(os.pathsep)
         )
 
+    # Next is environment or user, depending on the JUPYTER_PREFER_ENV_PATH flag
     user = jupyter_data_dir()
     env = [p for p in ENV_JUPYTER_PATH if p not in SYSTEM_JUPYTER_PATH]
 
@@ -195,16 +197,19 @@ def jupyter_config_path():
     directories will have priority over user-level directories.
     """
     if os.environ.get('JUPYTER_NO_CONFIG'):
+        # jupyter_config_dir makes a blank config when JUPYTER_NO_CONFIG is set.
         return [jupyter_config_dir()]
 
     paths = []
-    # highest priority is env
+
+    # highest priority is explicit environment variable
     if os.environ.get('JUPYTER_CONFIG_PATH'):
         paths.extend(
             p.rstrip(os.sep)
             for p in os.environ['JUPYTER_CONFIG_PATH'].split(os.pathsep)
         )
 
+    # Next is environment or user, depending on the JUPYTER_PREFER_ENV_PATH flag
     user = jupyter_config_dir()
     env = [p for p in ENV_CONFIG_PATH if p not in SYSTEM_CONFIG_PATH]
 
@@ -215,6 +220,7 @@ def jupyter_config_path():
         paths.append(user)
         paths.extend(env)
 
+    # Finally, system path
     paths.extend(SYSTEM_CONFIG_PATH)
     return paths
 
