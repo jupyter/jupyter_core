@@ -173,12 +173,12 @@ def _path_with_self():
 
 
 def main():
+    parser = jupyter_parser()
     if len(sys.argv) > 1 and not sys.argv[1].startswith('-'):
         # Don't parse if a subcommand is given
         # Avoids argparse gobbling up args passed to subcommand, such as `-h`.
         subcommand = sys.argv[1]
     else:
-        parser = jupyter_parser()
         args, opts = parser.parse_known_args()
         subcommand = args.subcommand
         if args.version:
