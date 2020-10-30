@@ -87,11 +87,12 @@ def test_subcommand_not_given():
 
 def test_help():
     output = get_jupyter_output('-h')
+    assert '--help' in output
 
 
 def test_subcommand_not_found():
     with pytest.raises(CalledProcessError):
-        output = get_jupyter_output('nonexistant-subcommand')
+        get_jupyter_output('nonexistant-subcommand')
 
 @patch.object(sys, 'argv', [__file__] + sys.argv[1:])
 def test_subcommand_list(tmpdir):
