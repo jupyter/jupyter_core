@@ -24,8 +24,9 @@ pjoin = os.path.join
 # It is used by BSD to indicate hidden files.
 UF_HIDDEN = getattr(stat, 'UF_HIDDEN', 32768)
 
-JUPYTER_ENV_PRIORITY = os.environ.get('JUPYTER_ENV_PRIORITY', 'n').lower() not in ['no', 'n', 'false', 'off', '0', '0.0']
 
+# True if environment variable is set to anything besides no, n, false, off, 0, or 0.0 (case insensitive)
+JUPYTER_PREFER_ENV_PATH = os.environ.get('JUPYTER_PREFER_ENV_PATH', 'n').lower() not in ['no', 'n', 'false', 'off', '0', '0.0']
 
 def get_home_dir():
     """Get the real path of the home directory"""
@@ -132,7 +133,7 @@ def jupyter_path(*subdirs):
 
     JUPYTER_PATH environment variable has highest priority.
 
-    If the JUPYTER_ENV_PRIORITY environment variable is set, the environment-level
+    If the JUPYTER_PREFER_ENV_PATH environment variable is set, the environment-level
     directories will have priority over user-level directories.
 
     If ``*subdirs`` are given, that subdirectory will be added to each element.
@@ -156,7 +157,7 @@ def jupyter_path(*subdirs):
     user = jupyter_data_dir()
     env = [p for p in ENV_JUPYTER_PATH if p not in SYSTEM_JUPYTER_PATH]
 
-    if JUPYTER_ENV_PRIORITY:
+    if JUPYTER_PREFER_ENV_PATH:
         paths.extend(env)
         paths.append(user)
     else:
@@ -190,7 +191,7 @@ ENV_CONFIG_PATH = [os.path.join(sys.prefix, 'etc', 'jupyter')]
 def jupyter_config_path():
     """Return the search path for Jupyter config files as a list.
     
-    If the JUPYTER_ENV_PRIORITY environment variable is set, the environment-level
+    If the JUPYTER_PREFER_ENV_PATH environment variable is set, the environment-level
     directories will have priority over user-level directories.
     """
     if os.environ.get('JUPYTER_NO_CONFIG'):
@@ -207,7 +208,7 @@ def jupyter_config_path():
     user = jupyter_config_dir()
     env = [p for p in ENV_CONFIG_PATH if p not in SYSTEM_CONFIG_PATH]
 
-    if JUPYTER_ENV_PRIORITY:
+    if JUPYTER_PREFER_ENV_PATH:
         paths.extend(env)
         paths.append(user)
     else:
