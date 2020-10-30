@@ -171,7 +171,6 @@ class JupyterApp(Application):
         except ConfigFileNotFound:
             # ignore errors loading parent
             self.log.debug("Config file %s not found", base_config)
-            pass
 
         if self.config_file:
             path, config_file_name = os.path.split(self.config_file)
