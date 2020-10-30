@@ -19,7 +19,6 @@ from jupyter_core.paths import (
     secure_write, is_hidden, is_file_hidden
 )
 from tempfile import TemporaryDirectory
-from ipython_genutils.testing.decorators import skip_if_not_win32, skip_win32
 from .mocking import darwin, windows, linux
 
 pjoin = os.path.join
