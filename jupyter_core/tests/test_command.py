@@ -80,14 +80,23 @@ def test_paths_json():
         assert isinstance(path, list)
 
 def test_paths_debug():
-    with patch.dict('os.environ', {'JUPYTER_PREFER_ENV_PATH': 'y'}):
-        output = get_jupyter_output(['--paths', '--debug'])
-    assert 'JUPYTER_PREFER_ENV_PATH is set' in output
-
-def test_paths_debug2():
+    vars = [
+        'JUPYTER_PREFER_ENV_PATH',
+        'JUPYTER_NO_CONFIG',
+        'JUPYTER_CONFIG_PATH',
+        'JUPYTER_CONFIG_DIR',
+        'JUPYTER_PATH',
+        'JUPYTER_DATA_DIR',
+        'JUPYTER_RUNTIME_DIR'
+        ]
     output = get_jupyter_output(['--paths', '--debug'])
-    assert 'JUPYTER_PREFER_ENV_PATH is not set' in output
+    for v in vars:
+        assert f"{v} is not set" in output
 
+    with patch.dict('os.environ', [(v, 'y') for v in vars]):
+        output = get_jupyter_output(['--paths', '--debug'])
+    for v in vars:
+        assert f"{v} is set" in output
 
 def test_subcommand_not_given():
     with pytest.raises(CalledProcessError):
