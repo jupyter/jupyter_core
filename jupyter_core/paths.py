@@ -25,8 +25,13 @@ pjoin = os.path.join
 UF_HIDDEN = getattr(stat, 'UF_HIDDEN', 32768)
 
 
-# True if environment variable is set to anything besides no, n, false, off, 0, or 0.0 (case insensitive)
-JUPYTER_PREFER_ENV_PATH = os.environ.get('JUPYTER_PREFER_ENV_PATH', 'n').lower() not in ['no', 'n', 'false', 'off', '0', '0.0']
+def envset(name):
+    """Return True if the given environment variable is set
+
+    An environment variable is considered set if it is assigned to a value
+    other than 'no', 'n', 'false', 'off', '0', or '0.0' (case insensitive)
+    """
+    return os.environ.get(name, 'no').lower() not in ['no', 'n', 'false', 'off', '0', '0.0']
 
 def get_home_dir():
     """Get the real path of the home directory"""
@@ -58,7 +63,7 @@ def jupyter_config_dir():
     env = os.environ
     home_dir = get_home_dir()
 
-    if env.get('JUPYTER_NO_CONFIG'):
+    if envset('JUPYTER_NO_CONFIG'):
         return _mkdtemp_once('jupyter-clean-cfg')
 
     if env.get('JUPYTER_CONFIG_DIR'):
@@ -159,7 +164,7 @@ def jupyter_path(*subdirs):
     user = jupyter_data_dir()
     env = [p for p in ENV_JUPYTER_PATH if p not in SYSTEM_JUPYTER_PATH]
 
-    if JUPYTER_PREFER_ENV_PATH:
+    if envset('JUPYTER_PREFER_ENV_PATH'):
         paths.extend(env)
         paths.append(user)
     else:
@@ -196,7 +201,7 @@ def jupyter_config_path():
     If the JUPYTER_PREFER_ENV_PATH environment variable is set, the environment-level
     directories will have priority over user-level directories.
     """
-    if os.environ.get('JUPYTER_NO_CONFIG'):
+    if envset('JUPYTER_NO_CONFIG'):
         # jupyter_config_dir makes a blank config when JUPYTER_NO_CONFIG is set.
         return [jupyter_config_dir()]
 
@@ -213,7 +218,7 @@ def jupyter_config_path():
     user = jupyter_config_dir()
     env = [p for p in ENV_CONFIG_PATH if p not in SYSTEM_CONFIG_PATH]
 
-    if JUPYTER_PREFER_ENV_PATH:
+    if envset('JUPYTER_PREFER_ENV_PATH'):
         paths.extend(env)
         paths.append(user)
     else:

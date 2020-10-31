@@ -56,6 +56,16 @@ def realpath(path):
 home_jupyter = realpath('~/.jupyter')
 
 
+def test_envset():
+    true_values = ['', 'True', 'on', 'yes', 'Y', '1', 'anything']
+    false_values = ['n', 'No', 'N', 'fAlSE', '0', '0.0', 'Off']
+    with patch.dict('os.environ', ((f"FOO_{v}", v) for v in true_values + false_values)):
+        for v in true_values:
+            assert paths.envset(f"FOO_{v}")
+        for v in false_values:
+            assert not paths.envset(f"FOO_{v}")
+        assert not paths.envset("THIS_VARIABLE_SHOULD_NOT_BE_SET")
+
 def test_config_dir_darwin():
     with darwin, no_config_env:
         config = jupyter_config_dir()
@@ -171,8 +181,8 @@ def test_jupyter_path():
     assert path[0] == jupyter_data_dir()
     assert path[-2:] == system_path
 
-def test_jupyter_path():
-    with patch.object(paths, 'JUPYTER_PREFER_ENV_PATH', True):
+def test_jupyter_path_prefer_env():
+    with patch.dict('os.environ', {'JUPYTER_PREFER_ENV_PATH': 'true'}):
         path = jupyter_path()
     assert path[0] == paths.ENV_JUPYTER_PATH[0]
     assert path[1] == jupyter_data_dir()
@@ -200,7 +210,12 @@ def test_jupyter_path_subdir():
         assert p.endswith(pjoin('', 'sub1', 'sub2'))
 
 def test_jupyter_config_path():
-    with patch.object(paths, 'JUPYTER_PREFER_ENV_PATH', True):
+    path = jupyter_config_path()
+    assert path[0] == jupyter_config_dir()
+    assert path[1] == paths.ENV_CONFIG_PATH[0]
+
+def test_jupyter_config_path_prefer_env():
+    with patch.dict('os.environ', {'JUPYTER_PREFER_ENV_PATH': 'true'}):
         path = jupyter_config_path()
     assert path[0] == paths.ENV_CONFIG_PATH[0]
     assert path[1] == jupyter_config_dir()
