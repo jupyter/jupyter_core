@@ -79,6 +79,24 @@ def test_paths_json():
     for key, path in data.items():
         assert isinstance(path, list)
 
+def test_paths_debug():
+    vars = [
+        'JUPYTER_PREFER_ENV_PATH',
+        'JUPYTER_NO_CONFIG',
+        'JUPYTER_CONFIG_PATH',
+        'JUPYTER_CONFIG_DIR',
+        'JUPYTER_PATH',
+        'JUPYTER_DATA_DIR',
+        'JUPYTER_RUNTIME_DIR'
+        ]
+    output = get_jupyter_output(['--paths', '--debug'])
+    for v in vars:
+        assert f"{v} is not set" in output
+
+    with patch.dict('os.environ', [(v, 'y') for v in vars]):
+        output = get_jupyter_output(['--paths', '--debug'])
+    for v in vars:
+        assert f"{v} is set" in output
 
 def test_subcommand_not_given():
     with pytest.raises(CalledProcessError):
