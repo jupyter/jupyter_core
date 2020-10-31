@@ -1,6 +1,24 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-version_info = (4, 6, 4, "dev")
+from collections import namedtuple
 
-__version__ = '.'.join(map(str, version_info))
+VersionInfo = namedtuple('VersionInfo', [
+    'major',
+    'minor',
+    'micro',
+    'releaselevel',
+    'serial'
+])
+
+version_info = VersionInfo(4, 6, 4, 'alpha', 0)
+
+_specifier_ = {'alpha': 'a', 'beta': 'b', 'candidate': 'rc', 'final': ''}
+
+__version__ = '{}.{}.{}{}'.format(
+    version_info.major,
+    version_info.minor,
+    version_info.micro,
+    (''
+     if version_info.releaselevel == 'final'
+     else _specifier_[version_info.releaselevel] + str(version_info.serial)))
