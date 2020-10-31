@@ -79,6 +79,10 @@ def test_paths_json():
     for key, path in data.items():
         assert isinstance(path, list)
 
+def test_paths_debug():
+    with patch.dict('os.environ', {'JUPYTER_PREFER_ENV_PATH': 'y'}):
+        output = get_jupyter_output(['--paths', '--debug'])
+    assert 'JUPYTER_PREFER_ENV_PATH' in output
 
 def test_subcommand_not_given():
     with pytest.raises(CalledProcessError):

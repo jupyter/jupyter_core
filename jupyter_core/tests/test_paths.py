@@ -173,7 +173,6 @@ def test_jupyter_path():
 
 def test_jupyter_path():
     with patch.object(paths, 'JUPYTER_PREFER_ENV_PATH', True):
-        print(os.environ.get('JUPYTER_PREFER_ENV_PATH'))
         path = jupyter_path()
     assert path[0] == paths.ENV_JUPYTER_PATH[0]
     assert path[1] == jupyter_data_dir()
@@ -202,7 +201,6 @@ def test_jupyter_path_subdir():
 
 def test_jupyter_config_path():
     with patch.object(paths, 'JUPYTER_PREFER_ENV_PATH', True):
-        print(os.environ.get('JUPYTER_PREFER_ENV_PATH'))
         path = jupyter_config_path()
     assert path[0] == paths.ENV_CONFIG_PATH[0]
     assert path[1] == jupyter_config_dir()
