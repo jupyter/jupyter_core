@@ -237,7 +237,7 @@ def main():
                         print("JUPYTER_PREFER_ENV_PATH is not set, making the user-level path preferred over the environment-level path for data and config")
 
                     # config path list
-                    if paths.envset('JUPYTER_NO_CONFIG'):
+                    if env.get('JUPYTER_NO_CONFIG'):
                         print("JUPYTER_NO_CONFIG is set, making the config path list only a single temporary directory")
                     else:
                         print("JUPYTER_NO_CONFIG is not set, so we use the full path list for config")
