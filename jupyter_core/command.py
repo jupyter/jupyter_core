@@ -53,6 +53,8 @@ def jupyter_parser():
         help="show all Jupyter paths. Add --json for machine-readable format.")
     parser.add_argument('--json', action='store_true',
         help="output paths as machine-readable json")
+    parser.add_argument('--debug', action='store_true',
+        help="output debug information about paths")
 
     return parser
 
@@ -205,6 +207,10 @@ def main():
             return
         if args.json and not args.paths:
             sys.exit("--json is only used with --paths")
+        if args.debug and not args.paths:
+            sys.exit("--debug is only used with --paths")
+        if args.debug and args.json:
+            sys.exit("--debug cannot be used with --json")
         if args.config_dir:
             print(paths.jupyter_config_dir())
             return
@@ -222,6 +228,9 @@ def main():
             if args.json:
                 print(json.dumps(data))
             else:
+                if args.debug:
+                    if paths.JUPYTER_PREFER_ENV_PATH:
+                        print("JUPYTER_PREFER_ENV_PATH is set, making the environment-level path preferred over the user-level path")
                 for name in sorted(data):
                     path = data[name]
                     print('%s:' % name)
