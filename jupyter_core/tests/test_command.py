@@ -82,7 +82,12 @@ def test_paths_json():
 def test_paths_debug():
     with patch.dict('os.environ', {'JUPYTER_PREFER_ENV_PATH': 'y'}):
         output = get_jupyter_output(['--paths', '--debug'])
-    assert 'JUPYTER_PREFER_ENV_PATH' in output
+    assert 'JUPYTER_PREFER_ENV_PATH is set' in output
+
+def test_paths_debug2():
+    output = get_jupyter_output(['--paths', '--debug'])
+    assert 'JUPYTER_PREFER_ENV_PATH is not set' in output
+
 
 def test_subcommand_not_given():
     with pytest.raises(CalledProcessError):

@@ -229,8 +229,48 @@ def main():
                 print(json.dumps(data))
             else:
                 if args.debug:
+                    env = os.environ
+
                     if paths.JUPYTER_PREFER_ENV_PATH:
-                        print("JUPYTER_PREFER_ENV_PATH is set, making the environment-level path preferred over the user-level path")
+                        print("JUPYTER_PREFER_ENV_PATH is set, making the environment-level path preferred over the user-level path for data and config")
+                    else:
+                        print("JUPYTER_PREFER_ENV_PATH is not set, making the user-level path preferred over the environment-level path for data and config")
+
+                    # config path list
+                    if env.get('JUPYTER_NO_CONFIG'):
+                        print("JUPYTER_NO_CONFIG is set, making the config path list only a single temporary directory")
+                    else:
+                        print("JUPYTER_NO_CONFIG is not set, so we use the full path list for config")
+
+                    if env.get('JUPYTER_CONFIG_PATH'):
+                        print(f"JUPYTER_CONFIG_PATH is set to '{env.get('JUPYTER_CONFIG_PATH')}', which is prepended to the config path list (unless JUPYTER_NO_CONFIG is set)")
+                    else:
+                        print("JUPYTER_CONFIG_PATH is not set, so we do not prepend anything to the default config paths")
+
+                    if env.get('JUPYTER_CONFIG_DIR'):
+                        print(f"JUPYTER_CONFIG_DIR is set to '{env.get('JUPYTER_CONFIG_DIR')}', overriding the default user-level config directory")
+                    else:
+                        print("JUPYTER_CONFIG_DIR is not set, so we use the default user-level config directory")
+
+                    # data path list
+                    if env.get('JUPYTER_PATH'):
+                        print(f"JUPYTER_PATH is set to '{env.get('JUPYTER_PATH')}', which is prepended to the data paths")
+                    else:
+                        print("JUPYTER_PATH is not set, so we use the default data paths")
+
+                    if env.get('JUPYTER_DATA_DIR'):
+                        print(f"JUPYTER_DATA_DIR is set to '{env.get('JUPYTER_DATA_DIR')}', overriding the default user-level data directory")
+                    else:
+                        print("JUPYTER_DATA_DIR is not set, so we use the default user-level data directory")
+
+                    # runtime directory
+                    if env.get('JUPYTER_RUNTIME_DIR'):
+                        print(f"JUPYTER_RUNTIME_DIR is set to '{env.get('JUPYTER_RUNTIME_DIR')}', overriding the default runtime directory")
+                    else:
+                        print("JUPYTER_RUNTIME_DIR is not set, so we use the default runtime directory")
+
+                    print()
+
                 for name in sorted(data):
                     path = data[name]
                     print('%s:' % name)
