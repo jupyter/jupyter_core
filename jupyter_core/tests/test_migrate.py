@@ -5,7 +5,6 @@
 import os
 import re
 import shutil
-from subprocess import check_call
 from tempfile import mkdtemp
 from unittest.mock import patch
 
@@ -13,7 +12,6 @@ import pytest
 
 from jupyter_core.utils import ensure_dir_exists
 
-from jupyter_core.paths import jupyter_data_dir
 from jupyter_core.migrate import (
     migrate, migrate_one, migrate_config,
     migrate_dir, migrate_file, migrate_static_custom,

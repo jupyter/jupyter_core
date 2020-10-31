@@ -1,21 +1,13 @@
 #!/usr/bin/env python
 """
-display environment information that isfrequently
+display environment information that is frequently
 used to troubleshoot installations of Jupyter or IPython
 """
 
-# import argparse
 import os
 import platform
 import subprocess
 import sys
-
-
-# def get_args():
-#     """
-#     TODO: output in JSON or xml? maybe?
-#     """
-#     pass
 
 def subs(cmd):
     """

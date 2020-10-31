@@ -12,13 +12,13 @@ pjoin = os.path.join
 
 
 def test_basic():
-    app = JupyterApp()
+    JupyterApp()
 
 
 def test_default_traits():
     app = JupyterApp()
     for trait_name in app.traits():
-        value = getattr(app, trait_name)
+        getattr(app, trait_name)
 
 class DummyApp(JupyterApp):
     name = "dummy-app"
