@@ -62,7 +62,7 @@ def jupyter_config_dir():
     env = os.environ
     home_dir = get_home_dir()
 
-    if envset('JUPYTER_NO_CONFIG'):
+    if env.get('JUPYTER_NO_CONFIG'):
         return _mkdtemp_once('jupyter-clean-cfg')
 
     if env.get('JUPYTER_CONFIG_DIR'):
@@ -200,7 +200,7 @@ def jupyter_config_path():
     If the JUPYTER_PREFER_ENV_PATH environment variable is set, the environment-level
     directories will have priority over user-level directories.
     """
-    if envset('JUPYTER_NO_CONFIG'):
+    if os.environ.get('JUPYTER_NO_CONFIG'):
         # jupyter_config_dir makes a blank config when JUPYTER_NO_CONFIG is set.
         return [jupyter_config_dir()]
 
