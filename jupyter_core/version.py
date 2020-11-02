@@ -15,7 +15,7 @@ version_info = VersionInfo(4, 6, 4, 'dev', 0)
 
 _specifier_ = {'alpha': 'a', 'beta': 'b', 'candidate': 'rc', 'final': '', 'dev': 'dev'}
 
-if version_info.releaselevel == 'final'
+if version_info.releaselevel == 'final':
     _suffix_ = ''
 elif version_info.releaselevel == 'dev':
     _suffix_ = f'.dev{version_info.serial}'
