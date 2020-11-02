@@ -1,6 +1,24 @@
 Changes in jupyter-core
 =======================
 
+
+4.7
+---
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.7>`__
+
+See the `jupyter_core
+4.7 <https://github.com/jupyter/jupyter_core/milestone/19?closed=1>`__
+milestone on GitHub for the full list of pull requests and issues closed.
+
+- Add a new ``JUPYTER_PREFER_ENV_PATH`` variable, which can be set to switch the order of the environment-level path and the user-level path in the Jupyter path hierarchy (e.g., ``jupyter --paths``). It is considered set if it is a value that is not one of 'no', 'n', 'off', 'false', '0', or '0.0' (case insensitive). If you are running Jupyter in multiple virtual environments as the same user, you will likely want to set this environment variable.
+- Drop Python 2.x and 3.5 support, as they have reached end of life.
+- Add Python 3.9 builds to testing, and expand testing to cover Windows, macOS, and Linux platforms.
+- ``jupyter --paths --debug`` now explains the environment variables that affect the current path list.
+- Update the file hidden check on Windows to use new Python features rather than ctypes directly.
+- Add conda environment information in ``jupyter troubleshoot``.
+- Update ``_version.version_info`` and ``_version.__version__`` to follow Python conventions.
+
 4.6
 ---
 
