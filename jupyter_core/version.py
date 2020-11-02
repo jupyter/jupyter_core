@@ -8,18 +8,21 @@ VersionInfo = namedtuple('VersionInfo', [
     'minor',
     'micro',
     'releaselevel',
-    'serial'
+    'serial',
+    'development',
+    'developmentserial'
 ])
 
-version_info = VersionInfo(4, 6, 4, 'dev', 0)
+version_info = VersionInfo(4, 6, 4, 'final', 0, development=True, developmentserial=0)
 
-_specifier_ = {'alpha': 'a', 'beta': 'b', 'candidate': 'rc', 'final': '', 'dev': 'dev'}
+_specifier_ = {'alpha': 'a', 'beta': 'b', 'candidate': 'rc'}
 
-if version_info.releaselevel == 'final'
-    _suffix_ = ''
-elif version_info.releaselevel == 'dev':
-    _suffix_ = f'.dev{version_info.serial}'
-else:
-    _suffix_ = f'{_specifier_[version_info.releaselevel]}{version_info.serial}'
+_suffix_ = ''
+
+if version_info.releaselevel != 'final':
+    _suffix_ += f'{_specifier_[version_info.releaselevel]}{version_info.serial}'
+
+if version_info.development:
+    _suffix_ += f'.dev{version_info.developmentserial}'
 
 __version__ = f'{version_info.major}.{version_info.minor}.{version_info.micro}{_suffix_}'
