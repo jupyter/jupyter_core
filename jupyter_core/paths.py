@@ -14,6 +14,9 @@ import stat
 import errno
 import tempfile
 import warnings
+import traceback
+import entrypoints
+from functools import lru_cache
 
 from contextlib import contextmanager
 
@@ -23,6 +26,26 @@ pjoin = os.path.join
 # It is used by BSD to indicate hidden files.
 UF_HIDDEN = getattr(stat, 'UF_HIDDEN', 32768)
 
+# the group names for entry_points in pyproject.toml, setup.py and .cfg to
+# provide discoverable paths
+# the entrypoint target must be a list of strings to absolute paths
+JUPYTER_DATA_PATH_ENTRY_POINT = "jupyter_data_paths"
+JUPYTER_CONFIG_PATH_ENTRY_POINT = "jupyter_config_paths"
+
+@lru_cache(maxsize=10)
+def _entry_point_paths(ep_group):
+    paths = []
+    """Load extra jupyter paths from entry_points, sorted by their entry_point name
+    """
+    for name, ep in reversed(sorted(entrypoints.get_group_named(ep_group).items())):
+        try:
+            paths.extend(ep.load())
+        except:
+            warnings.warn('Failed to load jupyter_paths from entry_point "{}"\n{}'.format(
+                name,
+                traceback.format_exc()
+            ))
+    return paths
 
 def envset(name):
     """Return True if the given environment variable is set
@@ -170,6 +193,9 @@ def jupyter_path(*subdirs):
         paths.append(user)
         paths.extend(env)
 
+    # entry_points
+    paths.extend(_entry_point_paths(JUPYTER_DATA_PATH_ENTRY_POINT))
+
     # finally, system
     paths.extend(SYSTEM_JUPYTER_PATH)
 
@@ -196,7 +222,7 @@ ENV_CONFIG_PATH = [os.path.join(sys.prefix, 'etc', 'jupyter')]
 
 def jupyter_config_path():
     """Return the search path for Jupyter config files as a list.
-    
+
     If the JUPYTER_PREFER_ENV_PATH environment variable is set, the environment-level
     directories will have priority over user-level directories.
     """
@@ -223,6 +249,9 @@ def jupyter_config_path():
     else:
         paths.append(user)
         paths.extend(env)
+
+    # entry_points
+    paths.extend(_entry_point_paths(JUPYTER_CONFIG_PATH_ENTRY_POINT))
 
     # Finally, system path
     paths.extend(SYSTEM_CONFIG_PATH)

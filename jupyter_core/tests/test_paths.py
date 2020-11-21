@@ -16,7 +16,7 @@ from jupyter_core import paths
 from jupyter_core.paths import (
     jupyter_config_dir, jupyter_data_dir, jupyter_runtime_dir,
     jupyter_path, jupyter_config_path, ENV_JUPYTER_PATH,
-    secure_write, is_hidden, is_file_hidden
+    secure_write, is_hidden, is_file_hidden, JUPYTER_PATH_ENTRY_POINT
 )
 
 from .mocking import darwin, windows, linux
