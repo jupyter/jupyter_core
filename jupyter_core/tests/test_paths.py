@@ -294,7 +294,7 @@ def test_secure_write_win32():
         permissions = fetch_win32_permissions(fname)
         print(permissions) # for easier debugging
         assert username in permissions
-        assert permissions[username] == set(['r', 'w'])
+        assert permissions[username] == set(['r', 'w', 'd'])
         assert 'administrators' in permissions
         assert permissions['administrators'] == set(['f'])
         assert 'everyone' not in permissions
