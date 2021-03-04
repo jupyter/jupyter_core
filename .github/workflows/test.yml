@@ -11,6 +11,7 @@ on:
 
 env:
   PIP_DISABLE_PIP_VERSION_CHECK: 1
+  CACHE_EPOCH: 0
 
 
 defaults:
@@ -48,20 +49,17 @@ jobs:
 
   test:
     needs: [build]
-    runs-on: ${{ matrix.vm }}
+    runs-on: ${{ matrix.os }}-latest
     strategy:
       matrix:
         os: [linux, macos, windows]
         python-version: [3.6, 3.7, 3.8, 3.9, pypy3]
         include:
           - os: linux
-            vm: ubuntu-20.04
             py-cmd: python
           - os: macos
-            vm: macos-latest
             py-cmd: python3
           - os: windows
-            vm: windows-latest
             py-cmd: python
           # different dists
           - python-version: 3.6
@@ -94,14 +92,9 @@ jobs:
         run: |
           ${{ matrix.py-cmd }} -m pip install --upgrade pip wheel setuptools
 
-      - name: Install dist
+      - name: Install distribution and test dependencies
         run: |
-          ${{ matrix.py-cmd }} -m pip install -vv ${{ matrix.dist }}
-          ${{ matrix.py-cmd }} -m pip check
-
-      - name: Install test dependencies
-        run: |
-          ${{ matrix.py-cmd }} -m pip install -r dev-requirements.txt codecov
+          ${{ matrix.py-cmd }} -m pip install -vv ${{ matrix.dist }} -r dev-requirements.txt codecov
           ${{ matrix.py-cmd }} -m pip check
 
       - name: Test with pytest
