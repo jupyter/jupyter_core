@@ -52,10 +52,10 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     strategy:
       matrix:
-        os: [linux, macos, windows]
+        os: [ubuntu, macos, windows]
         python-version: [3.6, 3.7, 3.8, 3.9, pypy3]
         include:
-          - os: linux
+          - os: ubuntu
             py-cmd: python
           - os: macos
             py-cmd: python3
