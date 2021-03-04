@@ -34,9 +34,9 @@ JUPYTER_CONFIG_PATH_ENTRY_POINT = "jupyter_config_paths"
 
 @lru_cache(maxsize=10)
 def _entry_point_paths(ep_group):
-    paths = []
     """Load extra jupyter paths from entry_points, sorted by their entry_point name
     """
+    paths = []
     for name, ep in reversed(sorted(entrypoints.get_group_named(ep_group).items())):
         try:
             paths.extend(ep.load())
@@ -185,16 +185,16 @@ def jupyter_path(*subdirs):
     # Next is environment or user, depending on the JUPYTER_PREFER_ENV_PATH flag
     user = jupyter_data_dir()
     env = [p for p in ENV_JUPYTER_PATH if p not in SYSTEM_JUPYTER_PATH]
+    entry_points = [p for p in _entry_point_paths(JUPYTER_DATA_PATH_ENTRY_POINT) if p not in SYSTEM_JUPYTER_PATH]
 
     if envset('JUPYTER_PREFER_ENV_PATH'):
         paths.extend(env)
+        paths.extend(entry_points)
         paths.append(user)
     else:
         paths.append(user)
         paths.extend(env)
-
-    # entry_points
-    paths.extend(_entry_point_paths(JUPYTER_DATA_PATH_ENTRY_POINT))
+        paths.extend(entry_points)
 
     # finally, system
     paths.extend(SYSTEM_JUPYTER_PATH)
@@ -242,16 +242,16 @@ def jupyter_config_path():
     # Next is environment or user, depending on the JUPYTER_PREFER_ENV_PATH flag
     user = jupyter_config_dir()
     env = [p for p in ENV_CONFIG_PATH if p not in SYSTEM_CONFIG_PATH]
+    entry_points = [p for p in _entry_point_paths(JUPYTER_CONFIG_PATH_ENTRY_POINT) if p not in SYSTEM_CONFIG_PATH]
 
     if envset('JUPYTER_PREFER_ENV_PATH'):
         paths.extend(env)
+        paths.extend(entry_points)
         paths.append(user)
     else:
         paths.append(user)
         paths.extend(env)
-
-    # entry_points
-    paths.extend(_entry_point_paths(JUPYTER_CONFIG_PATH_ENTRY_POINT))
+        paths.extend(entry_points)
 
     # Finally, system path
     paths.extend(SYSTEM_CONFIG_PATH)
