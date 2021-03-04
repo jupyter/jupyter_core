@@ -70,7 +70,7 @@ jobs:
             dist: 'jupyter-core*.tar.gz'
           - python-version: 3.9
             dist: 'jupyter_core*.whl'
-          - python-version: pypy
+          - python-version: pypy3
             dist: 'jupyter-core*.tar.gz'
         exclude:
           - os: windows
