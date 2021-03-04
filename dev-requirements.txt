@@ -1,2 +1,3 @@
-pytest
 ipykernel
+pytest
+pytest-cov
