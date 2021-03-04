@@ -96,9 +96,10 @@ jobs:
       - name: Install distribution and test dependencies
         run: |
           set -eux
-          ${{ matrix.py-cmd }} -m pip install -vv \
+          ${{ matrix.py-cmd }} -m pip install \
             $(${{ matrix.dist }}) \
-            -r dev-requirements.txt codecov
+            -r dev-requirements.txt
+          ${{ matrix.py-cmd }} -m pip freeze
           ${{ matrix.py-cmd }} -m pip check
 
       - name: Test with pytest
@@ -114,6 +115,7 @@ jobs:
         if: ${{ matrix.python-version != 'pypy3' }}
         run: |
           set -eux
+          ${{ matrix.py-cmd }} -m pip install -vv codecov
           ${{ matrix.py-cmd }} -m codecov
 
       - name: Test setuptools example
