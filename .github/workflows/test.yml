@@ -64,15 +64,15 @@ jobs:
             py-cmd: python
           # different dists
           - python-version: 3.6
-            dist: 'jupyter-core*.tar.gz'
+            dist: jupyter_core*.tar.gz
           - python-version: 3.7
-            dist: 'jupyter_core*.whl'
+            dist: jupyter_core*.whl
           - python-version: 3.8
-            dist: 'jupyter-core*.tar.gz'
+            dist: jupyter_core*.tar.gz
           - python-version: 3.9
-            dist: 'jupyter_core*.whl'
+            dist: jupyter_core*.whl
           - python-version: pypy3
-            dist: 'jupyter-core*.tar.gz'
+            dist: jupyter_core*.tar.gz
         exclude:
           - os: windows
             python-version: pypy3
@@ -97,6 +97,7 @@ jobs:
         run: |
           set -eux
           cd dist
+          ls
           ${{ matrix.py-cmd }} -m pip install -r ../dev-requirements.txt
           ${{ matrix.py-cmd }} -m pip install --ignore-installed $(ls ${{ matrix.dist }})
           ${{ matrix.py-cmd }} -m pip freeze
