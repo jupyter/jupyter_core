@@ -101,7 +101,7 @@ jobs:
       - name: Test with pytest
         run: |
           set -eux
-          ${{ matrix.py-cmd }} -m pytest -vv --ff --pyargs=jupyter_core --cov=jupyter_core --cov-report=term-missing:skip-covered --cov-report=html --no-cov-on-fail
+          ${{ matrix.py-cmd }} -m pytest -vv --ff --pyargs jupyter_core --cov=jupyter_core --cov-report=term-missing:skip-covered --cov-report=html --no-cov-on-fail
 
       - name: Upload coverage
         if: ${{ matrix.python-version != 'pypy3' }}
