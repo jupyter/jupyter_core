@@ -1,5 +1,8 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+# This workflow will install Python dependencies, run tests and lint with a
+# variety of Python versions
+#
+# For more information see:
+# https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
 name: Python package
 
@@ -11,8 +14,6 @@ on:
 
 env:
   PIP_DISABLE_PIP_VERSION_CHECK: 1
-  CACHE_EPOCH: 0
-
 
 defaults:
   run:
@@ -95,13 +96,19 @@ jobs:
       - name: Install distribution and test dependencies
         run: |
           set -eux
-          ${{ matrix.py-cmd }} -m pip install -vv $(${{ matrix.dist }}) -r dev-requirements.txt codecov
+          ${{ matrix.py-cmd }} -m pip install -vv \
+            $(${{ matrix.dist }}) \
+            -r dev-requirements.txt codecov
           ${{ matrix.py-cmd }} -m pip check
 
       - name: Test with pytest
         run: |
           set -eux
-          ${{ matrix.py-cmd }} -m pytest -vv --ff --pyargs jupyter_core --cov=jupyter_core --cov-report=term-missing:skip-covered --cov-report=html --no-cov-on-fail
+          ${{ matrix.py-cmd }} -m pytest -vv --ff --pyargs jupyter_core \
+            --cov=jupyter_core \
+            --cov-report=term-missing:skip-covered \
+            --cov-report=html \
+            --no-cov-on-fail
 
       - name: Upload coverage
         if: ${{ matrix.python-version != 'pypy3' }}
