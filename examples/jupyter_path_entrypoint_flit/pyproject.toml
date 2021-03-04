@@ -12,7 +12,7 @@ home-page = "https://github.com/sirrobin/foobar"
 entry-point-example-flit = "entry_point_example_flit:JUPYTER_CONFIG_PATHS"
 
 [tool.flit.entrypoints.jupyter_data_paths]
-entry-point-example-flit = "entry_point_example_flit:JUPYTER_CONFIG_PATHS"
+entry-point-example-flit = "entry_point_example_flit:JUPYTER_DATA_PATHS"
 
 [tool.flit.sdist]
 include = ["etc/", "share/"]
