@@ -99,7 +99,7 @@ jobs:
           cd dist
           ${{ matrix.py-cmd }} -m pip install \
             $(ls ${{ matrix.dist }}) \
-            -r dev-requirements.txt
+            -r ../dev-requirements.txt
           ${{ matrix.py-cmd }} -m pip freeze
           ${{ matrix.py-cmd }} -m pip check
 
