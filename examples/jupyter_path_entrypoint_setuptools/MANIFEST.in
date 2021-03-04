@@ -1,1 +1,2 @@
 recursive-include src/entry_point_example *.*
+exclude src/entry_point_example/share/jupyter/example_excluded_file_setuptools.json

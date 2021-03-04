@@ -16,4 +16,4 @@ entry-point-example-flit = "entry_point_example_flit:JUPYTER_CONFIG_PATHS"
 
 [tool.flit.sdist]
 include = ["etc/", "share/"]
-exclude = ["share/*/example_excluded_file.json"]
+exclude = ["share/*/example_excluded_file_flit.json"]

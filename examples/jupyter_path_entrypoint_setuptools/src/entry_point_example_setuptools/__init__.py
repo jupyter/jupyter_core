@@ -1,4 +1,4 @@
-"""an example of using the jupyter_paths entry_point"""
+"""an example of using the jupyter_*_paths entry_points in setuptools"""
 import os
 
 __version__ = "0.1.0"
