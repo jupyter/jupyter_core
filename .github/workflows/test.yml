@@ -18,19 +18,15 @@ defaults:
     shell: bash -l {0}
 
 jobs:
-  dist:
+  build:
     runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        os: [linux]
-        python-version: [3.9]
     steps:
       - uses: actions/checkout@v2
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.9
 
       - name: Upgrade packaging deps
         run: |
@@ -51,22 +47,22 @@ jobs:
           path: ./dist
 
   test:
-    needs: [dist]
+    needs: [build]
     runs-on: ${{ matrix.vm }}
     strategy:
       matrix:
-        os: [linux, windows, macos]
+        os: [linux, macos, windows]
         python-version: [3.6, 3.7, 3.8, 3.9, pypy3]
         include:
           - os: linux
             vm: ubuntu-20.04
-            py_cmd: python
+            py-cmd: python
           - os: macos
             vm: macos-latest
-            py_cmd: python3
+            py-cmd: python3
           - os: windows
             vm: windows-latest
-            py_cmd: python
+            py-cmd: python
           # different dists
           - python-version: 3.6
             dist: 'jupyter-core*.tar.gz'
@@ -96,40 +92,40 @@ jobs:
 
       - name: Upgrade packaging deps
         run: |
-          ${{ matrix.py_cmd }} -m pip install --upgrade pip wheel setuptools
+          ${{ matrix.py-cmd }} -m pip install --upgrade pip wheel setuptools
 
       - name: Install dist
         run: |
-          ${{ matrix.py_cmd }} -m pip install -vv ${{ matrix.dist }}
-          ${{ matrix.py_cmd }} -m pip check
+          ${{ matrix.py-cmd }} -m pip install -vv ${{ matrix.dist }}
+          ${{ matrix.py-cmd }} -m pip check
 
       - name: Install test dependencies
         run: |
-          ${{ matrix.py_cmd }} -m pip install -r dev-requirements.txt codecov
-          ${{ matrix.py_cmd }} -m pip check
+          ${{ matrix.py-cmd }} -m pip install -r dev-requirements.txt codecov
+          ${{ matrix.py-cmd }} -m pip check
 
       - name: Test with pytest
         run: |
-          ${{ matrix.py_cmd }} -m pytest -vv --ff --pyargs=jupyter_core --cov=jupyter_core --cov-report=term-missing:skip-covered --cov-report=html --no-cov-on-fail
+          ${{ matrix.py-cmd }} -m pytest -vv --ff --pyargs=jupyter_core --cov=jupyter_core --cov-report=term-missing:skip-covered --cov-report=html --no-cov-on-fail
 
       - name: Upload coverage
         if: ${{ matrix.python-version != 'pypy3' }}
         run: |
-          ${{ matrix.py_cmd }} -m codecov
+          ${{ matrix.py-cmd }} -m codecov
 
       - name: Test setuptools example
         run: |
           cd examples/jupyter_path_entrypoint_setuptools
-          ${{ matrix.py_cmd }} -m pip install -e .
-          ${{ matrix.py_cmd }} -m jupyter --paths | tee paths.txt
+          ${{ matrix.py-cmd }} -m pip install -e .
+          ${{ matrix.py-cmd }} -m jupyter --paths | tee paths.txt
           cat paths.txt | grep jupyter_path_entrypoint_setuptools/share/jupyter
           cat paths.txt | grep jupyter_path_entrypoint_setuptools/etc/jupyter
 
       - name: Test flit example
         run: |
-          ${{ matrix.py_cmd }} -m pip install flit
+          ${{ matrix.py-cmd }} -m pip install flit
           cd examples/jupyter_path_entrypoint_flit
-          ${{ matrix.py_cmd }} -m pip install -e .
-          ${{ matrix.py_cmd }} -m jupyter --paths | tee paths.txt
+          ${{ matrix.py-cmd }} -m pip install -e .
+          ${{ matrix.py-cmd }} -m jupyter --paths | tee paths.txt
           cat paths.txt | grep jupyter_path_entrypoint_flit/share/jupyter
           cat paths.txt | grep jupyter_path_entrypoint_flit/etc/jupyter

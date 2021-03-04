@@ -13,6 +13,7 @@ graft jupyter_core/tests/dotipython_empty
 
 # docs subdirs we want to skip
 prune docs/_build
+prune examples
 
 # Patterns to exclude from any directory
 global-exclude *~
