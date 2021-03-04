@@ -1,4 +1,4 @@
-# entry_point_example
+# entry_point_example_setuptools
 
-A minimal example of a package which provides an additional `jupyter_path` value
-via `entry_point`.
+A minimal example of a package which provides additional `jupyter_*_path`s
+via `entry_points`, packaged with `setuptools`.
