@@ -9,38 +9,124 @@ on:
   pull_request:
     branches: [ master ]
 
-jobs:
-  build:
+env:
+  PIP_DISABLE_PIP_VERSION_CHECK: 1
 
-    runs-on: ${{ matrix.os }}
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+jobs:
+  dist:
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        os: [linux]
+        python-version: [3.9]
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Get pip cache dir
-      id: pip-cache
-      run: |
-        echo "::set-output name=dir::$(pip cache dir)"
-    - name: pip cache
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.pip-cache.outputs.dir }}
-        key: ${{ runner.os }}-pip-${{ hashFiles('dev-requirements.txt', 'setup.cfg') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+      - uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install --upgrade setuptools
-        pip install --upgrade nose
-        pip install -r dev-requirements.txt .
-    - name: Test with pytest
-      run: |
-        pytest jupyter_core
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Upgrade packaging deps
+        run: |
+          set -eux
+          python -m pip install --upgrade --user pip wheel setuptools
+
+      - name: Build distributions
+        run: |
+          set -eux
+          python setup.py sdist bdist_wheel
+          cd dist
+          sha256sum * | tee SHA256SUMS
+
+      - name: publish dists
+        uses: actions/upload-artifact@v2
+        with:
+          name: jupyter_core dist ${{ github.run_number }}
+          path: ./dist
+
+  test:
+    needs: [dist]
+    runs-on: ${{ matrix.vm }}
+    strategy:
+      matrix:
+        os: [linux, windows, macos]
+        python-version: [3.6, 3.7, 3.8, 3.9, pypy3]
+        include:
+          - os: linux
+            vm: ubuntu-20.04
+            py_cmd: python
+          - os: macos
+            vm: macos-latest
+            py_cmd: python3
+          - os: windows
+            vm: windows-latest
+            py_cmd: python
+          # different dists
+          - python-version: 3.6
+            dist: 'jupyter-core*.tar.gz'
+          - python-version: 3.7
+            dist: 'jupyter_core*.whl'
+          - python-version: 3.8
+            dist: 'jupyter-core*.tar.gz'
+          - python-version: 3.9
+            dist: 'jupyter_core*.whl'
+          - python-version: pypy
+            dist: 'jupyter-core*.tar.gz'
+        exclude:
+          - os: windows
+            python-version: pypy3
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: jupyter_core dist ${{ github.run_number }}
+          path: ./dist
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Upgrade packaging deps
+        run: |
+          ${{ matrix.py_cmd }} -m pip install --upgrade pip wheel setuptools
+
+      - name: Install dist
+        run: |
+          ${{ matrix.py_cmd }} -m pip install -vv ${{ matrix.dist }}
+          ${{ matrix.py_cmd }} -m pip check
+
+      - name: Install test dependencies
+        run: |
+          ${{ matrix.py_cmd }} -m pip install -r dev-requirements.txt codecov
+          ${{ matrix.py_cmd }} -m pip check
+
+      - name: Test with pytest
+        run: |
+          ${{ matrix.py_cmd }} -m pytest -vv --ff --pyargs=jupyter_core --cov=jupyter_core --cov-report=term-missing:skip-covered --cov-report=html --no-cov-on-fail
+
+      - name: Upload coverage
+        if: ${{ matrix.python-version != 'pypy3' }}
+        run: |
+          ${{ matrix.py_cmd }} -m codecov
+
+      - name: Test setuptools example
+        run: |
+          cd examples/jupyter_path_entrypoint_setuptools
+          ${{ matrix.py_cmd }} -m pip install -e .
+          jupyter_paths | tee paths
+          cat paths.json | grep jupyter_path_entrypoint_setuptools
+
+      - name: Test flit example
+        run: |
+          cd examples/jupyter_path_entrypoint_flit
+          ${{ matrix.py_cmd }} -m pip install -e .
+          jupyter_paths | tee paths
+          cat paths.json | grep jupyter_path_entrypoint_flit

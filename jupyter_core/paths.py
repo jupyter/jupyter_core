@@ -38,6 +38,7 @@ def _entry_point_paths(ep_group):
     """Load extra jupyter paths from entry_points, sorted by their entry_point name
     """
     paths = []
+    raise Exception(ep_group)
     for name, ep in reversed(sorted(entrypoints.get_group_named(ep_group).items())):
         try:
             paths.extend([*map(str, ep.load())])
