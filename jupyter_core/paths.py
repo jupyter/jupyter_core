@@ -15,10 +15,11 @@ import errno
 import tempfile
 import warnings
 import traceback
-import entrypoints
-from functools import lru_cache
 
 from contextlib import contextmanager
+
+import entrypoints
+
 
 pjoin = os.path.join
 
@@ -32,16 +33,17 @@ UF_HIDDEN = getattr(stat, 'UF_HIDDEN', 32768)
 JUPYTER_DATA_PATH_ENTRY_POINT = "jupyter_data_paths"
 JUPYTER_CONFIG_PATH_ENTRY_POINT = "jupyter_config_paths"
 
-@lru_cache(maxsize=10)
+
 def _entry_point_paths(ep_group):
     """Load extra jupyter paths from entry_points, sorted by their entry_point name
     """
     paths = []
     for name, ep in reversed(sorted(entrypoints.get_group_named(ep_group).items())):
         try:
-            paths.extend(ep.load())
-        except:
-            warnings.warn('Failed to load jupyter_paths from entry_point "{}"\n{}'.format(
+            paths.extend([*map(str, ep.load())])
+        except Exception:
+            warnings.warn('Failed to load {} from entry_point "{}"\n{}'.format(
+                ep_group,
                 name,
                 traceback.format_exc()
             ))

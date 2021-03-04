@@ -8,15 +8,18 @@ import re
 import stat
 import shutil
 import tempfile
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 import pytest
 import sys
+
+import entrypoints
 
 from jupyter_core import paths
 from jupyter_core.paths import (
     jupyter_config_dir, jupyter_data_dir, jupyter_runtime_dir,
     jupyter_path, jupyter_config_path, ENV_JUPYTER_PATH,
-    secure_write, is_hidden, is_file_hidden
+    secure_write, is_hidden, is_file_hidden, JUPYTER_CONFIG_PATH_ENTRY_POINT,
+    JUPYTER_DATA_PATH_ENTRY_POINT
 )
 
 from .mocking import darwin, windows, linux
@@ -334,3 +337,33 @@ def test_secure_write_unix():
             assert f.read() == 'test 2'
     finally:
         shutil.rmtree(directory)
+
+
+@pytest.fixture
+def data_path_entry_point():
+    ep = Mock(spec=['load'])
+    ep.name = JUPYTER_DATA_PATH_ENTRY_POINT
+    ep.load.return_value = ['/foo/share']
+
+    with patch.object(entrypoints, 'get_group_named', return_value={'foo': ep}):
+        yield ep
+
+
+def test_data_entry_point(data_path_entry_point):
+    data_path = jupyter_path()
+    assert '/foo/share' in data_path
+
+
+@pytest.fixture
+def config_path_entry_point():
+    ep = Mock(spec=['load'])
+    ep.name = JUPYTER_CONFIG_PATH_ENTRY_POINT
+    ep.load.return_value = ['/foo/etc']
+
+    with patch.object(entrypoints, 'get_group_named', return_value={'foo': ep}):
+        yield ep
+
+
+def test_config_entry_point(config_path_entry_point):
+    config_path = jupyter_config_path()
+    assert '/foo/etc' in config_path
