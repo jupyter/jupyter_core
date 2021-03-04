@@ -127,8 +127,8 @@ jobs:
           cd examples/jupyter_path_entrypoint_setuptools
           ${{ matrix.py-cmd }} -m pip install -e .
           ${{ matrix.py-cmd }} -m jupyter --paths | tee paths.txt
-          cat paths.txt | grep entry_point_example_setuptools/share/jupyter
-          cat paths.txt | grep entry_point_example_setuptools/etc/jupyter
+          cat paths.txt | grep entry_point_example_setuptools.share.jupyter
+          cat paths.txt | grep entry_point_example_setuptools.etc.jupyter
 
       - name: Test flit example
         run: |
@@ -137,5 +137,5 @@ jobs:
           cd examples/jupyter_path_entrypoint_flit
           ${{ matrix.py-cmd }} -m flit install --pth-file
           ${{ matrix.py-cmd }} -m jupyter --paths | tee paths.txt
-          cat paths.txt | grep jupyter_path_entrypoint_flit/share/jupyter
-          cat paths.txt | grep jupyter_path_entrypoint_flit/etc/jupyter
+          cat paths.txt | grep jupyter_path_entrypoint_flit.share.jupyter
+          cat paths.txt | grep jupyter_path_entrypoint_flit.etc.jupyter
