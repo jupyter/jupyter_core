@@ -94,20 +94,24 @@ jobs:
 
       - name: Install distribution and test dependencies
         run: |
-          ${{ matrix.py-cmd }} -m pip install -vv ${{ matrix.dist }} -r dev-requirements.txt codecov
+          set -eux
+          ${{ matrix.py-cmd }} -m pip install -vv $(${{ matrix.dist }}) -r dev-requirements.txt codecov
           ${{ matrix.py-cmd }} -m pip check
 
       - name: Test with pytest
         run: |
+          set -eux
           ${{ matrix.py-cmd }} -m pytest -vv --ff --pyargs=jupyter_core --cov=jupyter_core --cov-report=term-missing:skip-covered --cov-report=html --no-cov-on-fail
 
       - name: Upload coverage
         if: ${{ matrix.python-version != 'pypy3' }}
         run: |
+          set -eux
           ${{ matrix.py-cmd }} -m codecov
 
       - name: Test setuptools example
         run: |
+          set -eux
           cd examples/jupyter_path_entrypoint_setuptools
           ${{ matrix.py-cmd }} -m pip install -e .
           ${{ matrix.py-cmd }} -m jupyter --paths | tee paths.txt
@@ -116,6 +120,7 @@ jobs:
 
       - name: Test flit example
         run: |
+          set -eux
           ${{ matrix.py-cmd }} -m pip install flit
           cd examples/jupyter_path_entrypoint_flit
           ${{ matrix.py-cmd }} -m pip install -e .
