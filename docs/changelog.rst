@@ -4,6 +4,18 @@ Changes in jupyter-core
 
 4.7
 ---
+
+4.7.1
+~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.7.1>`__
+
+- Allow creating user to delete secure file (:ghpull:`213`)
+
+4.7.0
+~~~~~
+
 `on
 GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.7>`__
 
