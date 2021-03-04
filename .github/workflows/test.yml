@@ -98,7 +98,7 @@ jobs:
           set -eux
           cd dist
           ${{ matrix.py-cmd }} -m pip install -r ../dev-requirements.txt
-          ${{ matrix.py-cmd }} -m pip install --ignore-installed $(ls ${{ matrix.dist }}) \
+          ${{ matrix.py-cmd }} -m pip install --ignore-installed $(ls ${{ matrix.dist }})
           ${{ matrix.py-cmd }} -m pip freeze
           ${{ matrix.py-cmd }} -m pip check
 
