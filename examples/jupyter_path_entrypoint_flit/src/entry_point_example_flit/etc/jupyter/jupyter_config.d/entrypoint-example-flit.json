@@ -1,0 +1,5 @@
+{
+  "SingletonConfigurable": {
+    "log_level": "INFO"
+  }
+}

@@ -1,6 +1,19 @@
 Changes in jupyter-core
 =======================
 
+4.8
+---
+
+4.8.0
+~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.8.0>`__
+
+- Add new ``jupyter_data_paths`` and ``jupyter_config_paths`` ``entry_points``
+  (:ghpull:`209`) to allow python packages to extend the data and config paths
+  in ``jupyter --paths``. These paths are considered immediately after those put
+  in-place with ``data_files`` but work with modern packaging tools.
 
 4.7
 ---

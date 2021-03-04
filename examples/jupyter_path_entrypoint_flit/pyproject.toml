@@ -1,0 +1,15 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module = "entry_point_example_flit"
+author = "Sir Robin"
+author-email = "robin@camelot.uk"
+home-page = "https://github.com/sirrobin/foobar"
+
+[tool.flit.entrypoints.jupyter_config_paths]
+entry-point-example-flit = "entry_point_example_flit:JUPYTER_CONFIG_PATHS"
+
+[tool.flit.entrypoints.jupyter_data_paths]
+entry-point-example-flit = "entry_point_example_flit:JUPYTER_CONFIG_PATHS"
