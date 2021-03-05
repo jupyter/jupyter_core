@@ -186,8 +186,8 @@ def test_jupyter_path():
 def test_jupyter_path_prefer_env():
     with patch.dict('os.environ', {'JUPYTER_PREFER_ENV_PATH': 'true'}):
         path = jupyter_path()
-    assert path[0] == paths.ENV_JUPYTER_PATH[0]
-    assert path[1] == jupyter_data_dir()
+
+    assert path.index(paths.ENV_JUPYTER_PATH[0]) < path.index(jupyter_data_dir())
 
 def test_jupyter_path_env():
     path_env = os.pathsep.join([
@@ -197,7 +197,8 @@ def test_jupyter_path_env():
 
     with patch.dict('os.environ', {'JUPYTER_PATH': path_env}):
         path = jupyter_path()
-    assert path[:2] == [pjoin('foo', 'bar'), pjoin('bar', 'baz')]
+
+    assert path.index(pjoin('foo', 'bar')) == path.index(pjoin('bar', 'baz')) - 1
 
 
 def test_jupyter_path_sys_prefix():
@@ -214,13 +215,13 @@ def test_jupyter_path_subdir():
 def test_jupyter_config_path():
     path = jupyter_config_path()
     assert path[0] == jupyter_config_dir()
-    assert path[1] == paths.ENV_CONFIG_PATH[0]
+    assert paths.ENV_CONFIG_PATH[0] in path
 
 def test_jupyter_config_path_prefer_env():
     with patch.dict('os.environ', {'JUPYTER_PREFER_ENV_PATH': 'true'}):
         path = jupyter_config_path()
     assert path[0] == paths.ENV_CONFIG_PATH[0]
-    assert path[1] == jupyter_config_dir()
+    assert jupyter_config_dir() in path
 
 def test_jupyter_config_path_env():
     path_env = os.pathsep.join([
