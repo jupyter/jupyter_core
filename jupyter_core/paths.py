@@ -9,12 +9,17 @@
 
 
 import os
+import ast
 import sys
 import stat
 import errno
+import time
+import pathlib
 import tempfile
 import warnings
+import functools
 import traceback
+import importlib
 
 from contextlib import contextmanager
 
@@ -33,21 +38,108 @@ UF_HIDDEN = getattr(stat, 'UF_HIDDEN', 32768)
 JUPYTER_DATA_PATH_ENTRY_POINT = "jupyter_data_paths"
 JUPYTER_CONFIG_PATH_ENTRY_POINT = "jupyter_config_paths"
 
+# TODO: remove, once the correct strategy is decided
+JUPYTER_ENTRY_POINT_STRATEGY = os.environ.get("JUPYTER_ENTRY_POINT_STRATEGY")
+JUPYTER_ENTRY_POINT_TIMINGS = os.environ.get("JUPYTER_ENTRY_POINT_TIMINGS")
+
+
+# TODO: remove if not parsing
+# from https://github.com/pypa/setuptools/blob/23ee037d56a6d8ab957882e1a041f67924ae04da/setuptools/config.py#L19
+class StaticModule:
+    """
+    Attempt to load the module by the name
+    """
+    def __init__(self, name):
+        spec = importlib.util.find_spec(name)
+
+        with open(spec.origin) as strm:
+            src = strm.read()
+        module = ast.parse(src)
+        vars(self).update(locals())
+        del self.self
+        # add a path
+        self.__file__ = spec.origin
+
+    def __getattr__(self, attr):
+        try:
+            return next(
+                ast.literal_eval(statement.value)
+                for statement in self.module.body
+                if isinstance(statement, ast.Assign)
+                for target in statement.targets
+                if isinstance(target, ast.Name) and target.id == attr
+            )
+        except Exception as e:
+            raise AttributeError(
+                "{self.name} has no attribute {attr}".format(**locals())
+            ) from e
+
+# TODO: remove if not parsing
+@functools.lru_cache(maxsize=1024)
+def _load_static_module(module_name):
+    return StaticModule(module_name)
+
+
+def _load_paths_from_one_entry_point(ep):
+    """ get the paths from the entry_point target by importing
+    """
+    loaded = ep.load()
+    spec = importlib.util.find_spec(ep.module_name)
+    module = importlib.util.module_from_spec(spec)
+    origin = pathlib.Path(module.__file__).parent.resolve()
+    return [str(origin / path) for path in loaded]
+
+
+def _parse_paths_from_one_entry_point(ep):
+    """ get the paths from the AST of the entry_point target without importing
+    """
+    static_mod = _load_static_module(ep.module_name)
+    raw_mod_paths = getattr(static_mod, ep.object_name, [])
+    origin = pathlib.Path(static_mod.__file__).parent.resolve()
+    return [str(origin / path) for path in raw_mod_paths]
+
+
+def _parse_or_load_paths_from_one_entry_point(ep):
+    return _parse_paths_from_one_entry_point(ep) or _load_paths_from_one_entry_point(ep)
+
+
+if JUPYTER_ENTRY_POINT_STRATEGY == "LOAD":
+    _get_paths_from_one_entry_point = _load_paths_from_one_entry_point
+elif JUPYTER_ENTRY_POINT_STRATEGY == "PARSE":
+    _get_paths_from_one_entry_point = _parse_paths_from_one_entry_point
+else:
+    _get_paths_from_one_entry_point = _parse_or_load_paths_from_one_entry_point
 
 def _entry_point_paths(ep_group):
-    """Load extra jupyter paths from entry_points, sorted by their entry_point name
-    """
+    start = time.time()
+
+    group = reversed(sorted(entrypoints.get_group_named(ep_group).items()))
+    JUPYTER_ENTRY_POINT_TIMINGS and print(
+        f"{1e3 * (time.time() - start):.2f}ms {ep_group} loaded"
+    )
     paths = []
-    for name, ep in reversed(sorted(entrypoints.get_group_named(ep_group).items())):
+
+    for name, ep in group:
         try:
-            paths.extend([*map(str, ep.load())])
+            ep_start = time.time()
+            paths.extend(_get_paths_from_one_entry_point(ep))
         except Exception:
             warnings.warn('Failed to load {} from entry_point "{}"\n{}'.format(
                 ep_group,
                 name,
                 traceback.format_exc()
             ))
+        finally:
+            JUPYTER_ENTRY_POINT_TIMINGS and print(
+                f"{1e3 * (time.time() - ep_start):.2f}ms\t{ep_group}\t{name}"
+            )
+
+
+    end = time.time()
+    JUPYTER_ENTRY_POINT_TIMINGS and print(f"{1e3 * (end - start):.2f}ms {ep_group}\tTOTAL")
     return paths
+
+
 
 def envset(name):
     """Return True if the given environment variable is set
