@@ -282,7 +282,10 @@ def main():
         parser.print_usage(file=sys.stderr)
         sys.exit("subcommand is required")
 
-    command = _jupyter_abspath(subcommand)
+    try:
+        command = _jupyter_abspath(subcommand)
+    except Exception as e:
+        sys.exit(e)
 
     try:
         _execvp(command, sys.argv[1:])
