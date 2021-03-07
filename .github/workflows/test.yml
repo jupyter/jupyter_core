@@ -137,5 +137,5 @@ jobs:
           cd examples/jupyter_path_entrypoint_flit
           ${{ matrix.py-cmd }} -m flit install --pth-file
           ${{ matrix.py-cmd }} -m jupyter --paths | tee paths.txt
-          cat paths.txt | grep entrypoint_example_flit.share.jupyter
-          cat paths.txt | grep entrypoint_example_flit.etc.jupyter
+          cat paths.txt | grep entry_point_example_flit.share.jupyter
+          cat paths.txt | grep entry_point_example_flit.etc.jupyter
