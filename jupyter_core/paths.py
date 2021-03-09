@@ -22,7 +22,7 @@ import traceback
 import importlib
 
 
-from contextlib import contextmanager, ExitStack
+from contextlib import contextmanager
 
 # TODO: clean these up when the correct tools are chosen
 import entrypoints
@@ -138,9 +138,13 @@ def _parse_or_load_path_from_one_entry_point(ep):
     return _parse_path_from_one_entry_point(ep) or _load_path_from_one_entry_point(ep)
 
 def _inspect_path_from_one_entry_point(ep):
-    """ use the entrypoint metadata directly to discover the path
+    """ use the entrypoint attribute name to discover the path without loading
     """
     module_name, object_name = _get_ep_name_object(ep)
+    spec = importlib.util.find_spec(module_name)
+    module = importlib.util.module_from_spec(spec)
+    origin = pathlib.Path(module.__file__).parent.resolve()
+    return str(origin / object_name)
 
     try:
         ExitStack().enter_context(importlib_resources.path(module_name, object_name))

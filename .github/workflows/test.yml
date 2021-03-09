@@ -103,7 +103,9 @@ jobs:
           ${{ matrix.py-cmd }} -m pip freeze
           ${{ matrix.py-cmd }} -m pip check
 
-      - name: Test with pytest (entrypoints)
+      - name: Test with pytest (entrypoints, PARSE_OR_LOAD)
+        env:
+          JUPYTER_ENTRY_POINT_FINDER: entrypoints
         run: |
           set -eux
           cd dist
@@ -113,9 +115,35 @@ jobs:
             --cov-report=html \
             --no-cov-on-fail
 
-      - name: Test with pytest (importlib_metadata)
+      - name: Test with pytest (importlib_metadata, PARSE_OR_LOAD)
         env:
           JUPYTER_ENTRY_POINT_FINDER: importlib_metadata
+        run: |
+          set -eux
+          cd dist
+          ${{ matrix.py-cmd }} -m pytest -vv --ff --pyargs jupyter_core \
+            --cov=jupyter_core \
+            --cov-report=term-missing:skip-covered \
+            --cov-report=html \
+            --no-cov-on-fail
+
+      - name: Test with pytest (entrypoints, INSPECT)
+        env:
+          JUPYTER_ENTRY_POINT_FINDER: entrypoints
+          JUPYTER_ENTRY_POINT_STRATEGY: INSPECT
+        run: |
+          set -eux
+          cd dist
+          ${{ matrix.py-cmd }} -m pytest -vv --ff --pyargs jupyter_core \
+            --cov=jupyter_core \
+            --cov-report=term-missing:skip-covered \
+            --cov-report=html \
+            --no-cov-on-fail
+
+      - name: Test with pytest (importlib_metadata, INSPECT)
+        env:
+          JUPYTER_ENTRY_POINT_FINDER: importlib_metadata
+          JUPYTER_ENTRY_POINT_STRATEGY: INSPECT
         run: |
           set -eux
           cd dist
@@ -133,21 +161,21 @@ jobs:
           ${{ matrix.py-cmd }} -m pip install -vv codecov
           ${{ matrix.py-cmd }} -m codecov
 
-      - name: Test setuptools example
+      - name: Test setuptools example (develop)
         run: |
           set -eux
           cd examples/jupyter_path_entrypoint_setuptools
           ${{ matrix.py-cmd }} -m pip install -e .
           ${{ matrix.py-cmd }} -m jupyter --paths | tee paths.txt
-          cat paths.txt | grep entry_point_example_setuptools.share.jupyter
-          cat paths.txt | grep entry_point_example_setuptools.etc.jupyter
+          cat paths.txt | grep entry_point_example_setuptools.share
+          cat paths.txt | grep entry_point_example_setuptools.etc
 
-      - name: Test flit example
+      - name: Test flit example (develop)
         run: |
           set -eux
           ${{ matrix.py-cmd }} -m pip install flit
           cd examples/jupyter_path_entrypoint_flit
           ${{ matrix.py-cmd }} -m flit install --pth-file
           ${{ matrix.py-cmd }} -m jupyter --paths | tee paths.txt
-          cat paths.txt | grep entry_point_example_flit.share.jupyter
-          cat paths.txt | grep entry_point_example_flit.etc.jupyter
+          cat paths.txt | grep entry_point_example_flit.share
+          cat paths.txt | grep entry_point_example_flit.etc
