@@ -103,7 +103,19 @@ jobs:
           ${{ matrix.py-cmd }} -m pip freeze
           ${{ matrix.py-cmd }} -m pip check
 
-      - name: Test with pytest
+      - name: Test with pytest (entrypoints)
+        run: |
+          set -eux
+          cd dist
+          ${{ matrix.py-cmd }} -m pytest -vv --ff --pyargs jupyter_core \
+            --cov=jupyter_core \
+            --cov-report=term-missing:skip-covered \
+            --cov-report=html \
+            --no-cov-on-fail
+
+      - name: Test with pytest (importlib_metadata)
+        env:
+          JUPYTER_ENTRY_POINT_FINDER: importlib_metadata
         run: |
           set -eux
           cd dist

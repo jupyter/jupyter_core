@@ -20,6 +20,7 @@ import warnings
 import functools
 import traceback
 import importlib
+import importlib_metadata
 
 from contextlib import contextmanager
 
@@ -39,6 +40,7 @@ JUPYTER_DATA_PATH_ENTRY_POINT = "jupyter_data_paths"
 JUPYTER_CONFIG_PATH_ENTRY_POINT = "jupyter_config_paths"
 
 # TODO: remove, once the correct strategy is decided
+JUPYTER_ENTRY_POINT_FINDER = os.environ.get("JUPYTER_ENTRY_POINT_FINDER")
 JUPYTER_ENTRY_POINT_STRATEGY = os.environ.get("JUPYTER_ENTRY_POINT_STRATEGY")
 JUPYTER_ENTRY_POINT_TIMINGS = os.environ.get("JUPYTER_ENTRY_POINT_TIMINGS")
 
@@ -84,7 +86,12 @@ def _load_paths_from_one_entry_point(ep):
     """ get the paths from the entry_point target by importing
     """
     loaded = ep.load()
-    spec = importlib.util.find_spec(ep.module_name)
+    if JUPYTER_ENTRY_POINT_FINDER == "importlib_metadata":
+        module_name = ep.module
+    else:
+        module_name = ep.module_name
+
+    spec = importlib.util.find_spec(module_name)
     module = importlib.util.module_from_spec(spec)
     origin = pathlib.Path(module.__file__).parent.resolve()
     return [str(origin / path) for path in loaded]
@@ -93,8 +100,14 @@ def _load_paths_from_one_entry_point(ep):
 def _parse_paths_from_one_entry_point(ep):
     """ get the paths from the AST of the entry_point target without importing
     """
-    static_mod = _load_static_module(ep.module_name)
-    raw_mod_paths = getattr(static_mod, ep.object_name, [])
+    if JUPYTER_ENTRY_POINT_FINDER == "importlib_metadata":
+        module_name = ep.module
+        object_name = ep.attr
+    else:
+        module_name = ep.module_name
+        object_name = ep.object_name
+    static_mod = _load_static_module(module_name)
+    raw_mod_paths = getattr(static_mod, object_name, [])
     origin = pathlib.Path(static_mod.__file__).parent.resolve()
     return [str(origin / path) for path in raw_mod_paths]
 
@@ -113,13 +126,17 @@ else:
 def _entry_point_paths(ep_group):
     start = time.time()
 
-    group = reversed(sorted(entrypoints.get_group_named(ep_group).items()))
+    if JUPYTER_ENTRY_POINT_FINDER == "importlib_metadata":
+        group = [(ep.name, ep) for ep in importlib_metadata.entry_points(group=ep_group)]
+    else:
+        group = entrypoints.get_group_named(ep_group).items()
+
     JUPYTER_ENTRY_POINT_TIMINGS and print(
-        f"{1e3 * (time.time() - start):.2f}ms {ep_group} loaded"
+        f"{1e3 * (time.time() - start):.2f}ms {ep_group} loaded with {JUPYTER_ENTRY_POINT_FINDER}"
     )
     paths = []
 
-    for name, ep in group:
+    for name, ep in reversed(sorted(group)):
         try:
             ep_start = time.time()
             paths.extend(_get_paths_from_one_entry_point(ep))
