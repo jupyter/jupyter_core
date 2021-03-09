@@ -15,6 +15,21 @@ from jupyter_core.paths import (
     JUPYTER_DATA_PATH_ENTRY_POINT
 )
 
+
+def test_data_entry_point(data_path_entry_point, tmp_path):
+    data_path = jupyter_path()
+    path = str(tmp_path / "foo/share")
+    assert path in data_path
+
+
+def test_config_entry_point(config_path_entry_point, tmp_path):
+    config_path = jupyter_config_path()
+    path = str(tmp_path / "bar/etc")
+    assert path in config_path
+
+
+# there's a lot of duplication, as ugly path hackes get confused otheriwse
+
 @pytest.fixture
 def foo_entry_point_module(tmp_path):
     mod = tmp_path / "foo/__init__.py"
@@ -40,12 +55,6 @@ def data_path_entry_point(foo_entry_point_module):
         yield ep
 
 
-def test_data_entry_point(data_path_entry_point, tmp_path):
-    data_path = jupyter_path()
-    path = str(tmp_path / "foo/share")
-    assert path in data_path
-
-
 @pytest.fixture
 def bar_entry_point_module(tmp_path):
     mod = tmp_path / "bar/__init__.py"
@@ -69,9 +78,3 @@ def config_path_entry_point(bar_entry_point_module):
 
     with patch.object(entrypoints, 'get_group_named', return_value={'bar': ep}):
         yield ep
-
-
-def test_config_entry_point(config_path_entry_point, tmp_path):
-    config_path = jupyter_config_path()
-    path = str(tmp_path / "bar/etc")
-    assert path in config_path
