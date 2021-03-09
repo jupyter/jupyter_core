@@ -21,15 +21,9 @@ import functools
 import traceback
 import importlib
 
-
 from contextlib import contextmanager
 
-# TODO: clean these up when the correct tools are chosen
 import entrypoints
-if sys.version_info >= (3, 8):
-    import importlib.metadata as importlib_metadata
-else:
-    import importlib_metadata
 
 pjoin = os.path.join
 
@@ -38,133 +32,31 @@ pjoin = os.path.join
 UF_HIDDEN = getattr(stat, 'UF_HIDDEN', 32768)
 
 
-# TODO: remove, once the correct strategy is decided
-JUPYTER_ENTRY_POINT_FINDER = os.environ.get("JUPYTER_ENTRY_POINT_FINDER", "entrypoints")
-JUPYTER_ENTRY_POINT_STRATEGY = os.environ.get("JUPYTER_ENTRY_POINT_STRATEGY", "PARSE_OR_LOAD")
+# The entry_point MUST be the name of a directory, consisting of only
+# letters, numbers, and underscores, adjacent to __init__.py
+JUPYTER_DATA_PATH_ENTRY_POINT = "jupyter_data_path"
+JUPYTER_CONFIG_PATH_ENTRY_POINT = "jupyter_config_path"
+
+# TODO: decide whether to keep, or grow a logging endpoint
 JUPYTER_ENTRY_POINT_TIMINGS = os.environ.get("JUPYTER_ENTRY_POINT_TIMINGS")
 
 
-# The group names for entry_points in pyproject.toml, setup.py and .cfg to
-# provide discoverable paths
-if JUPYTER_ENTRY_POINT_STRATEGY == "INSPECT":
-    # The entry_point MUST be the name of a directory, consisting of only
-    # letters, numbers, and underscores, adjacent to __init__.py
-    # and will never be loaded.
-    JUPYTER_DATA_PATH_ENTRY_POINT = "jupyter_data_resource"
-    JUPYTER_CONFIG_PATH_ENTRY_POINT = "jupyter_config_resource"
-else:
-    # The entry_point MUST resolve single string literal POSIX path relative to the
-    # entry_point's importable
-    JUPYTER_DATA_PATH_ENTRY_POINT = "jupyter_data_path"
-    JUPYTER_CONFIG_PATH_ENTRY_POINT = "jupyter_config_path"
-
-# TODO: remove if not parsing
-# from https://github.com/pypa/setuptools/blob/23ee037d56a6d8ab957882e1a041f67924ae04da/setuptools/config.py#L19
-class StaticModule:
-    """
-    Attempt to load the module by the name
-    """
-    def __init__(self, name):
-        spec = importlib.util.find_spec(name)
-
-        with open(spec.origin) as strm:
-            src = strm.read()
-        module = ast.parse(src)
-        vars(self).update(locals())
-        del self.self
-        # add a path
-        self.__file__ = spec.origin
-
-    def __getattr__(self, attr):
-        try:
-            return next(
-                ast.literal_eval(statement.value)
-                for statement in self.module.body
-                if isinstance(statement, ast.Assign)
-                for target in statement.targets
-                if isinstance(target, ast.Name) and target.id == attr
-            )
-        except Exception as e:
-            raise AttributeError(
-                "{self.name} has no attribute {attr}".format(**locals())
-            ) from e
-
-# TODO: remove if not parsing
-@functools.lru_cache(maxsize=1024)
-def _load_static_module(module_name):
-    return StaticModule(module_name)
-
-
-def _get_ep_name_object(ep):
-    if JUPYTER_ENTRY_POINT_FINDER == "importlib_metadata":
-        return ep.module, ep.attr
-    elif JUPYTER_ENTRY_POINT_FINDER == "entrypoints":
-        return ep.module_name, ep.object_name
-    else:
-        raise NotImplementedError(JUPYTER_ENTRY_POINT_FINDER)
-
-
-def _load_path_from_one_entry_point(ep):
-    """ get the paths from the entry_point target by importing
-    """
-    path = ep.load()
-    module_name, object_name = _get_ep_name_object(ep)
-
-    spec = importlib.util.find_spec(module_name)
-    module = importlib.util.module_from_spec(spec)
-    origin = pathlib.Path(module.__file__).parent.resolve()
-    return str(origin / path)
-
-
-def _parse_path_from_one_entry_point(ep):
-    """ get the paths from the AST of the entry_point target without importing
-    """
-    module_name, object_name = _get_ep_name_object(ep)
-    static_mod = _load_static_module(module_name)
-    path = getattr(static_mod, object_name)
-    origin = pathlib.Path(static_mod.__file__).parent.resolve()
-    return str(origin / path)
-
-
-def _parse_or_load_path_from_one_entry_point(ep):
-    """ first attempt static discovery of the entry_point target, fall back to import
-    """
-    return _parse_path_from_one_entry_point(ep) or _load_path_from_one_entry_point(ep)
-
-def _inspect_path_from_one_entry_point(ep):
+def _get_path_from_one_entry_point(ep):
     """ use the entrypoint attribute name to discover the path without loading
     """
-    module_name, object_name = _get_ep_name_object(ep)
-    spec = importlib.util.find_spec(module_name)
+    spec = importlib.util.find_spec(ep.module_name)
     module = importlib.util.module_from_spec(spec)
     origin = pathlib.Path(module.__file__).parent.resolve()
-    return str(origin / object_name)
-
-
-if JUPYTER_ENTRY_POINT_STRATEGY == "PARSE_OR_LOAD":
-    _get_path_from_one_entry_point = _parse_or_load_path_from_one_entry_point
-elif JUPYTER_ENTRY_POINT_STRATEGY == "LOAD":
-    _get_path_from_one_entry_point = _load_path_from_one_entry_point
-elif JUPYTER_ENTRY_POINT_STRATEGY == "PARSE":
-    _get_path_from_one_entry_point = _parse_path_from_one_entry_point
-elif JUPYTER_ENTRY_POINT_STRATEGY == "INSPECT":
-    _get_path_from_one_entry_point = _inspect_path_from_one_entry_point
-else:
-    raise NotImplementedError(JUPYTER_ENTRY_POINT_STRATEGY)
+    return str(origin / ep.object_name)
 
 
 def _entry_point_paths(ep_group):
     start = time.time()
 
-    if JUPYTER_ENTRY_POINT_FINDER == "importlib_metadata":
-        group = [(ep.name, ep) for ep in importlib_metadata.entry_points().get(ep_group, [])]
-    elif JUPYTER_ENTRY_POINT_FINDER == "entrypoints":
-        group = entrypoints.get_group_named(ep_group).items()
-    else:
-        raise NotImplementedError(JUPYTER_ENTRY_POINT_FINDER)
+    group = entrypoints.get_group_named(ep_group).items()
 
     JUPYTER_ENTRY_POINT_TIMINGS and print(
-        f"{1e3 * (time.time() - start):.2f}ms {ep_group} loaded with {JUPYTER_ENTRY_POINT_FINDER}"
+        f"{1e3 * (time.time() - start):.2f}ms {ep_group} loaded"
     )
     paths = []
 
@@ -187,7 +79,6 @@ def _entry_point_paths(ep_group):
     end = time.time()
     JUPYTER_ENTRY_POINT_TIMINGS and print(f"{1e3 * (end - start):.2f}ms {ep_group}\tTOTAL")
     return paths
-
 
 
 def envset(name):

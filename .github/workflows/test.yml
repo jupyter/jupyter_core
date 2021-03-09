@@ -103,47 +103,7 @@ jobs:
           ${{ matrix.py-cmd }} -m pip freeze
           ${{ matrix.py-cmd }} -m pip check
 
-      - name: Test with pytest (entrypoints, PARSE_OR_LOAD)
-        env:
-          JUPYTER_ENTRY_POINT_FINDER: entrypoints
-        run: |
-          set -eux
-          cd dist
-          ${{ matrix.py-cmd }} -m pytest -vv --ff --pyargs jupyter_core \
-            --cov=jupyter_core \
-            --cov-report=term-missing:skip-covered \
-            --cov-report=html \
-            --no-cov-on-fail
-
-      - name: Test with pytest (importlib_metadata, PARSE_OR_LOAD)
-        env:
-          JUPYTER_ENTRY_POINT_FINDER: importlib_metadata
-        run: |
-          set -eux
-          cd dist
-          ${{ matrix.py-cmd }} -m pytest -vv --ff --pyargs jupyter_core \
-            --cov=jupyter_core \
-            --cov-report=term-missing:skip-covered \
-            --cov-report=html \
-            --no-cov-on-fail
-
-      - name: Test with pytest (entrypoints, INSPECT)
-        env:
-          JUPYTER_ENTRY_POINT_FINDER: entrypoints
-          JUPYTER_ENTRY_POINT_STRATEGY: INSPECT
-        run: |
-          set -eux
-          cd dist
-          ${{ matrix.py-cmd }} -m pytest -vv --ff --pyargs jupyter_core \
-            --cov=jupyter_core \
-            --cov-report=term-missing:skip-covered \
-            --cov-report=html \
-            --no-cov-on-fail
-
-      - name: Test with pytest (importlib_metadata, INSPECT)
-        env:
-          JUPYTER_ENTRY_POINT_FINDER: importlib_metadata
-          JUPYTER_ENTRY_POINT_STRATEGY: INSPECT
+      - name: Test with pytest
         run: |
           set -eux
           cd dist

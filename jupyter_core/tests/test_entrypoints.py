@@ -4,21 +4,16 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from unittest.mock import patch, Mock
 import importlib
+from unittest.mock import patch, Mock
+
+import entrypoints
 
 import pytest
-import entrypoints
 
 from jupyter_core.paths import (
     jupyter_path, jupyter_config_path,
-    # these would stay
     JUPYTER_CONFIG_PATH_ENTRY_POINT, JUPYTER_DATA_PATH_ENTRY_POINT,
-    # these might have to stay
-    importlib_metadata,
-    # these would go
-    JUPYTER_ENTRY_POINT_FINDER, JUPYTER_ENTRY_POINT_STRATEGY,
-    JUPYTER_ENTRY_POINT_TIMINGS
 )
 
 
@@ -43,7 +38,7 @@ def foo_entry_point_module(tmp_path):
 
 @pytest.fixture
 def data_path_entry_point(foo_entry_point_module):
-    with _mock_entry_point(JUPYTER_DATA_PATH_ENTRY_POINT, "foo-config", "foo", "DATA", "share"):
+    with _mock_entry_point(JUPYTER_DATA_PATH_ENTRY_POINT, "foo-config", "foo", "share"):
         yield
 
 
@@ -55,7 +50,7 @@ def bar_entry_point_module(tmp_path):
 
 @pytest.fixture
 def config_path_entry_point(bar_entry_point_module):
-    loader = _mock_entry_point(JUPYTER_CONFIG_PATH_ENTRY_POINT, "bar-config", "bar", "CONFIG", "etc")
+    loader = _mock_entry_point(JUPYTER_CONFIG_PATH_ENTRY_POINT, "bar-config", "bar", "etc")
     with loader:
         yield
 
@@ -63,36 +58,15 @@ def config_path_entry_point(bar_entry_point_module):
 def _mock_modspec(name, tmp_path):
     mod = tmp_path / f"{name}/__init__.py"
     mod.parent.mkdir()
-
-    # if deriving the path from the entry_point spec, the module _can_ be empty
-    mod.write_text("\n".join(
-        []
-        if JUPYTER_ENTRY_POINT_STRATEGY == "INSPECT" else
-        ["DATA = 'share'", "CONFIG = 'etc'"]
-    ))
-
+    mod.write_text('__version__ = "0.1.0"')
     spec = Mock()
     spec.origin = str(mod)
-
     return patch.object(importlib.util, 'find_spec', return_value=spec)
 
 
-def _mock_entry_point(ep_group, ep_name, module_name, object_name, return_value):
-    ep = Mock(spec=['load'])
+def _mock_entry_point(ep_group, ep_name, module_name, object_name):
+    ep = Mock()
     ep.name = ep_name
-
-    if JUPYTER_ENTRY_POINT_STRATEGY == "INSPECT":
-        object_name = return_value
-
-    if JUPYTER_ENTRY_POINT_FINDER == "importlib_metadata":
-        ep.load.return_value = return_value
-        ep.module = module_name
-        ep.attr = object_name
-        return patch.object(importlib_metadata, 'entry_points', return_value={ep_group: [ep]})
-    elif JUPYTER_ENTRY_POINT_FINDER == "entrypoints":
-        ep.load.return_value = return_value
-        ep.module_name = module_name
-        ep.object_name = object_name
-        return patch.object(entrypoints, 'get_group_named', return_value={ep_name: ep})
-    else:
-        raise NotImplementedError(JUPYTER_ENTRY_POINT_FINDER)
+    ep.module_name = module_name
+    ep.object_name = object_name
+    return patch.object(entrypoints, 'get_group_named', return_value={ep_name: ep})
