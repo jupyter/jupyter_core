@@ -14,6 +14,13 @@ entry-point-example-flit = "entry_point_example_flit:JUPYTER_CONFIG_PATH"
 [tool.flit.entrypoints.jupyter_data_path]
 entry-point-example-flit = "entry_point_example_flit:JUPYTER_DATA_PATH"
 
+[tool.flit.entrypoints.jupyter_config_resource]
+entry-point-example-flit = "entry_point_example_flit:etc"
+
+[tool.flit.entrypoints.jupyter_data_resource]
+entry-point-example-flit = "entry_point_example_flit:share"
+
+
 [tool.flit.sdist]
 include = ["src/entry_point_example_flit/etc/", "src/entry_point_example_flit/share/"]
 exclude = ["src/entry_point_example_flit/share/*/example_excluded_file_flit.json"]

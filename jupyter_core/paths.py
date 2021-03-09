@@ -25,12 +25,17 @@ import importlib
 from contextlib import contextmanager
 
 
-# TODO: only one of these will be kept
+# TODO: clean these up when the correct tools are chosen
 import entrypoints
 if sys.version_info >= (3, 8):
     import importlib.metadata as importlib_metadata
 else:
     import importlib_metadata
+
+if sys.version_info >= (3, 9):
+    import importlib.resources as importlib_resource
+else:
+    import importlib_resources
 
 
 pjoin = os.path.join
@@ -39,18 +44,24 @@ pjoin = os.path.join
 # It is used by BSD to indicate hidden files.
 UF_HIDDEN = getattr(stat, 'UF_HIDDEN', 32768)
 
-# the group names for entry_points in pyproject.toml, setup.py and .cfg to
-# provide discoverable paths
-# the entry_point target MUST a single string of a relative POSIX path to the
-# entry_point's importable
-JUPYTER_DATA_PATH_ENTRY_POINT = "jupyter_data_path"
-JUPYTER_CONFIG_PATH_ENTRY_POINT = "jupyter_config_path"
 
 # TODO: remove, once the correct strategy is decided
 JUPYTER_ENTRY_POINT_FINDER = os.environ.get("JUPYTER_ENTRY_POINT_FINDER", "entrypoints")
 JUPYTER_ENTRY_POINT_STRATEGY = os.environ.get("JUPYTER_ENTRY_POINT_STRATEGY", "PARSE_OR_LOAD")
 JUPYTER_ENTRY_POINT_TIMINGS = os.environ.get("JUPYTER_ENTRY_POINT_TIMINGS")
 
+
+# the group names for entry_points in pyproject.toml, setup.py and .cfg to
+# provide discoverable paths
+if JUPYTER_ENTRY_POINT_STRATEGY == "INSPECT":
+    # the entry_point will be used directly (never imported)
+    JUPYTER_DATA_PATH_ENTRY_POINT = "jupyter_data_resource"
+    JUPYTER_CONFIG_PATH_ENTRY_POINT = "jupyter_config_resource"
+else:
+    # the entry_point MUST resolve single string literal POSIX path relative to the
+    # entry_point's importable
+    JUPYTER_DATA_PATH_ENTRY_POINT = "jupyter_data_path"
+    JUPYTER_CONFIG_PATH_ENTRY_POINT = "jupyter_config_path"
 
 # TODO: remove if not parsing
 # from https://github.com/pypa/setuptools/blob/23ee037d56a6d8ab957882e1a041f67924ae04da/setuptools/config.py#L19
@@ -124,10 +135,14 @@ def _parse_path_from_one_entry_point(ep):
 
 
 def _parse_or_load_path_from_one_entry_point(ep):
+    """ first attempt static discovery of the entry_point target, fall back to import
+    """
     return _parse_path_from_one_entry_point(ep) or _load_path_from_one_entry_point(ep)
 
 def _inspect_path_from_one_entry_point(ep):
-    raise NotImplementedError("TODO")
+    """ use the entrypoint metadata directly to discover the path
+    """
+    raise NotImplementedError("woo")
 
 if JUPYTER_ENTRY_POINT_STRATEGY == "PARSE_OR_LOAD":
     _get_path_from_one_entry_point = _parse_or_load_path_from_one_entry_point
@@ -136,7 +151,7 @@ elif JUPYTER_ENTRY_POINT_STRATEGY == "LOAD":
 elif JUPYTER_ENTRY_POINT_STRATEGY == "PARSE":
     _get_path_from_one_entry_point = _parse_path_from_one_entry_point
 elif JUPYTER_ENTRY_POINT_STRATEGY == "INSPECT":
-    _get_path_from_one_entry_point == _inspect_path_from_one_entry_point
+    _get_path_from_one_entry_point = _inspect_path_from_one_entry_point
 else:
     raise NotImplementedError(JUPYTER_ENTRY_POINT_STRATEGY)
 
