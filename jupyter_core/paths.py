@@ -22,8 +22,7 @@ import traceback
 import importlib
 
 
-from contextlib import contextmanager
-
+from contextlib import contextmanager, ExitStack
 
 # TODO: clean these up when the correct tools are chosen
 import entrypoints
@@ -33,7 +32,7 @@ else:
     import importlib_metadata
 
 if sys.version_info >= (3, 9):
-    import importlib.resources as importlib_resource
+    import importlib.resources as importlib_resources
 else:
     import importlib_resources
 
@@ -51,14 +50,16 @@ JUPYTER_ENTRY_POINT_STRATEGY = os.environ.get("JUPYTER_ENTRY_POINT_STRATEGY", "P
 JUPYTER_ENTRY_POINT_TIMINGS = os.environ.get("JUPYTER_ENTRY_POINT_TIMINGS")
 
 
-# the group names for entry_points in pyproject.toml, setup.py and .cfg to
+# The group names for entry_points in pyproject.toml, setup.py and .cfg to
 # provide discoverable paths
 if JUPYTER_ENTRY_POINT_STRATEGY == "INSPECT":
-    # the entry_point will be used directly (never imported)
+    # The entry_point MUST be the name of a directory, consisting of only
+    # letters, numbers, and underscores, adjacent to __init__.py
+    # and will never be loaded.
     JUPYTER_DATA_PATH_ENTRY_POINT = "jupyter_data_resource"
     JUPYTER_CONFIG_PATH_ENTRY_POINT = "jupyter_config_resource"
 else:
-    # the entry_point MUST resolve single string literal POSIX path relative to the
+    # The entry_point MUST resolve single string literal POSIX path relative to the
     # entry_point's importable
     JUPYTER_DATA_PATH_ENTRY_POINT = "jupyter_data_path"
     JUPYTER_CONFIG_PATH_ENTRY_POINT = "jupyter_config_path"
@@ -100,16 +101,20 @@ def _load_static_module(module_name):
     return StaticModule(module_name)
 
 
+def _get_ep_name_object(ep):
+    if JUPYTER_ENTRY_POINT_FINDER == "importlib_metadata":
+        return ep.module, ep.attr
+    elif JUPYTER_ENTRY_POINT_FINDER == "entrypoints":
+        return ep.module_name, ep.object_name
+    else:
+        raise NotImplementedError(JUPYTER_ENTRY_POINT_FINDER)
+
+
 def _load_path_from_one_entry_point(ep):
     """ get the paths from the entry_point target by importing
     """
     path = ep.load()
-    if JUPYTER_ENTRY_POINT_FINDER == "importlib_metadata":
-        module_name = ep.module
-    elif JUPYTER_ENTRY_POINT_FINDER == "entrypoints":
-        module_name = ep.module_name
-    else:
-        raise NotImplementedError(JUPYTER_ENTRY_POINT_FINDER)
+    module_name, object_name = _get_ep_name_object(ep)
 
     spec = importlib.util.find_spec(module_name)
     module = importlib.util.module_from_spec(spec)
@@ -120,14 +125,7 @@ def _load_path_from_one_entry_point(ep):
 def _parse_path_from_one_entry_point(ep):
     """ get the paths from the AST of the entry_point target without importing
     """
-    if JUPYTER_ENTRY_POINT_FINDER == "importlib_metadata":
-        module_name = ep.module
-        object_name = ep.attr
-    elif JUPYTER_ENTRY_POINT_FINDER == "entrypoints":
-        module_name = ep.module_name
-        object_name = ep.object_name
-    else:
-        raise NotImplementedError(JUPYTER_ENTRY_POINT_FINDER)
+    module_name, object_name = _get_ep_name_object(ep)
     static_mod = _load_static_module(module_name)
     path = getattr(static_mod, object_name)
     origin = pathlib.Path(static_mod.__file__).parent.resolve()
@@ -142,7 +140,14 @@ def _parse_or_load_path_from_one_entry_point(ep):
 def _inspect_path_from_one_entry_point(ep):
     """ use the entrypoint metadata directly to discover the path
     """
-    raise NotImplementedError("woo")
+    module_name, object_name = _get_ep_name_object(ep)
+
+    try:
+        ExitStack().enter_context(importlib_resources.path(module_name, object_name))
+    except IsADirectoryError as err:
+        return err.filename
+
+    raise NotImplementedError("Must be a file")
 
 if JUPYTER_ENTRY_POINT_STRATEGY == "PARSE_OR_LOAD":
     _get_path_from_one_entry_point = _parse_or_load_path_from_one_entry_point

@@ -23,4 +23,4 @@ entry-point-example-flit = "entry_point_example_flit:share"
 
 [tool.flit.sdist]
 include = ["src/entry_point_example_flit/etc/", "src/entry_point_example_flit/share/"]
-exclude = ["src/entry_point_example_flit/share/*/example_excluded_file_flit.json"]
+exclude = ["src/entry_point_example_flit/share/example_excluded_file_flit.json"]
