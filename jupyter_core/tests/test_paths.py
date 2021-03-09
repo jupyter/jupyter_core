@@ -12,16 +12,14 @@ import tempfile
 import importlib
 
 import pytest
-import entrypoints
 
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 
 from jupyter_core import paths
 from jupyter_core.paths import (
     jupyter_config_dir, jupyter_data_dir, jupyter_runtime_dir,
     jupyter_path, jupyter_config_path, ENV_JUPYTER_PATH,
-    secure_write, is_hidden, is_file_hidden, JUPYTER_CONFIG_PATH_ENTRY_POINT,
-    JUPYTER_DATA_PATH_ENTRY_POINT
+    secure_write, is_hidden, is_file_hidden
 )
 
 from .mocking import darwin, windows, linux
@@ -340,53 +338,3 @@ def test_secure_write_unix():
             assert f.read() == 'test 2'
     finally:
         shutil.rmtree(directory)
-
-@pytest.fixture
-def foo_entry_point_module(tmp_path):
-    mod = tmp_path / "foo/__init__.py"
-    mod.parent.mkdir()
-    mod.write_text("\n".join(["DATA = ['share']", "CONFIG = ['etc']"]))
-
-    # importlib.util.find_spec(name)
-
-    spec = Mock()
-    spec.origin = str(mod)
-
-    with patch.object(importlib.util, 'find_spec', return_value=spec):
-        yield
-
-
-@pytest.fixture
-def data_path_entry_point(foo_entry_point_module):
-    ep = Mock(spec=['load'])
-    ep.name = JUPYTER_DATA_PATH_ENTRY_POINT
-    ep.load.return_value = 'share'
-    ep.module_name = "foo"
-    ep.object_name = "DATA"
-
-    with patch.object(entrypoints, 'get_group_named', return_value={'foo': ep}):
-        yield ep
-
-
-@pytest.fixture
-def config_path_entry_point(foo_entry_point_module):
-    ep = Mock(spec=['load'])
-    ep.name = JUPYTER_CONFIG_PATH_ENTRY_POINT
-    ep.load.return_value = 'etc'
-    ep.module_name = "foo"
-    ep.object_name = "FOO"
-
-    with patch.object(entrypoints, 'get_group_named', return_value={'foo': ep}):
-        yield ep
-
-
-def test_data_entry_point(data_path_entry_point, tmp_path):
-    data_path = jupyter_path()
-    path = str(tmp_path / "foo/share")
-    assert path in data_path
-
-
-def test_config_entry_point(config_path_entry_point, tmp_path):
-    config_path = jupyter_config_path()
-    path = str(tmp_path / "foo/etc")
-    assert path in config_path
