@@ -360,7 +360,7 @@ def foo_entry_point_module(tmp_path):
 def data_path_entry_point(foo_entry_point_module):
     ep = Mock(spec=['load'])
     ep.name = JUPYTER_DATA_PATH_ENTRY_POINT
-    ep.load.return_value = ['share']
+    ep.load.return_value = 'share'
     ep.module_name = "foo"
     ep.object_name = "DATA"
 
@@ -372,7 +372,7 @@ def data_path_entry_point(foo_entry_point_module):
 def config_path_entry_point(foo_entry_point_module):
     ep = Mock(spec=['load'])
     ep.name = JUPYTER_CONFIG_PATH_ENTRY_POINT
-    ep.load.return_value = ['etc']
+    ep.load.return_value = 'etc'
     ep.module_name = "foo"
     ep.object_name = "FOO"
 
