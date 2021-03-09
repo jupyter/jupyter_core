@@ -31,12 +31,6 @@ if sys.version_info >= (3, 8):
 else:
     import importlib_metadata
 
-if sys.version_info >= (3, 9):
-    import importlib.resources as importlib_resources
-else:
-    import importlib_resources
-
-
 pjoin = os.path.join
 
 # UF_HIDDEN is a stat flag not defined in the stat module.
@@ -146,12 +140,6 @@ def _inspect_path_from_one_entry_point(ep):
     origin = pathlib.Path(module.__file__).parent.resolve()
     return str(origin / object_name)
 
-    try:
-        ExitStack().enter_context(importlib_resources.path(module_name, object_name))
-    except IsADirectoryError as err:
-        return err.filename
-
-    raise NotImplementedError("Must be a file")
 
 if JUPYTER_ENTRY_POINT_STRATEGY == "PARSE_OR_LOAD":
     _get_path_from_one_entry_point = _parse_or_load_path_from_one_entry_point

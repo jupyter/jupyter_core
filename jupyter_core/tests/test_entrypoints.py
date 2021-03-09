@@ -14,8 +14,8 @@ from jupyter_core.paths import (
     jupyter_path, jupyter_config_path,
     # these would stay
     JUPYTER_CONFIG_PATH_ENTRY_POINT, JUPYTER_DATA_PATH_ENTRY_POINT,
-    # these might stay
-    importlib_metadata, importlib_resources,
+    # these might have to stay
+    importlib_metadata,
     # these would go
     JUPYTER_ENTRY_POINT_FINDER, JUPYTER_ENTRY_POINT_STRATEGY,
     JUPYTER_ENTRY_POINT_TIMINGS
@@ -85,8 +85,9 @@ def _mock_entry_point(ep_group, ep_name, module_name, object_name, return_value)
         object_name = return_value
 
     if JUPYTER_ENTRY_POINT_FINDER == "importlib_metadata":
+        ep.load.return_value = return_value
         ep.module = module_name
-        ep.attr = return_value
+        ep.attr = object_name
         return patch.object(importlib_metadata, 'entry_points', return_value={ep_group: [ep]})
     elif JUPYTER_ENTRY_POINT_FINDER == "entrypoints":
         ep.load.return_value = return_value
