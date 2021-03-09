@@ -169,7 +169,7 @@ def _entry_point_paths(ep_group):
     start = time.time()
 
     if JUPYTER_ENTRY_POINT_FINDER == "importlib_metadata":
-        group = [(ep.name, ep) for ep in importlib_metadata.entry_points()[ep_group]]
+        group = [(ep.name, ep) for ep in importlib_metadata.entry_points().get(ep_group, [])]
     elif JUPYTER_ENTRY_POINT_FINDER == "entrypoints":
         group = entrypoints.get_group_named(ep_group).items()
     else:
