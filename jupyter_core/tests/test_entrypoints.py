@@ -1,5 +1,9 @@
 """TODO: these should be merged back into test_paths.py when they settle down
 """
+
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 from unittest.mock import patch, Mock
 import importlib
 

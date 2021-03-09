@@ -5,15 +5,12 @@
 
 import os
 import re
-import sys
 import stat
 import shutil
 import tempfile
-import importlib
-
-import pytest
-
 from unittest.mock import patch
+import pytest
+import sys
 
 from jupyter_core import paths
 from jupyter_core.paths import (
