@@ -4,7 +4,7 @@ import json
 import os
 import sys
 import sysconfig
-from subprocess import check_output, CalledProcessError
+from subprocess import check_output, PIPE, CalledProcessError
 from unittest.mock import patch
 
 import pytest
@@ -21,7 +21,7 @@ def get_jupyter_output(cmd):
     """Get output of a jupyter command"""
     if not isinstance(cmd, list):
         cmd = [cmd]
-    return check_output([sys.executable, '-m', 'jupyter_core'] + cmd).decode('utf8').strip()
+    return check_output([sys.executable, '-m', 'jupyter_core'] + cmd, stderr=PIPE).decode('utf8').strip()
 
 
 def write_executable(path, source):
@@ -109,8 +109,10 @@ def test_help():
 
 
 def test_subcommand_not_found():
-    with pytest.raises(CalledProcessError):
+    with pytest.raises(CalledProcessError) as excinfo:
         get_jupyter_output('nonexistant-subcommand')
+    stderr = excinfo.value.stderr.decode('utf8')
+    assert stderr == 'Jupyter command `jupyter-nonexistant-subcommand` not found.' + os.linesep
 
 @patch.object(sys, 'argv', [__file__] + sys.argv[1:])
 def test_subcommand_list(tmpdir):
