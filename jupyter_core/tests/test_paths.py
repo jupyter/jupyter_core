@@ -116,12 +116,12 @@ def test_data_dir_darwin():
 def test_data_dir_windows():
     with windows, appdata:
         data = jupyter_data_dir()
-    assert data == pjoin('appdata', 'jupyter')
+    assert data == realpath(pjoin('appdata', 'jupyter'))
 
     with windows, appdata, xdg:
         # windows should ignore xdg
         data = jupyter_data_dir()
-    assert data == pjoin('appdata', 'jupyter')
+    assert data == realpath(pjoin('appdata', 'jupyter'))
 
 
 def test_data_dir_linux():
@@ -155,12 +155,12 @@ def test_runtime_dir_darwin():
 def test_runtime_dir_windows():
     with windows, appdata:
         runtime = jupyter_runtime_dir()
-    assert runtime == pjoin('appdata', 'jupyter', 'runtime')
+    assert runtime == realpath(pjoin('appdata', 'jupyter', 'runtime'))
 
     with windows, appdata, xdg:
         # windows should ignore xdg
         runtime = jupyter_runtime_dir()
-    assert runtime == pjoin('appdata', 'jupyter', 'runtime')
+    assert runtime == realpath(pjoin('appdata', 'jupyter', 'runtime'))
 
 
 def test_runtime_dir_linux():

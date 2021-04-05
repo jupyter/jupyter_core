@@ -90,7 +90,7 @@ def jupyter_data_dir():
     elif os.name == 'nt':
         appdata = os.environ.get('APPDATA', None)
         if appdata:
-            return pjoin(appdata, 'jupyter')
+            return os.path.realpath(pjoin(appdata, 'jupyter'))
         else:
             return pjoin(jupyter_config_dir(), 'data')
     else:
