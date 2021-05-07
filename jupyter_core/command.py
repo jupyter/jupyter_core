@@ -37,7 +37,7 @@ def jupyter_parser():
     parser = JupyterParser(
         description="Jupyter: Interactive Computing",
     )
-    group = parser.add_mutually_exclusive_group(required=True)
+    group = parser.add_mutually_exclusive_group(required=False)
     # don't use argparse's version action because it prints to stderr on py2
     group.add_argument('--version', action='store_true',
         help="show the jupyter command's version and exit")
@@ -122,12 +122,12 @@ def _jupyter_abspath(subcommand):
     abs_path = which(jupyter_subcommand, path=search_path)
     if abs_path is None:
         raise Exception(
-            'Jupyter command `{}` not found.'.format(jupyter_subcommand)
+            '\nJupyter command `{}` not found.'.format(jupyter_subcommand)
         )
 
     if not os.access(abs_path, os.X_OK):
         raise Exception(
-            'Jupyter command `{}` is not executable.'.format(jupyter_subcommand)
+            '\nJupyter command `{}` is not executable.'.format(jupyter_subcommand)
         )
 
     return abs_path
@@ -279,12 +279,16 @@ def main():
             return
 
     if not subcommand:
-        parser.print_usage(file=sys.stderr)
-        sys.exit("subcommand is required")
+        parser.print_help(file=sys.stderr)
+        sys.exit("\nPlease specify a subcommand or one of the optional arguments.")
 
     try:
         command = _jupyter_abspath(subcommand)
     except Exception as e:
+        parser.print_help(file=sys.stderr)
+        # special-case alias of "jupyter help" to "jupyter --help"
+        if subcommand == "help":
+            return
         sys.exit(e)
 
     try:

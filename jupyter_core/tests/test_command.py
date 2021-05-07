@@ -112,7 +112,7 @@ def test_subcommand_not_found():
     with pytest.raises(CalledProcessError) as excinfo:
         get_jupyter_output('nonexistant-subcommand')
     stderr = excinfo.value.stderr.decode('utf8')
-    assert stderr == 'Jupyter command `jupyter-nonexistant-subcommand` not found.' + os.linesep
+    assert 'Jupyter command `jupyter-nonexistant-subcommand` not found.' in stderr
 
 @patch.object(sys, 'argv', [__file__] + sys.argv[1:])
 def test_subcommand_list(tmpdir):
