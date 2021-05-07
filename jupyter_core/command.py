@@ -286,6 +286,9 @@ def main():
         command = _jupyter_abspath(subcommand)
     except Exception as e:
         parser.print_help(file=sys.stderr)
+        # special-case alias of "jupyter help" to "jupyter --help"
+        if subcommand == "help":
+            return
         sys.exit(e)
 
     try:
