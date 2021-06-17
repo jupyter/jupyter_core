@@ -40,7 +40,7 @@ def jupyter_parser():
     group = parser.add_mutually_exclusive_group(required=False)
     # don't use argparse's version action because it prints to stderr on py2
     group.add_argument('--version', action='store_true',
-        help="show the jupyter command's version and exit")
+        help="show the versions of core jupyter packages and exit")
     group.add_argument('subcommand', type=str, nargs='?', help='the subcommand to launch')
 
     group.add_argument('--config-dir', action='store_true',
@@ -184,26 +184,31 @@ def main():
         args, opts = parser.parse_known_args()
         subcommand = args.subcommand
         if args.version:
-            print('{:<17}:'.format('jupyter core'), __version__)
-            for package, name in [
-                ('notebook', 'jupyter-notebook'),
-                ('qtconsole', 'qtconsole'),
-                ('IPython', 'ipython'),
-                ('ipykernel', 'ipykernel'),
-                ('jupyter_client', 'jupyter client'),
-                ('jupyterlab', 'jupyter lab'),
-                ('nbconvert', 'nbconvert'),
-                ('ipywidgets', 'ipywidgets'),
-                ('nbformat', 'nbformat'),
-                ('traitlets', 'traitlets'),
+            print("Selected Jupyter core packages...")
+            for package in [
+                'IPython',
+                'ipykernel',
+                'ipywidgets',
+                'jupyter_client',
+                'jupyter_core',
+                'jupyter_server',
+                'jupyterlab',
+                'nbclient',
+                'nbconvert',
+                'nbformat',
+                'notebook',
+                'qtconsole',
+                'traitlets',
             ]:
-                version = None
                 try:
-                    mod = __import__(package)
-                    version = mod.__version__
+                    if package == 'jupyter_core':  # We're already here
+                        version = __version__
+                    else:
+                        mod = __import__(package)
+                        version = mod.__version__
                 except ImportError:
                     version = 'not installed'
-                print('{:<17}:'.format(name), version)
+                print('{:<17}:'.format(package), version)
             return
         if args.json and not args.paths:
             sys.exit("--json is only used with --paths")
