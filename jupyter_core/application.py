@@ -27,12 +27,21 @@ from .paths import (
 
 # aliases and flags
 
-base_aliases = {
+base_aliases = {}
+if isinstance(Application.aliases, dict):
+    # traitlets 5
+    base_aliases.update(Application.aliases)
+_jupyter_aliases = {
     'log-level' : 'Application.log_level',
     'config' : 'JupyterApp.config_file',
 }
+base_aliases.update(_jupyter_aliases)
 
-base_flags = {
+base_flags = {}
+if isinstance(Application.flags, dict):
+    # traitlets 5
+    base_flags.update(Application.flags)
+_jupyter_flags = {
     'debug': ({'Application' : {'log_level' : logging.DEBUG}},
             "set log level to logging.DEBUG (maximize logging output)"),
     'generate-config': ({'JupyterApp': {'generate_config': True}},
@@ -40,6 +49,7 @@ base_flags = {
     'y': ({'JupyterApp': {'answer_yes': True}},
         "Answer yes to any questions instead of prompting."),
 }
+base_flags.update(_jupyter_flags)
 
 class NoStart(Exception):
     """Exception to raise when an application shouldn't start"""
