@@ -14,6 +14,7 @@ import stat
 import errno
 import tempfile
 import warnings
+from pathlib import Path
 
 from contextlib import contextmanager
 
@@ -37,7 +38,7 @@ def get_home_dir():
     homedir = os.path.expanduser('~')
     # Next line will make things work even when /home/ is a symlink to
     # /usr/home as it is on FreeBSD, for example
-    homedir = os.path.realpath(homedir)
+    homedir = str(Path(homedir).resolve())
     return homedir
 
 _dtemps = {}
@@ -90,7 +91,7 @@ def jupyter_data_dir():
     elif os.name == 'nt':
         appdata = os.environ.get('APPDATA', None)
         if appdata:
-            return os.path.realpath(pjoin(appdata, 'jupyter'))
+            return str(Path(appdata, 'jupyter').resolve())
         else:
             return pjoin(jupyter_config_dir(), 'data')
     else:
