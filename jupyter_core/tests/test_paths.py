@@ -50,7 +50,7 @@ config_env = patch.dict('os.environ', {'JUPYTER_CONFIG_DIR': jupyter_config_env}
 
 
 def realpath(path):
-    return os.path.realpath(os.path.expanduser(path))
+    return os.path.abspath(os.path.realpath(os.path.expanduser(path)))
 
 home_jupyter = realpath('~/.jupyter')
 
@@ -119,11 +119,13 @@ def test_data_dir_darwin():
 def test_data_dir_windows():
     with appdata:
         data = jupyter_data_dir()
+    print(data)
     assert data == realpath(pjoin('appdata', 'jupyter'))
 
     with appdata, xdg:
         # windows should ignore xdg
         data = jupyter_data_dir()
+    print(data)
     assert data == realpath(pjoin('appdata', 'jupyter'))
 
 
