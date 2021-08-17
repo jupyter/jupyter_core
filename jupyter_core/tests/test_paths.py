@@ -65,6 +65,7 @@ def test_envset():
             assert not paths.envset(f"FOO_{v}")
         assert not paths.envset("THIS_VARIABLE_SHOULD_NOT_BE_SET")
 
+@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
 def test_config_dir_darwin():
     with darwin, no_config_env:
         config = jupyter_config_dir()
@@ -85,6 +86,7 @@ def test_config_dir_windows():
     assert config == jupyter_config_env
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
 def test_config_dir_linux():
     with linux, no_config_env:
         config = jupyter_config_dir()
@@ -102,6 +104,7 @@ def test_data_dir_env():
     assert data == data_env
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
 def test_data_dir_darwin():
     with darwin:
         data = jupyter_data_dir()
@@ -124,6 +127,7 @@ def test_data_dir_windows():
     assert data == realpath(pjoin('appdata', 'jupyter'))
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
 def test_data_dir_linux():
     with linux, no_xdg:
         data = jupyter_data_dir()
@@ -141,6 +145,7 @@ def test_runtime_dir_env():
     assert runtime == rtd_env
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
 def test_runtime_dir_darwin():
     with darwin:
         runtime = jupyter_runtime_dir()
@@ -163,6 +168,7 @@ def test_runtime_dir_windows():
     assert runtime == realpath(pjoin('appdata', 'jupyter', 'runtime'))
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
 def test_runtime_dir_linux():
     with linux, no_xdg:
         runtime = jupyter_runtime_dir()
