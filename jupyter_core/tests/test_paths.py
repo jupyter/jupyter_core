@@ -74,23 +74,23 @@ def test_config_dir_darwin():
         config = jupyter_config_dir()
     assert config == jupyter_config_env
 
-
+@pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
 def test_config_dir_windows():
-    with windows, no_config_env:
+    with no_config_env:
         config = jupyter_config_dir()
     assert config == home_jupyter
 
-    with windows, config_env:
+    with config_env:
         config = jupyter_config_dir()
     assert config == jupyter_config_env
 
 
 def test_config_dir_linux():
-    with windows, no_config_env:
+    with linux, no_config_env:
         config = jupyter_config_dir()
     assert config == home_jupyter
 
-    with windows, config_env:
+    with linux, config_env:
         config = jupyter_config_dir()
     assert config == jupyter_config_env
 
@@ -112,13 +112,13 @@ def test_data_dir_darwin():
         data = jupyter_data_dir()
     assert data == realpath('~/Library/Jupyter')
 
-
+@pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
 def test_data_dir_windows():
-    with windows, appdata:
+    with appdata:
         data = jupyter_data_dir()
     assert data == realpath(pjoin('appdata', 'jupyter'))
 
-    with windows, appdata, xdg:
+    with appdata, xdg:
         # windows should ignore xdg
         data = jupyter_data_dir()
     assert data == realpath(pjoin('appdata', 'jupyter'))
@@ -151,13 +151,13 @@ def test_runtime_dir_darwin():
         runtime = jupyter_runtime_dir()
     assert runtime == realpath('~/Library/Jupyter/runtime')
 
-
+@pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
 def test_runtime_dir_windows():
-    with windows, appdata:
+    with appdata:
         runtime = jupyter_runtime_dir()
     assert runtime == realpath(pjoin('appdata', 'jupyter', 'runtime'))
 
-    with windows, appdata, xdg:
+    with appdata, xdg:
         # windows should ignore xdg
         runtime = jupyter_runtime_dir()
     assert runtime == realpath(pjoin('appdata', 'jupyter', 'runtime'))
