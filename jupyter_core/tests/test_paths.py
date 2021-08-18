@@ -36,8 +36,6 @@ no_xdg = patch.dict('os.environ', {
     'XDG_RUNTIME_DIR': '',
 })
 
-appdata = patch.dict('os.environ', {'APPDATA': 'appdata'})
-
 no_config_env = patch.dict('os.environ', {
     'JUPYTER_CONFIG_DIR': '',
     'JUPYTER_DATA_DIR': '',
@@ -117,16 +115,14 @@ def test_data_dir_darwin():
 
 @pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
 def test_data_dir_windows():
-    with appdata:
+    with windows:
         data = jupyter_data_dir()
-    print(data)
-    assert data == realpath(pjoin('appdata', 'jupyter'))
+    assert data == realpath(pjoin(os.environ.get('APPDATA', None), 'jupyter'))
 
-    with appdata, xdg:
+    with windows, xdg:
         # windows should ignore xdg
         data = jupyter_data_dir()
-    print(data)
-    assert data == realpath(pjoin('appdata', 'jupyter'))
+    assert data == realpath(pjoin(os.environ.get('APPDATA', None), 'jupyter'))
 
 
 @pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
@@ -160,14 +156,14 @@ def test_runtime_dir_darwin():
 
 @pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
 def test_runtime_dir_windows():
-    with appdata:
+    with windows:
         runtime = jupyter_runtime_dir()
-    assert runtime == realpath(pjoin('appdata', 'jupyter', 'runtime'))
+    assert runtime == realpath(pjoin(os.environ.get('APPDATA', None), 'jupyter', 'runtime'))
 
-    with appdata, xdg:
+    with windows, xdg:
         # windows should ignore xdg
         runtime = jupyter_runtime_dir()
-    assert runtime == realpath(pjoin('appdata', 'jupyter', 'runtime'))
+    assert runtime == realpath(pjoin(os.environ.get('APPDATA', None), 'jupyter', 'runtime'))
 
 
 @pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
