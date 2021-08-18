@@ -1,6 +1,25 @@
 Changes in jupyter-core
 =======================
 
+4.8
+---
+
+4.8.0
+~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.8.0>`__
+
+See the `jupyter_core
+4.8 <https://github.com/jupyter/jupyter_core/milestone/20?closed=1>`__
+milestone on GitHub for the full list of pull requests and issues closed.
+
+- Print an error message instead of an exception when a command is not found (:ghpull:`218`)
+- Return canonical path when using ``%APPDATA%`` on Windows (:ghpull:`222`)
+- Print full usage on missing or invalid commands (:ghpull:`225`)
+- Remove dependency on ``pywin32`` package on PyPy (:ghpull:`230`)
+- Update packages listed in ``jupyter --version`` (:ghpull:`232`)
+- Inherit base aliases/flags from traitlets Application, including ``--show-config`` from traitlets 5 (:ghpull:`233`)
 
 4.7
 ---
@@ -17,7 +36,7 @@ GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.7.1>`__
 ~~~~~
 
 `on
-GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.7>`__
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.7.0>`__
 
 See the `jupyter_core
 4.7 <https://github.com/jupyter/jupyter_core/milestone/19?closed=1>`__
