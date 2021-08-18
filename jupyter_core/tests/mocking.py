@@ -29,8 +29,3 @@ linux = MultiPatch(
     patch.object(os, 'name', 'posix'),
     patch.object(sys, 'platform', 'linux2'),
 )
-
-windows = MultiPatch(
-    patch.object(os, 'name', 'nt'),
-    patch.object(sys, 'platform', 'win32'),
-)

@@ -19,7 +19,7 @@ from jupyter_core.paths import (
     secure_write, is_hidden, is_file_hidden
 )
 
-from .mocking import darwin, windows, linux
+from .mocking import darwin, linux
 
 pjoin = os.path.join
 
@@ -115,11 +115,10 @@ def test_data_dir_darwin():
 
 @pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
 def test_data_dir_windows():
-    with windows:
-        data = jupyter_data_dir()
+    data = jupyter_data_dir()
     assert data == realpath(pjoin(os.environ.get('APPDATA', None), 'jupyter'))
 
-    with windows, xdg:
+    with xdg:
         # windows should ignore xdg
         data = jupyter_data_dir()
     assert data == realpath(pjoin(os.environ.get('APPDATA', None), 'jupyter'))
@@ -156,11 +155,10 @@ def test_runtime_dir_darwin():
 
 @pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
 def test_runtime_dir_windows():
-    with windows:
-        runtime = jupyter_runtime_dir()
+    runtime = jupyter_runtime_dir()
     assert runtime == realpath(pjoin(os.environ.get('APPDATA', None), 'jupyter', 'runtime'))
 
-    with windows, xdg:
+    with xdg:
         # windows should ignore xdg
         runtime = jupyter_runtime_dir()
     assert runtime == realpath(pjoin(os.environ.get('APPDATA', None), 'jupyter', 'runtime'))
