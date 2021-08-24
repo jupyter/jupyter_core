@@ -18,6 +18,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: [3.6, 3.7, 3.8, 3.9, 3.10-dev, pypy-3.7]
+      exclude:
+        # pywin32 not available
+        - os: windows-latest
+          python-version: 3.10-dev
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -32,8 +36,10 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ${{ steps.pip-cache.outputs.dir }}
-        key: ${{ runner.os }}-pip-${{ hashFiles('dev-requirements.txt', 'setup.cfg') }}
+        key: |
+          ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('dev-requirements.txt', 'setup.cfg') }}
         restore-keys: |
+          ${{ runner.os }}-pip-${{ matrix.python-version }}-
           ${{ runner.os }}-pip-
     - name: Install dependencies
       run: |
