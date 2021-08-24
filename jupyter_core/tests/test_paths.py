@@ -10,6 +10,7 @@ import shutil
 import tempfile
 from unittest.mock import patch
 import pytest
+import subprocess
 import sys
 
 from jupyter_core import paths
@@ -265,8 +266,7 @@ def test_is_hidden_win32():
         subdir1 = os.path.join(root, 'subdir')
         os.makedirs(subdir1)
         assert not is_hidden(subdir1, root)
-        r = ctypes.windll.kernel32.SetFileAttributesW(subdir1, 0x02)
-        print(r) # Helps debugging
+        subprocess.check_call(["attrib", "+h", subdir1])
         assert is_hidden(subdir1, root)
         assert is_file_hidden(subdir1)
 
