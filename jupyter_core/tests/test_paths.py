@@ -259,7 +259,10 @@ def test_is_hidden():
         assert not is_file_hidden(subdir56, os.stat(subdir56))
 
 
-@pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
+@pytest.mark.skipif(
+    sys.platform != "win32" or "__pypy__" in sys.modules,
+    reason="only run on windows/cpython: https://foss.heptapod.net/pypy/pypy/-/issues/3469"
+)
 def test_is_hidden_win32():
     import ctypes
     with tempfile.TemporaryDirectory() as root:
