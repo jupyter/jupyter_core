@@ -291,8 +291,7 @@ def test_secure_write_win32():
 
     def check_user_only_permissions(fname):
         # Windows has it's own permissions ACL patterns
-        import win32api
-        username = win32api.GetUserName().lower()
+        username = os.environ["USERNAME"]
         permissions = fetch_win32_permissions(fname)
         print(permissions) # for easier debugging
         assert username in permissions
