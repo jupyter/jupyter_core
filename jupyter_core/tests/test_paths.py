@@ -10,6 +10,7 @@ import shutil
 import tempfile
 from unittest.mock import patch
 import pytest
+import subprocess
 import sys
 
 from jupyter_core import paths
@@ -258,15 +259,17 @@ def test_is_hidden():
         assert not is_file_hidden(subdir56, os.stat(subdir56))
 
 
-@pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
+@pytest.mark.skipif(
+    sys.platform != "win32" or "__pypy__" in sys.modules,
+    reason="only run on windows/cpython: https://foss.heptapod.net/pypy/pypy/-/issues/3469"
+)
 def test_is_hidden_win32():
     import ctypes
     with tempfile.TemporaryDirectory() as root:
         subdir1 = os.path.join(root, 'subdir')
         os.makedirs(subdir1)
         assert not is_hidden(subdir1, root)
-        r = ctypes.windll.kernel32.SetFileAttributesW(subdir1, 0x02)
-        print(r) # Helps debugging
+        subprocess.check_call(["attrib", "+h", subdir1])
         assert is_hidden(subdir1, root)
         assert is_file_hidden(subdir1)
 
@@ -291,8 +294,7 @@ def test_secure_write_win32():
 
     def check_user_only_permissions(fname):
         # Windows has it's own permissions ACL patterns
-        import win32api
-        username = win32api.GetUserName().lower()
+        username = os.environ["USERNAME"]
         permissions = fetch_win32_permissions(fname)
         print(permissions) # for easier debugging
         assert username in permissions
