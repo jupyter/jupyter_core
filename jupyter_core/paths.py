@@ -275,6 +275,7 @@ def is_file_hidden_win(abs_path, stat_res=None):
         # allow AttributeError on PyPy for Windows
         # 'stat_result' object has no attribute 'st_file_attributes'
         # https://foss.heptapod.net/pypy/pypy/-/issues/3469
+        warnings.warn("hidden files are not detectable on this system, so no file will be marked as hidden.")
         pass
 
     return False
