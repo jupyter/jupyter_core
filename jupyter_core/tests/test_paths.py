@@ -12,6 +12,7 @@ from unittest.mock import patch
 import pytest
 import subprocess
 import sys
+import warnings
 
 from jupyter_core import paths
 from jupyter_core.paths import (
@@ -260,10 +261,10 @@ def test_is_hidden():
 
 
 @pytest.mark.skipif(
-    sys.platform != "win32" or "__pypy__" in sys.modules,
+    not (sys.platform == "win32" and "__pypy__" not in sys.modules),
     reason="only run on windows/cpython: https://foss.heptapod.net/pypy/pypy/-/issues/3469"
 )
-def test_is_hidden_win32():
+def test_is_hidden_win32_cpython():
     import ctypes
     with tempfile.TemporaryDirectory() as root:
         subdir1 = os.path.join(root, 'subdir')
@@ -272,6 +273,39 @@ def test_is_hidden_win32():
         subprocess.check_call(["attrib", "+h", subdir1])
         assert is_hidden(subdir1, root)
         assert is_file_hidden(subdir1)
+
+@pytest.mark.skipif(
+    not (sys.platform == "win32" and "__pypy__" in sys.modules),
+    reason="only run on windows/pypy: https://foss.heptapod.net/pypy/pypy/-/issues/3469"
+)
+def test_is_hidden_win32_pypy():
+    import ctypes
+    with tempfile.TemporaryDirectory() as root:
+        subdir1 = os.path.join(root, 'subdir')
+        os.makedirs(subdir1)
+        assert not is_hidden(subdir1, root)
+        subprocess.check_call(["attrib", "+h", subdir1])
+
+        with warnings.catch_warnings(record=True) as w:
+            # Cause all warnings to always be triggered.
+            warnings.simplefilter("always")
+            # Trigger a warning.
+            assert not is_hidden(subdir1, root)
+            # Verify the warning was triggered
+            assert len(w) == 1
+            assert issubclass(w[-1].category, UserWarning)
+            assert "hidden files are not detectable on this system" in str(w[-1].message)
+
+        with warnings.catch_warnings(record=True) as w:
+            # Cause all warnings to always be triggered.
+            warnings.simplefilter("always")
+            # Trigger a warning.
+            assert not is_file_hidden(subdir1)
+            # Verify the warning was triggered
+            assert len(w) == 1
+            assert issubclass(w[-1].category, UserWarning)
+            assert "hidden files are not detectable on this system" in str(w[-1].message)
+
 
 
 @pytest.mark.skipif(sys.platform != "win32", reason="only runs on windows")
