@@ -261,8 +261,8 @@ def test_is_hidden():
 
 
 @pytest.mark.skipif(
-    not (sys.platform == "win32" and "__pypy__" not in sys.modules),
-    reason="only run on windows/cpython: https://foss.heptapod.net/pypy/pypy/-/issues/3469"
+    not (sys.platform == "win32" and (("__pypy__" not in sys.modules) or (sys.implementation.version >= (7, 3, 6)))),
+    reason="only run on windows/cpython or pypy >= 7.3.6: https://foss.heptapod.net/pypy/pypy/-/issues/3469"
 )
 def test_is_hidden_win32_cpython():
     import ctypes
@@ -275,8 +275,8 @@ def test_is_hidden_win32_cpython():
         assert is_file_hidden(subdir1)
 
 @pytest.mark.skipif(
-    not (sys.platform == "win32" and "__pypy__" in sys.modules),
-    reason="only run on windows/pypy: https://foss.heptapod.net/pypy/pypy/-/issues/3469"
+    not (sys.platform == "win32" and "__pypy__" in sys.modules and sys.implementation.version < (7, 3, 6)),
+    reason="only run on windows/pypy < 7.3.6: https://foss.heptapod.net/pypy/pypy/-/issues/3469"
 )
 def test_is_hidden_win32_pypy():
     import ctypes
