@@ -10,6 +10,7 @@ import shutil
 import tempfile
 from unittest.mock import patch
 import pytest
+import site
 import subprocess
 import sys
 import warnings
@@ -215,13 +216,15 @@ def test_jupyter_path_subdir():
 def test_jupyter_config_path():
     path = jupyter_config_path()
     assert path[0] == jupyter_config_dir()
-    assert path[1] == paths.ENV_CONFIG_PATH[0]
+    assert path[1] == os.path.join(site.USER_BASE, 'etc', 'jupyter')
+    assert path[2] == paths.ENV_CONFIG_PATH[0]
 
 def test_jupyter_config_path_prefer_env():
     with patch.dict('os.environ', {'JUPYTER_PREFER_ENV_PATH': 'true'}):
         path = jupyter_config_path()
     assert path[0] == paths.ENV_CONFIG_PATH[0]
     assert path[1] == jupyter_config_dir()
+    assert path[2] == os.path.join(site.USER_BASE, 'etc', 'jupyter')
 
 def test_jupyter_config_path_env():
     path_env = os.pathsep.join([
