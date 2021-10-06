@@ -12,6 +12,7 @@ import os
 import sys
 import stat
 import errno
+import site
 import tempfile
 import warnings
 from pathlib import Path
@@ -161,14 +162,17 @@ def jupyter_path(*subdirs):
         )
 
     # Next is environment or user, depending on the JUPYTER_PREFER_ENV_PATH flag
-    user = jupyter_data_dir()
+    user = [jupyter_data_dir()]
+    if site.ENABLE_USER_SITE:
+        user.append(os.path.join(site.getuserbase(), 'share', 'jupyter'))
+
     env = [p for p in ENV_JUPYTER_PATH if p not in SYSTEM_JUPYTER_PATH]
 
     if envset('JUPYTER_PREFER_ENV_PATH'):
         paths.extend(env)
-        paths.append(user)
+        paths.extend(user)
     else:
-        paths.append(user)
+        paths.extend(user)
         paths.extend(env)
 
     # finally, system
@@ -215,14 +219,17 @@ def jupyter_config_path():
         )
 
     # Next is environment or user, depending on the JUPYTER_PREFER_ENV_PATH flag
-    user = jupyter_config_dir()
+    user = [jupyter_config_dir()]
+    if site.ENABLE_USER_SITE:
+        user.append(os.path.join(site.getuserbase(), 'etc', 'jupyter'))
+
     env = [p for p in ENV_CONFIG_PATH if p not in SYSTEM_CONFIG_PATH]
 
     if envset('JUPYTER_PREFER_ENV_PATH'):
         paths.extend(env)
-        paths.append(user)
+        paths.extend(user)
     else:
-        paths.append(user)
+        paths.extend(user)
         paths.extend(env)
 
     # Finally, system path
