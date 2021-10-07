@@ -1,6 +1,22 @@
 Changes in jupyter-core
 =======================
 
+4.9
+---
+
+4.9.0
+~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.9.0>`__
+
+See the `jupyter_core
+4.9 <https://github.com/jupyter/jupyter_core/milestone/21?closed=1>`__
+milestone on GitHub for the full list of pull requests and issues closed.
+
+- Add Python site user base directory to config and data paths if ``site.ENABLE_USER_SITE`` is True (:ghpull:`242`)
+
+
 4.8
 ---
 
