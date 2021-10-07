@@ -261,7 +261,7 @@ def main():
                     if site.ENABLE_USER_SITE:
                         print(f"Python's site.ENABLE_USER_SITE is True, so we add the user site directory '{site.getuserbase()}'")
                     else:
-                        print("Python's site.ENABLE_USER_SITE is False, so we do not add the Python site user directory")
+                        print(f"Python's site.ENABLE_USER_SITE is not True, so we do not add the Python site user directory '{site.getuserbase()}'")
 
                     # data path list
                     if env.get('JUPYTER_PATH'):
