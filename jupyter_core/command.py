@@ -11,6 +11,7 @@ import errno
 import json
 import os
 from shutil import which
+import site
 import sys
 import sysconfig
 from subprocess import Popen
@@ -256,6 +257,11 @@ def main():
                         print(f"JUPYTER_CONFIG_DIR is set to '{env.get('JUPYTER_CONFIG_DIR')}', overriding the default user-level config directory")
                     else:
                         print("JUPYTER_CONFIG_DIR is not set, so we use the default user-level config directory")
+
+                    if site.ENABLE_USER_SITE:
+                        print(f"Python's site.ENABLE_USER_SITE is True, so we add the user site directory '{site.getuserbase()}'")
+                    else:
+                        print("Python's site.ENABLE_USER_SITE is False, so we do not add the Python site user directory")
 
                     # data path list
                     if env.get('JUPYTER_PATH'):
