@@ -142,6 +142,10 @@ def jupyter_path(*subdirs):
     If the JUPYTER_PREFER_ENV_PATH environment variable is set, the environment-level
     directories will have priority over user-level directories.
 
+    If the Python site.ENABLE_USER_SITE variable is True, we also add the
+    appropriate Python user site subdirectory to the user-level directories.
+
+
     If ``*subdirs`` are given, that subdirectory will be added to each element.
 
     Examples:
@@ -201,9 +205,13 @@ ENV_CONFIG_PATH = [os.path.join(sys.prefix, 'etc', 'jupyter')]
 
 def jupyter_config_path():
     """Return the search path for Jupyter config files as a list.
-    
-    If the JUPYTER_PREFER_ENV_PATH environment variable is set, the environment-level
-    directories will have priority over user-level directories.
+
+    If the JUPYTER_PREFER_ENV_PATH environment variable is set, the
+    environment-level directories will have priority over user-level
+    directories.
+
+    If the Python site.ENABLE_USER_SITE variable is True, we also add the
+    appropriate Python user site subdirectory to the user-level directories.
     """
     if os.environ.get('JUPYTER_NO_CONFIG'):
         # jupyter_config_dir makes a blank config when JUPYTER_NO_CONFIG is set.
