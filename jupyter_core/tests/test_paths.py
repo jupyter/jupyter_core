@@ -48,13 +48,23 @@ no_config_env = patch.dict('os.environ', {
 
 jupyter_config_env = '/jupyter-cfg'
 config_env = patch.dict('os.environ', {'JUPYTER_CONFIG_DIR': jupyter_config_env})
+prefer_env = patch.dict('os.environ', {'JUPYTER_PREFER_ENV_PATH': 'True'})
+
+resetenv = patch.dict(os.environ)
+
+def setup_module():
+    resetenv.start()
+    os.environ.pop('JUPYTER_PREFER_ENV_PATH', None)
+
+def teardown_module():
+    resetenv.stop()
+
 
 
 def realpath(path):
     return os.path.abspath(os.path.realpath(os.path.expanduser(path)))
 
 home_jupyter = realpath('~/.jupyter')
-
 
 def test_envset():
     true_values = ['', 'True', 'on', 'yes', 'Y', '1', 'anything']
@@ -199,7 +209,7 @@ def test_jupyter_path_no_user_site():
     assert path[1] == paths.ENV_JUPYTER_PATH[0]
 
 def test_jupyter_path_prefer_env():
-    with patch.dict('os.environ', {'JUPYTER_PREFER_ENV_PATH': 'true'}):
+    with prefer_env:
         path = jupyter_path()
     assert path[0] == paths.ENV_JUPYTER_PATH[0]
     assert path[1] == jupyter_data_dir()
@@ -241,7 +251,7 @@ def test_jupyter_config_path_no_user_site():
 
 
 def test_jupyter_config_path_prefer_env():
-    with patch.dict('os.environ', {'JUPYTER_PREFER_ENV_PATH': 'true'}):
+    with prefer_env:
         path = jupyter_config_path()
     assert path[0] == paths.ENV_CONFIG_PATH[0]
     assert path[1] == jupyter_config_dir()
