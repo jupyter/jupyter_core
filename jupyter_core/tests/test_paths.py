@@ -198,9 +198,11 @@ def test_jupyter_path():
 def test_jupyter_path_user_site():
     with no_config_env, patch.object(site, 'ENABLE_USER_SITE', True):
         path = jupyter_path()
-    assert path[0] == jupyter_data_dir()
-    assert path[1] == os.path.join(site.getuserbase(), 'share', 'jupyter')
-    assert path[2] == paths.ENV_JUPYTER_PATH[0]
+    sitedir = os.path.join(site.getuserbase(), 'share', 'jupyter')
+    assert path.pop(0) == jupyter_data_dir()
+    if jupyter_data_dir() != sitedir:
+        assert path.pop(0) == sitedir
+    assert path.pop(0) == paths.ENV_JUPYTER_PATH[0]
 
 def test_jupyter_path_no_user_site():
     with no_config_env, patch.object(site, 'ENABLE_USER_SITE', False):
@@ -239,9 +241,11 @@ def test_jupyter_path_subdir():
 def test_jupyter_config_path():
     with patch.object(site, 'ENABLE_USER_SITE', True):
         path = jupyter_config_path()
-    assert path[0] == jupyter_config_dir()
-    assert path[1] == os.path.join(site.USER_BASE, 'etc', 'jupyter')
-    assert path[2] == paths.ENV_CONFIG_PATH[0]
+    sitedir = os.path.join(site.USER_BASE, 'etc', 'jupyter')
+    assert path.pop(0) == jupyter_config_dir()
+    if jupyter_config_dir() != sitedir:
+        assert path.pop(0) == sitedir
+    assert path.pop(0) == paths.ENV_CONFIG_PATH[0]
 
 def test_jupyter_config_path_no_user_site():
     with patch.object(site, 'ENABLE_USER_SITE', False):
