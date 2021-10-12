@@ -168,7 +168,9 @@ def jupyter_path(*subdirs):
     # Next is environment or user, depending on the JUPYTER_PREFER_ENV_PATH flag
     user = [jupyter_data_dir()]
     if site.ENABLE_USER_SITE:
-        user.append(os.path.join(site.getuserbase(), 'share', 'jupyter'))
+        userdir = os.path.join(site.getuserbase(), 'share', 'jupyter')
+        if userdir not in user:
+            user.append(userdir)
 
     env = [p for p in ENV_JUPYTER_PATH if p not in SYSTEM_JUPYTER_PATH]
 
@@ -229,7 +231,9 @@ def jupyter_config_path():
     # Next is environment or user, depending on the JUPYTER_PREFER_ENV_PATH flag
     user = [jupyter_config_dir()]
     if site.ENABLE_USER_SITE:
-        user.append(os.path.join(site.getuserbase(), 'etc', 'jupyter'))
+        userdir = os.path.join(site.getuserbase(), 'etc', 'jupyter')
+        if userdir not in user:
+            user.append(userdir)
 
     env = [p for p in ENV_CONFIG_PATH if p not in SYSTEM_CONFIG_PATH]
 
