@@ -198,11 +198,15 @@ def test_jupyter_path():
 def test_jupyter_path_user_site():
     with no_config_env, patch.object(site, 'ENABLE_USER_SITE', True):
         path = jupyter_path()
-    sitedir = os.path.join(site.getuserbase(), 'share', 'jupyter')
-    assert path.pop(0) == jupyter_data_dir()
-    if jupyter_data_dir() != sitedir:
-        assert path.pop(0) == sitedir
-    assert path.pop(0) == paths.ENV_JUPYTER_PATH[0]
+
+    # deduplicated expected values
+    values = list(dict.fromkeys([
+        jupyter_data_dir(),
+        os.path.join(site.getuserbase(), 'share', 'jupyter'),
+        paths.ENV_JUPYTER_PATH[0]
+    ]))
+    for p,v in zip(path, values):
+        assert p == v
 
 def test_jupyter_path_no_user_site():
     with no_config_env, patch.object(site, 'ENABLE_USER_SITE', False):
@@ -241,11 +245,15 @@ def test_jupyter_path_subdir():
 def test_jupyter_config_path():
     with patch.object(site, 'ENABLE_USER_SITE', True):
         path = jupyter_config_path()
-    sitedir = os.path.join(site.USER_BASE, 'etc', 'jupyter')
-    assert path.pop(0) == jupyter_config_dir()
-    if jupyter_config_dir() != sitedir:
-        assert path.pop(0) == sitedir
-    assert path.pop(0) == paths.ENV_CONFIG_PATH[0]
+
+    # deduplicated expected values
+    values = list(dict.fromkeys([
+        jupyter_config_dir(),
+        os.path.join(site.getuserbase(), 'etc', 'jupyter'),
+        paths.ENV_CONFIG_PATH[0]
+    ]))
+    for p,v in zip(path, values):
+        assert p == v
 
 def test_jupyter_config_path_no_user_site():
     with patch.object(site, 'ENABLE_USER_SITE', False):
@@ -255,11 +263,17 @@ def test_jupyter_config_path_no_user_site():
 
 
 def test_jupyter_config_path_prefer_env():
-    with prefer_env:
+    with prefer_env, patch.object(site, 'ENABLE_USER_SITE', True):
         path = jupyter_config_path()
-    assert path[0] == paths.ENV_CONFIG_PATH[0]
-    assert path[1] == jupyter_config_dir()
-    assert path[2] == os.path.join(site.USER_BASE, 'etc', 'jupyter')
+
+    # deduplicated expected values
+    values = list(dict.fromkeys([
+        paths.ENV_CONFIG_PATH[0],
+        jupyter_config_dir(),
+        os.path.join(site.getuserbase(), 'etc', 'jupyter')
+    ]))
+    for p,v in zip(path, values):
+        assert p == v
 
 def test_jupyter_config_path_env():
     path_env = os.pathsep.join([
