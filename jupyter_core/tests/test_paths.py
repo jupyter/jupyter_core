@@ -10,6 +10,7 @@ import shutil
 import tempfile
 from unittest.mock import patch
 import pytest
+import site
 import subprocess
 import sys
 import warnings
@@ -47,13 +48,23 @@ no_config_env = patch.dict('os.environ', {
 
 jupyter_config_env = '/jupyter-cfg'
 config_env = patch.dict('os.environ', {'JUPYTER_CONFIG_DIR': jupyter_config_env})
+prefer_env = patch.dict('os.environ', {'JUPYTER_PREFER_ENV_PATH': 'True'})
+
+resetenv = patch.dict(os.environ)
+
+def setup_module():
+    resetenv.start()
+    os.environ.pop('JUPYTER_PREFER_ENV_PATH', None)
+
+def teardown_module():
+    resetenv.stop()
+
 
 
 def realpath(path):
     return os.path.abspath(os.path.realpath(os.path.expanduser(path)))
 
 home_jupyter = realpath('~/.jupyter')
-
 
 def test_envset():
     true_values = ['', 'True', 'on', 'yes', 'Y', '1', 'anything']
@@ -184,8 +195,27 @@ def test_jupyter_path():
     assert path[0] == jupyter_data_dir()
     assert path[-2:] == system_path
 
+def test_jupyter_path_user_site():
+    with no_config_env, patch.object(site, 'ENABLE_USER_SITE', True):
+        path = jupyter_path()
+
+    # deduplicated expected values
+    values = list(dict.fromkeys([
+        jupyter_data_dir(),
+        os.path.join(site.getuserbase(), 'share', 'jupyter'),
+        paths.ENV_JUPYTER_PATH[0]
+    ]))
+    for p,v in zip(path, values):
+        assert p == v
+
+def test_jupyter_path_no_user_site():
+    with no_config_env, patch.object(site, 'ENABLE_USER_SITE', False):
+        path = jupyter_path()
+    assert path[0] == jupyter_data_dir()
+    assert path[1] == paths.ENV_JUPYTER_PATH[0]
+
 def test_jupyter_path_prefer_env():
-    with patch.dict('os.environ', {'JUPYTER_PREFER_ENV_PATH': 'true'}):
+    with prefer_env:
         path = jupyter_path()
     assert path[0] == paths.ENV_JUPYTER_PATH[0]
     assert path[1] == jupyter_data_dir()
@@ -213,15 +243,37 @@ def test_jupyter_path_subdir():
         assert p.endswith(pjoin('', 'sub1', 'sub2'))
 
 def test_jupyter_config_path():
-    path = jupyter_config_path()
+    with patch.object(site, 'ENABLE_USER_SITE', True):
+        path = jupyter_config_path()
+
+    # deduplicated expected values
+    values = list(dict.fromkeys([
+        jupyter_config_dir(),
+        os.path.join(site.getuserbase(), 'etc', 'jupyter'),
+        paths.ENV_CONFIG_PATH[0]
+    ]))
+    for p,v in zip(path, values):
+        assert p == v
+
+def test_jupyter_config_path_no_user_site():
+    with patch.object(site, 'ENABLE_USER_SITE', False):
+        path = jupyter_config_path()
     assert path[0] == jupyter_config_dir()
     assert path[1] == paths.ENV_CONFIG_PATH[0]
 
+
 def test_jupyter_config_path_prefer_env():
-    with patch.dict('os.environ', {'JUPYTER_PREFER_ENV_PATH': 'true'}):
+    with prefer_env, patch.object(site, 'ENABLE_USER_SITE', True):
         path = jupyter_config_path()
-    assert path[0] == paths.ENV_CONFIG_PATH[0]
-    assert path[1] == jupyter_config_dir()
+
+    # deduplicated expected values
+    values = list(dict.fromkeys([
+        paths.ENV_CONFIG_PATH[0],
+        jupyter_config_dir(),
+        os.path.join(site.getuserbase(), 'etc', 'jupyter')
+    ]))
+    for p,v in zip(path, values):
+        assert p == v
 
 def test_jupyter_config_path_env():
     path_env = os.pathsep.join([
