@@ -4,6 +4,15 @@ Changes in jupyter-core
 4.8
 ---
 
+4.8.2
+~~~~~
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.8.2>`__
+
+jupyter_core 4.8.1 was released the same day as 4.8.0 and also included the fix below for the Windows tests. Unfortunately, the 4.8.1 release commit and tag were not pushed to GitHub. We are releasing 4.8.2 so we have a commit and tag in version control.
+
+- Fix windows test regression (:ghpull:`240`)
+
 4.8.0
 ~~~~~
 
