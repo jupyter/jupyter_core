@@ -17,6 +17,15 @@ from jupyter_core.paths import (
 )
 
 
+resetenv = patch.dict(os.environ)
+
+def setup_module():
+    resetenv.start()
+    os.environ.pop('JUPYTER_PREFER_ENV_PATH', None)
+
+def teardown_module():
+    resetenv.stop()
+
 def get_jupyter_output(cmd):
     """Get output of a jupyter command"""
     if not isinstance(cmd, list):

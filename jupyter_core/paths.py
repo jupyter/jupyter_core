@@ -12,6 +12,7 @@ import os
 import sys
 import stat
 import errno
+import site
 import tempfile
 import warnings
 from pathlib import Path
@@ -141,6 +142,10 @@ def jupyter_path(*subdirs):
     If the JUPYTER_PREFER_ENV_PATH environment variable is set, the environment-level
     directories will have priority over user-level directories.
 
+    If the Python site.ENABLE_USER_SITE variable is True, we also add the
+    appropriate Python user site subdirectory to the user-level directories.
+
+
     If ``*subdirs`` are given, that subdirectory will be added to each element.
 
     Examples:
@@ -161,14 +166,19 @@ def jupyter_path(*subdirs):
         )
 
     # Next is environment or user, depending on the JUPYTER_PREFER_ENV_PATH flag
-    user = jupyter_data_dir()
+    user = [jupyter_data_dir()]
+    if site.ENABLE_USER_SITE:
+        userdir = os.path.join(site.getuserbase(), 'share', 'jupyter')
+        if userdir not in user:
+            user.append(userdir)
+
     env = [p for p in ENV_JUPYTER_PATH if p not in SYSTEM_JUPYTER_PATH]
 
     if envset('JUPYTER_PREFER_ENV_PATH'):
         paths.extend(env)
-        paths.append(user)
+        paths.extend(user)
     else:
-        paths.append(user)
+        paths.extend(user)
         paths.extend(env)
 
     # finally, system
@@ -197,9 +207,13 @@ ENV_CONFIG_PATH = [os.path.join(sys.prefix, 'etc', 'jupyter')]
 
 def jupyter_config_path():
     """Return the search path for Jupyter config files as a list.
-    
-    If the JUPYTER_PREFER_ENV_PATH environment variable is set, the environment-level
-    directories will have priority over user-level directories.
+
+    If the JUPYTER_PREFER_ENV_PATH environment variable is set, the
+    environment-level directories will have priority over user-level
+    directories.
+
+    If the Python site.ENABLE_USER_SITE variable is True, we also add the
+    appropriate Python user site subdirectory to the user-level directories.
     """
     if os.environ.get('JUPYTER_NO_CONFIG'):
         # jupyter_config_dir makes a blank config when JUPYTER_NO_CONFIG is set.
@@ -215,14 +229,19 @@ def jupyter_config_path():
         )
 
     # Next is environment or user, depending on the JUPYTER_PREFER_ENV_PATH flag
-    user = jupyter_config_dir()
+    user = [jupyter_config_dir()]
+    if site.ENABLE_USER_SITE:
+        userdir = os.path.join(site.getuserbase(), 'etc', 'jupyter')
+        if userdir not in user:
+            user.append(userdir)
+
     env = [p for p in ENV_CONFIG_PATH if p not in SYSTEM_CONFIG_PATH]
 
     if envset('JUPYTER_PREFER_ENV_PATH'):
         paths.extend(env)
-        paths.append(user)
+        paths.extend(user)
     else:
-        paths.append(user)
+        paths.extend(user)
         paths.extend(env)
 
     # Finally, system path
