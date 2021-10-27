@@ -4,6 +4,15 @@ Changes in jupyter-core
 4.9
 ---
 
+4.9.1
+~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.9.0>`__
+
+- Add a workaround for virtualenv for getting the user site directory. (:ghpull:`247`)
+
+
 4.9.0
 ~~~~~
 
