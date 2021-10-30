@@ -303,7 +303,7 @@ def main():
         sys.exit(e)
 
     try:
-        _execvp(command, sys.argv[1:])
+        _execvp(command, [command] + sys.argv[2:])
     except OSError as e:
         sys.exit("Error executing Jupyter command %r: %s" % (subcommand, e))
 
