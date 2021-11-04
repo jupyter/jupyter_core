@@ -201,3 +201,27 @@ def test_path_priority(tmpdir):
         env[str('PATHEXT')] = '.EXE'
     out = check_output([sys.executable, str(jupyter), 'witness'], env=env)
     assert b'WITNESS A' in out
+
+def test_argv0(tmpdir):
+    a = tmpdir.mkdir("a")
+    jupyter = a.join('jupyter')
+    jupyter.write(
+        'from jupyter_core import command; command.main()'
+    )
+    jupyter.chmod(0o700)
+    witness_a = a.join('jupyter-witness')
+    witness_a_src = f'''#!{sys.executable}
+import sys
+print(sys.argv[0])
+'''
+    write_executable(witness_a, witness_a_src)
+
+    env = {}
+    if 'SYSTEMROOT' in os.environ:  # Windows http://bugs.python.org/issue20614
+        env[str('SYSTEMROOT')] = os.environ['SYSTEMROOT']
+    if sys.platform == 'win32':
+        env[str('PATHEXT')] = '.EXE'
+    out = check_output([sys.executable, str(jupyter), 'witness'], env=env)
+
+    # Make sure the first argv is the full path to the executing script
+    assert f'{jupyter}-witness'.encode() in out
