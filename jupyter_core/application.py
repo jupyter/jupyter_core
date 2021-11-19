@@ -147,7 +147,7 @@ class JupyterApp(Application):
             config_text = config_text.decode('utf8')
         print("Writing default config to: %s" % config_file)
         ensure_dir_exists(os.path.abspath(os.path.dirname(config_file)), 0o700)
-        with open(config_file, mode='w') as f:
+        with open(config_file, mode='w', encoding='utf-8') as f:
             f.write(config_text)
     
     def migrate_config(self):

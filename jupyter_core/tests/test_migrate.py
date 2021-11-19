@@ -57,7 +57,7 @@ def env(request):
 
 def touch(path, content=''):
     ensure_dir_exists(os.path.dirname(path))
-    with open(path, 'w') as f:
+    with open(path, 'w', encoding='utf-8') as f:
         f.write(content)
 
 
@@ -65,10 +65,10 @@ def assert_files_equal(a, b):
     """Verify that two files match"""
     
     assert os.path.exists(b)
-    with open(a) as f:
+    with open(a, encoding='utf-8') as f:
         a_txt = f.read()
     
-    with open(b) as f:
+    with open(b, encoding='utf-8') as f:
         b_txt = f.read()
     
     assert a_txt == b_txt
@@ -166,7 +166,7 @@ def test_migrate_config(td):
         'jupyter_test_config.py',
     ]
     
-    with open(pjoin(jpy, 'jupyter_test_config.py')) as f:
+    with open(pjoin(jpy, 'jupyter_test_config.py'), encoding='utf-8') as f:
         text = f.read()
     assert text == 'c.Replaced.trait = 5\n'
 

@@ -877,6 +877,7 @@ def secure_write(fname, binary=False):
         Indicates that the file is binary
     """
     mode = 'wb' if binary else 'w'
+    encoding = None if binary else 'utf-8'
     open_flag = os.O_CREAT | os.O_WRONLY | os.O_TRUNC
     try:
         os.remove(fname)
@@ -898,7 +899,7 @@ def secure_write(fname, binary=False):
             open_flag = os.O_WRONLY | os.O_TRUNC
             win32_restrict_file_to_user(fname)
 
-    with os.fdopen(os.open(fname, open_flag, 0o0600), mode) as f:
+    with os.fdopen(os.open(fname, open_flag, 0o0600), mode, encoding=encoding) as f:
         if os.name != 'nt':
             # Enforce that the file got the requested permissions before writing
             file_mode = get_file_mode(fname)
