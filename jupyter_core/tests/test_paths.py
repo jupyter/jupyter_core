@@ -396,7 +396,7 @@ def test_secure_write_win32():
         with secure_write(fname) as f:
             f.write('test 1')
         check_user_only_permissions(fname)
-        with open(fname, 'r') as f:
+        with open(fname, 'r', encoding='utf-8') as f:
             assert f.read() == 'test 1'
     finally:
         shutil.rmtree(directory)
@@ -411,7 +411,7 @@ def test_secure_write_unix():
             f.write('test 1')
         mode = os.stat(fname).st_mode
         assert 0o0600 == (stat.S_IMODE(mode) & 0o7677)  # tolerate owner-execute bit
-        with open(fname, 'r') as f:
+        with open(fname, 'r', encoding='utf-8') as f:
             assert f.read() == 'test 1'
 
         # Try changing file permissions ahead of time
@@ -420,7 +420,7 @@ def test_secure_write_unix():
             f.write('test 2')
         mode = os.stat(fname).st_mode
         assert 0o0600 == (stat.S_IMODE(mode) & 0o7677)  # tolerate owner-execute bit
-        with open(fname, 'r') as f:
+        with open(fname, 'r', encoding='utf-8') as f:
             assert f.read() == 'test 2'
     finally:
         shutil.rmtree(directory)

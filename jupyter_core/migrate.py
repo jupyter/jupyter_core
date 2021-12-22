@@ -109,11 +109,11 @@ def migrate_file(src, dst, substitutions=None):
     ensure_dir_exists(os.path.dirname(dst))
     shutil.copy(src, dst)
     if substitutions:
-        with open(dst) as f:
+        with open(dst, encoding='utf-8') as f:
             text = f.read()
         for pat, replacement in substitutions.items():
             text = pat.sub(replacement, text)
-        with open(dst, 'w') as f:
+        with open(dst, 'w', encoding='utf-8') as f:
             f.write(text)
     return True
 
@@ -146,7 +146,7 @@ def migrate_static_custom(src, dst):
     # check if custom_js is empty:
     custom_js_empty = True
     if os.path.isfile(custom_js):
-        with open(custom_js) as f:
+        with open(custom_js, encoding='utf-8') as f:
             js = f.read().strip()
             for line in js.splitlines():
                 if not (
@@ -159,7 +159,7 @@ def migrate_static_custom(src, dst):
     # check if custom_css is empty:
     custom_css_empty = True
     if os.path.isfile(custom_css):
-        with open(custom_css) as f:
+        with open(custom_css, encoding='utf-8') as f:
             css = f.read().strip()
             custom_css_empty = css.startswith('/*') and css.endswith('*/')
     
@@ -242,7 +242,7 @@ def migrate():
     
     # write a marker to avoid re-running migration checks
     ensure_dir_exists(env['jupyter_config'])
-    with open(os.path.join(env['jupyter_config'], 'migrated'), 'w') as f:
+    with open(os.path.join(env['jupyter_config'], 'migrated'), 'w', encoding='utf-8') as f:
         f.write(datetime.utcnow().isoformat())
     
     return migrated

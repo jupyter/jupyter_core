@@ -33,7 +33,7 @@ def test_custom_config():
     app = DummyApp()
     td = mkdtemp()
     fname = pjoin(td, 'config.py')
-    with open(fname, 'w') as f:
+    with open(fname, 'w', encoding='utf-8') as f:
         f.write(_dummy_config)
     app.initialize(['--config', fname])
     shutil.rmtree(td)
@@ -44,7 +44,7 @@ def test_cli_override():
     app = DummyApp()
     td = mkdtemp()
     fname = pjoin(td, 'config.py')
-    with open(fname, 'w') as f:
+    with open(fname, 'w', encoding='utf-8') as f:
         f.write(_dummy_config)
     app.initialize(['--config', fname, '--DummyApp.n=20'])
     shutil.rmtree(td)
@@ -66,7 +66,7 @@ def test_generate_config():
 def test_load_config():
     config_dir = mkdtemp()
     wd = mkdtemp()
-    with open(pjoin(config_dir, 'dummy_app_config.py'), 'w') as f:
+    with open(pjoin(config_dir, 'dummy_app_config.py'), 'w', encoding='utf-8') as f:
         f.write('c.DummyApp.m = 1\n')
         f.write('c.DummyApp.n = 1')
     with patch.object(os, 'getcwd', lambda : wd):
@@ -75,7 +75,7 @@ def test_load_config():
 
     assert app.n == 1, "Loaded config from config dir"
     
-    with open(pjoin(wd, 'dummy_app_config.py'), 'w') as f:
+    with open(pjoin(wd, 'dummy_app_config.py'), 'w', encoding='utf-8') as f:
         f.write('c.DummyApp.n = 2')
 
     with patch.object(os, 'getcwd', lambda : wd):
@@ -92,7 +92,7 @@ def test_load_config():
 def test_load_bad_config():
     config_dir = mkdtemp()
     wd = mkdtemp()
-    with open(pjoin(config_dir, 'dummy_app_config.py'), 'w') as f:
+    with open(pjoin(config_dir, 'dummy_app_config.py'), 'w', encoding='utf-8') as f:
         f.write('c.DummyApp.m = "a\n') # Syntax error
     with patch.object(os, 'getcwd', lambda : wd):
         with pytest.raises(SyntaxError):
