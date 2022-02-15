@@ -4,6 +4,16 @@ Changes in jupyter-core
 4.9
 ---
 
+4.9.2
+~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.9.1>`__
+
+* Set proper ``sys.argv[0]`` for subcommand. (:ghpull:`248`)
+* Add explicit encoding in open calls. (:ghpull:`249`)
+* ``jupyter_config_dir`` - reorder ``home_dir`` initialization.  (:ghpull:`251`)
+
 4.9.1
 ~~~~~
 
