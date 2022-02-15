@@ -62,14 +62,13 @@ def jupyter_config_dir():
     """
 
     env = os.environ
-    home_dir = get_home_dir()
-
     if env.get('JUPYTER_NO_CONFIG'):
         return _mkdtemp_once('jupyter-clean-cfg')
 
     if env.get('JUPYTER_CONFIG_DIR'):
         return env['JUPYTER_CONFIG_DIR']
 
+    home_dir = get_home_dir()
     return pjoin(home_dir, '.jupyter')
 
 
