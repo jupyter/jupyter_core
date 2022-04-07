@@ -30,7 +30,7 @@ class JupyterParser(argparse.ArgumentParser):
         return "Available subcommands: %s" % " ".join(list_subcommands())
 
     @epilog.setter
-    def epilog(self):
+    def epilog(self, x):
         """Ignore epilog set in Parser.__init__"""
         pass
 
