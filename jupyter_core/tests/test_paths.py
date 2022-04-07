@@ -18,7 +18,6 @@ import pytest
 
 from jupyter_core import paths
 from jupyter_core.paths import (
-    ENV_JUPYTER_PATH,
     is_file_hidden,
     is_hidden,
     jupyter_config_dir,
@@ -148,12 +147,12 @@ def test_data_dir_darwin():
 @pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
 def test_data_dir_windows():
     data = jupyter_data_dir()
-    assert data == realpath(pjoin(os.environ.get("APPDATA", None), "jupyter"))
+    assert data == realpath(pjoin(os.environ.get("APPDATA", ""), "jupyter"))
 
     with xdg:
         # windows should ignore xdg
         data = jupyter_data_dir()
-    assert data == realpath(pjoin(os.environ.get("APPDATA", None), "jupyter"))
+    assert data == realpath(pjoin(os.environ.get("APPDATA", ""), "jupyter"))
 
 
 @pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
@@ -189,12 +188,12 @@ def test_runtime_dir_darwin():
 @pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
 def test_runtime_dir_windows():
     runtime = jupyter_runtime_dir()
-    assert runtime == realpath(pjoin(os.environ.get("APPDATA", None), "jupyter", "runtime"))
+    assert runtime == realpath(pjoin(os.environ.get("APPDATA", ""), "jupyter", "runtime"))
 
     with xdg:
         # windows should ignore xdg
         runtime = jupyter_runtime_dir()
-    assert runtime == realpath(pjoin(os.environ.get("APPDATA", None), "jupyter", "runtime"))
+    assert runtime == realpath(pjoin(os.environ.get("APPDATA", ""), "jupyter", "runtime"))
 
 
 @pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
@@ -364,7 +363,7 @@ def test_is_hidden():
     reason="only run on windows/cpython or pypy >= 7.3.6: https://foss.heptapod.net/pypy/pypy/-/issues/3469",
 )
 def test_is_hidden_win32_cpython():
-    import ctypes
+    import ctypes  # noqa
 
     with tempfile.TemporaryDirectory() as root:
         subdir1 = os.path.join(root, "subdir")
@@ -384,7 +383,7 @@ def test_is_hidden_win32_cpython():
     reason="only run on windows/pypy < 7.3.6: https://foss.heptapod.net/pypy/pypy/-/issues/3469",
 )
 def test_is_hidden_win32_pypy():
-    import ctypes
+    import ctypes  # noqa
 
     with tempfile.TemporaryDirectory() as root:
         subdir1 = os.path.join(root, "subdir")

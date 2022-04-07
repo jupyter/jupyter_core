@@ -17,6 +17,7 @@ import tempfile
 import warnings
 from contextlib import contextmanager
 from pathlib import Path
+from typing import Optional
 
 pjoin = os.path.join
 
@@ -43,7 +44,7 @@ def get_home_dir():
     return homedir
 
 
-_dtemps = {}
+_dtemps: dict = {}
 
 
 def _mkdtemp_once(name):
@@ -159,7 +160,7 @@ def jupyter_path(*subdirs):
     ['~/.local/jupyter/kernels', '/usr/local/share/jupyter/kernels']
     """
 
-    paths = []
+    paths: list = []
 
     # highest priority is explicit environment variable
     if os.environ.get("JUPYTER_PATH"):
@@ -170,13 +171,16 @@ def jupyter_path(*subdirs):
     if site.ENABLE_USER_SITE:
         # Check if site.getuserbase() exists to be compatible with virtualenv,
         # which often does not have this method.
+        userbase: Optional[str]
         if hasattr(site, "getuserbase"):
             userbase = site.getuserbase()
         else:
             userbase = site.USER_BASE
-        userdir = os.path.join(userbase, "share", "jupyter")
-        if userdir not in user:
-            user.append(userdir)
+
+        if userbase:
+            userdir = os.path.join(userbase, "share", "jupyter")
+            if userdir not in user:
+                user.append(userdir)
 
     env = [p for p in ENV_JUPYTER_PATH if p not in SYSTEM_JUPYTER_PATH]
 
@@ -225,7 +229,7 @@ def jupyter_config_path():
         # jupyter_config_dir makes a blank config when JUPYTER_NO_CONFIG is set.
         return [jupyter_config_dir()]
 
-    paths = []
+    paths: list = []
 
     # highest priority is explicit environment variable
     if os.environ.get("JUPYTER_CONFIG_PATH"):
@@ -234,6 +238,7 @@ def jupyter_config_path():
     # Next is environment or user, depending on the JUPYTER_PREFER_ENV_PATH flag
     user = [jupyter_config_dir()]
     if site.ENABLE_USER_SITE:
+        userbase: Optional[str]
         # Check if site.getuserbase() exists to be compatible with virtualenv,
         # which often does not have this method.
         if hasattr(site, "getuserbase"):
@@ -241,9 +246,10 @@ def jupyter_config_path():
         else:
             userbase = site.USER_BASE
 
-        userdir = os.path.join(userbase, "etc", "jupyter")
-        if userdir not in user:
-            user.append(userdir)
+        if userbase:
+            userdir = os.path.join(userbase, "etc", "jupyter")
+            if userdir not in user:
+                user.append(userdir)
 
     env = [p for p in ENV_CONFIG_PATH if p not in SYSTEM_CONFIG_PATH]
 
@@ -298,7 +304,7 @@ def is_file_hidden_win(abs_path, stat_res=None):
             raise
 
     try:
-        if stat_res.st_file_attributes & stat.FILE_ATTRIBUTE_HIDDEN:
+        if stat_res.st_file_attributes & stat.FILE_ATTRIBUTE_HIDDEN:  # type:ignore[attr-defined]
             return True
     except AttributeError:
         # allow AttributeError on PyPy for Windows
@@ -470,8 +476,8 @@ def _win32_restrict_file_to_user_ctypes(fname):
     import ctypes
     from ctypes import wintypes
 
-    advapi32 = ctypes.WinDLL("advapi32", use_last_error=True)
-    secur32 = ctypes.WinDLL("secur32", use_last_error=True)
+    advapi32 = ctypes.WinDLL("advapi32", use_last_error=True)  # type:ignore[attr-defined]
+    secur32 = ctypes.WinDLL("secur32", use_last_error=True)  # type:ignore[attr-defined]
 
     NameSamCompatible = 2
     WinBuiltinAdministratorsSid = 26
@@ -520,7 +526,7 @@ def _win32_restrict_file_to_user_ctypes(fname):
 
     def _nonzero_success(result, func, args):
         if not result:
-            raise ctypes.WinError(ctypes.get_last_error())
+            raise ctypes.WinError(ctypes.get_last_error())  # type:ignore[attr-defined]
         return args
 
     secur32.GetUserNameExW.errcheck = _nonzero_success
@@ -627,7 +633,7 @@ def _win32_restrict_file_to_user_ctypes(fname):
         try:
             advapi32.CreateWellKnownSid(WellKnownSidType, None, pSid, ctypes.byref(cbSid))
         except OSError as e:
-            if e.winerror != ERROR_INSUFFICIENT_BUFFER:
+            if e.winerror != ERROR_INSUFFICIENT_BUFFER:  # type:ignore[attr-defined]
                 raise
             pSid = (ctypes.c_char * cbSid.value)()
             advapi32.CreateWellKnownSid(WellKnownSidType, None, pSid, ctypes.byref(cbSid))
@@ -640,7 +646,7 @@ def _win32_restrict_file_to_user_ctypes(fname):
         try:
             secur32.GetUserNameExW(NameFormat, None, nSize)
         except OSError as e:
-            if e.winerror != ERROR_MORE_DATA:
+            if e.winerror != ERROR_MORE_DATA:  # type:ignore[attr-defined]
                 raise
         if not nSize.contents.value:
             return None
@@ -665,7 +671,7 @@ def _win32_restrict_file_to_user_ctypes(fname):
                 ctypes.byref(peUse),
             )
         except OSError as e:
-            if e.winerror != ERROR_INSUFFICIENT_BUFFER:
+            if e.winerror != ERROR_INSUFFICIENT_BUFFER:  # type:ignore[attr-defined]
                 raise
         Sid = ctypes.create_unicode_buffer("", cbSid.value)
         pSid = ctypes.cast(ctypes.pointer(Sid), wintypes.LPVOID)
@@ -680,7 +686,7 @@ def _win32_restrict_file_to_user_ctypes(fname):
             ctypes.byref(peUse),
         )
         if not success:
-            raise ctypes.WinError()
+            raise ctypes.WinError()  # type:ignore[attr-defined]
         return pSid, lpReferencedDomainName.value, peUse.value
 
     def AddAccessAllowedAce(pAcl, dwAceRevision, AccessMask, pSid):
@@ -700,7 +706,7 @@ def _win32_restrict_file_to_user_ctypes(fname):
                 ctypes.byref(nLength),
             )
         except OSError as e:
-            if e.winerror != ERROR_INSUFFICIENT_BUFFER:
+            if e.winerror != ERROR_INSUFFICIENT_BUFFER:  # type:ignore[attr-defined]
                 raise
         if not nLength.value:
             return None
@@ -750,7 +756,7 @@ def _win32_restrict_file_to_user_ctypes(fname):
                 ctypes.byref(lpdwPrimaryGroupSize),
             )
         except OSError as e:
-            if e.winerror != ERROR_INSUFFICIENT_BUFFER:
+            if e.winerror != ERROR_INSUFFICIENT_BUFFER:  # type:ignore[attr-defined]
                 raise
         pAbsoluteSecurityDescriptor = (wintypes.BYTE * lpdwAbsoluteSecurityDescriptorSize.value)()
         pDaclData = (wintypes.BYTE * lpdwDaclSize.value)()
@@ -788,7 +794,7 @@ def _win32_restrict_file_to_user_ctypes(fname):
                 ctypes.byref(lpdwBufferLength),
             )
         except OSError as e:
-            if e.winerror != ERROR_INSUFFICIENT_BUFFER:
+            if e.winerror != ERROR_INSUFFICIENT_BUFFER:  # type:ignore[attr-defined]
                 raise
         pSelfRelativeSecurityDescriptor = (wintypes.BYTE * lpdwBufferLength.value)()
         advapi32.MakeSelfRelativeSD(
@@ -907,7 +913,7 @@ def issue_insecure_write_warning():
     def format_warning(msg, *args, **kwargs):
         return str(msg) + "\n"
 
-    warnings.formatwarning = format_warning
+    warnings.formatwarning = format_warning  # type:ignore[assignment]
     warnings.warn(
         "WARNING: Insecure writes have been enabled via environment variable "
         "'JUPYTER_ALLOW_INSECURE_WRITES'! If this is not intended, remove the "
