@@ -19,6 +19,7 @@ on:
     # The branches below must be a subset of the branches above
     branches: [master]
   schedule:
+    # Make a pass every Saturday at 06:41 UTC
     - cron: "41 6 * * 6"
 
 permissions:
