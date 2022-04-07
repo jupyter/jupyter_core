@@ -2,9 +2,9 @@
 
 c = get_config()
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # NotebookApp configuration
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # NotebookApp will inherit config from: BaseIPythonApplication, Application
 
@@ -16,11 +16,11 @@ c = get_config()
 # c.NotebookApp.config_manager_class = <class 'IPython.html.services.config.manager.ConfigManager'>
 
 # Hashed password to use for web authentication.
-# 
+#
 # To generate, type in a python/IPython shell:
-# 
+#
 #   from IPython.lib import passwd; passwd()
-# 
+#
 # The string should be of the form type:salt:hashed-password.
 # c.NotebookApp.password = ''
 
@@ -37,7 +37,7 @@ c = get_config()
 # c.NotebookApp.log_level = 30
 
 # Path to an extra config file to load.
-# 
+#
 # If specified, load this config file in addition to any other IPython config.
 # c.NotebookApp.extra_config_file = ''
 
@@ -45,7 +45,7 @@ c = get_config()
 # c.NotebookApp.cluster_manager_class = <class 'IPython.html.services.clusters.clustermanager.ClusterManager'>
 
 # The base URL for the notebook server.
-# 
+#
 # Leading and trailing slashes can be omitted, and will automatically be added.
 # c.NotebookApp.base_url = '/'
 
@@ -60,18 +60,18 @@ c = get_config()
 # c.NotebookApp.session_manager_class = <class 'IPython.html.services.sessions.sessionmanager.SessionManager'>
 
 # Set the Access-Control-Allow-Origin header
-# 
+#
 # Use '*' to allow any origin to access your server.
-# 
+#
 # Takes precedence over allow_origin_pat.
 # c.NotebookApp.allow_origin = ''
 
 # Whether to enable MathJax for typesetting math/TeX
-# 
+#
 # MathJax is the javascript library IPython uses to render math/LaTeX. It is
 # very large, so you may want to disable it if you have a slow internet
 # connection, or for offline use of the notebook.
-# 
+#
 # When disabled, equations etc. will appear as their untransformed TeX source.
 # c.NotebookApp.enable_mathjax = True
 
@@ -89,18 +89,18 @@ c = get_config()
 
 # The base URL for websockets, if it differs from the HTTP server (hint: it
 # almost certainly doesn't).
-# 
+#
 # Should be in the form of an HTTP origin: ws[s]://hostname[:port]
 # c.NotebookApp.websocket_url = ''
 
 # Use a regular expression for the Access-Control-Allow-Origin header
-# 
+#
 # Requests from an origin matching the expression will get replies with:
-# 
+#
 #     Access-Control-Allow-Origin: origin
-# 
+#
 # where `origin` is the origin of the request.
-# 
+#
 # Ignored if allow_origin is set.
 # c.NotebookApp.allow_origin_pat = ''
 
@@ -168,12 +168,12 @@ c = get_config()
 
 # The kernel spec manager class to use. Should be a subclass of
 # `IPython.kernel.kernelspec.KernelSpecManager`.
-# 
+#
 # The Api of KernelSpecManager is provisional and might change without warning
 # between this version of IPython and the next stable one.
 # c.NotebookApp.kernel_spec_manager_class = <class 'IPython.kernel.kernelspec.KernelSpecManager'>
 
-# 
+#
 # c.NotebookApp.file_to_run = ''
 
 # DEPRECATED use base_url
@@ -182,7 +182,7 @@ c = get_config()
 # The random bytes used to secure cookies. By default this is a new random
 # number every time you start the Notebook. Set it to a value in a config file
 # to enable logins to persist across server sessions.
-# 
+#
 # Note: Cookie secrets should be kept private, do not share config files with
 # cookie_secret stored in plaintext (you can read the value from a file).
 # c.NotebookApp.cookie_secret = b''
@@ -191,7 +191,7 @@ c = get_config()
 # c.NotebookApp.keyfile = ''
 
 # Extra paths to search for serving static files.
-# 
+#
 # This allows adding javascript/css to be available from the notebook server
 # machine, or overriding individual files in the IPython
 # c.NotebookApp.extra_static_paths = []
@@ -203,7 +203,7 @@ c = get_config()
 # c.NotebookApp.ipython_dir = ''
 
 # Extra paths to search for serving jinja templates.
-# 
+#
 # Can be used to override templates from IPython.html.templates.
 # c.NotebookApp.extra_template_paths = []
 
@@ -218,12 +218,12 @@ c = get_config()
 # The IP address the notebook server will listen on.
 # c.NotebookApp.ip = 'localhost'
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # KernelManager configuration
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # Manages a single kernel in a subprocess on this host.
-# 
+#
 # This version starts kernels with Popen.
 
 # KernelManager will inherit config from: ConnectionFileMixin
@@ -234,11 +234,11 @@ c = get_config()
 # set the stdin (ROUTER) port [default: random]
 # c.KernelManager.stdin_port = 0
 
-# 
+#
 # c.KernelManager.transport = 'tcp'
 
 # JSON file in which to store connection info [default: kernel-<pid>.json]
-# 
+#
 # This file will contain the IP, ports, and authentication key needed to connect
 # clients to this kernel. By default, this file will be created in the security
 # dir of the current profile, but can be specified by absolute path.
@@ -254,7 +254,7 @@ c = get_config()
 # c.KernelManager.autorestart = False
 
 # DEPRECATED: Use kernel_name instead.
-# 
+#
 # The Popen Command to launch the kernel. Override this if you have a custom
 # kernel. If kernel_cmd is specified in a configuration file, IPython does not
 # pass any arguments to the kernel, because it cannot make any assumptions about
@@ -271,15 +271,15 @@ c = get_config()
 # set the iopub (PUB) port [default: random]
 # c.KernelManager.iopub_port = 0
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # ProfileDir configuration
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # An object to manage the profile directory and its resources.
-# 
+#
 # The profile directory is used by all IPython applications, to manage
 # configuration, logging and security.
-# 
+#
 # This object knows how to find, create and manage these directories. This
 # should be used by any code that wants to handle profiles.
 
@@ -287,32 +287,32 @@ c = get_config()
 # `profile` option.
 # c.ProfileDir.location = ''
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Session configuration
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # Object for handling serialization and sending of messages.
-# 
+#
 # The Session object handles building messages and sending them with ZMQ sockets
 # or ZMQStream objects.  Objects can communicate with each other over the
 # network via Session objects, and only need to work with the dict-based IPython
 # message spec. The Session will handle serialization/deserialization, security,
 # and metadata.
-# 
+#
 # Sessions support configurable serialization via packer/unpacker traits, and
 # signing with HMAC digests via the key/keyfile traits.
-# 
+#
 # Parameters ----------
-# 
+#
 # debug : bool
 #     whether to trigger extra debugging statements
 # packer/unpacker : str : 'json', 'pickle' or import_string
 #     importstrings for methods to serialize message parts.  If just
 #     'json' or 'pickle', predefined JSON and pickle packers will be used.
 #     Otherwise, the entire importstring must be used.
-# 
+#
 #     The functions must accept at least valid JSON input, and output *bytes*.
-# 
+#
 #     For example, to use msgpack:
 #     packer = 'msgpack.packb', unpacker='msgpack.unpackb'
 # pack/unpack : callables
@@ -333,7 +333,7 @@ c = get_config()
 # c.Session.signature_scheme = 'hmac-sha256'
 
 # The maximum number of digests to remember.
-# 
+#
 # The digest history will be culled when it exceeds this value.
 # c.Session.digest_history_size = 65536
 
@@ -375,9 +375,9 @@ c = get_config()
 # each message.
 # c.Session.metadata = {}
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # MappingKernelManager configuration
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # A KernelManager that handles notebook mapping and HTTP error handling
 
@@ -387,24 +387,24 @@ c = get_config()
 # KernelManager for customized behavior.
 # c.MappingKernelManager.kernel_manager_class = 'IPython.kernel.ioloop.IOLoopKernelManager'
 
-# 
+#
 # c.MappingKernelManager.root_dir = ''
 
 # The name of the default kernel to start
 # c.MappingKernelManager.default_kernel_name = 'python3'
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # ContentsManager configuration
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # Base class for serving files and directories.
-# 
+#
 # This serves any text or binary file, as well as directories, with special
 # handling for JSON notebook documents.
-# 
+#
 # Most APIs take a path argument, which is always an API-style unicode path, and
 # always refers to a directory.
-# 
+#
 # - unicode, not url-escaped
 # - '/'-separated
 # - leading and trailing '/' will be stripped
@@ -415,16 +415,16 @@ c = get_config()
 # c.ContentsManager.untitled_directory = 'Untitled Folder'
 
 # Python callable or importstring thereof
-# 
+#
 # To be called on a contents model prior to save.
-# 
+#
 # This can be used to process the structure, such as removing notebook outputs
 # or other side effects that should not be saved.
-# 
+#
 # It will be called as (all arguments passed by keyword)::
-# 
+#
 #     hook(path=path, model=model, contents_manager=self)
-# 
+#
 # - model: the model to be saved. Includes file contents.
 #   Modifying this dict will affect the file that is stored.
 # - path: the API path of the save destination
@@ -440,18 +440,18 @@ c = get_config()
 # The base name used when creating untitled notebooks.
 # c.ContentsManager.untitled_notebook = 'Untitled'
 
-# 
+#
 # c.ContentsManager.checkpoints = None
 
-# 
+#
 # c.ContentsManager.checkpoints_class = <class 'IPython.html.services.contents.checkpoints.Checkpoints'>
 
-# 
+#
 # c.ContentsManager.checkpoints_kwargs = {}
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # FileContentsManager configuration
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # FileContentsManager will inherit config from: ContentsManager
 
@@ -459,16 +459,16 @@ c = get_config()
 # c.FileContentsManager.untitled_directory = 'Untitled Folder'
 
 # Python callable or importstring thereof
-# 
+#
 # To be called on a contents model prior to save.
-# 
+#
 # This can be used to process the structure, such as removing notebook outputs
 # or other side effects that should not be saved.
-# 
+#
 # It will be called as (all arguments passed by keyword)::
-# 
+#
 #     hook(path=path, model=model, contents_manager=self)
-# 
+#
 # - model: the model to be saved. Includes file contents.
 #   Modifying this dict will affect the file that is stored.
 # - path: the API path of the save destination
@@ -485,16 +485,16 @@ c = get_config()
 # c.FileContentsManager.untitled_notebook = 'Untitled'
 
 # Python callable or importstring thereof
-# 
+#
 # to be called on the path of a file just saved.
-# 
+#
 # This can be used to process the file on disk, such as converting the notebook
 # to a script or HTML via nbconvert.
-# 
+#
 # It will be called as (all arguments passed by keyword)::
-# 
+#
 #     hook(os_path=os_path, model=model, contents_manager=instance)
-# 
+#
 # - path: the filesystem path to the file just written - model: the model
 # representing the file - contents_manager: this ContentsManager instance
 # c.FileContentsManager.post_save_hook = None
@@ -502,21 +502,21 @@ c = get_config()
 # DEPRECATED, use post_save_hook
 # c.FileContentsManager.save_script = False
 
-# 
+#
 # c.FileContentsManager.root_dir = ''
 
-# 
+#
 # c.FileContentsManager.checkpoints_class = <class 'IPython.html.services.contents.checkpoints.Checkpoints'>
 
-# 
+#
 # c.FileContentsManager.checkpoints = None
 
-# 
+#
 # c.FileContentsManager.checkpoints_kwargs = {}
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # NotebookNotary configuration
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # A class for computing and verifying notebook signatures.
 
@@ -538,11 +538,11 @@ c = get_config()
 # The hashing algorithm used to sign notebooks.
 # c.NotebookNotary.algorithm = 'sha256'
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # KernelSpecManager configuration
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # Whitelist of allowed kernel names.
-# 
+#
 # By default, all installed kernels are allowed.
 # c.KernelSpecManager.whitelist = set()

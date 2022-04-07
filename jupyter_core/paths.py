@@ -8,22 +8,21 @@
 # Distributed under the terms of the Modified BSD License.
 
 
-import os
-import sys
-import stat
 import errno
+import os
 import site
+import stat
+import sys
 import tempfile
 import warnings
-from pathlib import Path
-
 from contextlib import contextmanager
+from pathlib import Path
 
 pjoin = os.path.join
 
 # UF_HIDDEN is a stat flag not defined in the stat module.
 # It is used by BSD to indicate hidden files.
-UF_HIDDEN = getattr(stat, 'UF_HIDDEN', 32768)
+UF_HIDDEN = getattr(stat, "UF_HIDDEN", 32768)
 
 
 def envset(name):
@@ -32,17 +31,21 @@ def envset(name):
     An environment variable is considered set if it is assigned to a value
     other than 'no', 'n', 'false', 'off', '0', or '0.0' (case insensitive)
     """
-    return os.environ.get(name, 'no').lower() not in ['no', 'n', 'false', 'off', '0', '0.0']
+    return os.environ.get(name, "no").lower() not in ["no", "n", "false", "off", "0", "0.0"]
+
 
 def get_home_dir():
     """Get the real path of the home directory"""
-    homedir = os.path.expanduser('~')
+    homedir = os.path.expanduser("~")
     # Next line will make things work even when /home/ is a symlink to
     # /usr/home as it is on FreeBSD, for example
     homedir = str(Path(homedir).resolve())
     return homedir
 
+
 _dtemps = {}
+
+
 def _mkdtemp_once(name):
     """Make or reuse a temporary directory.
 
@@ -52,8 +55,9 @@ def _mkdtemp_once(name):
     try:
         return _dtemps[name]
     except KeyError:
-        d = _dtemps[name] = tempfile.mkdtemp(prefix=name + '-')
+        d = _dtemps[name] = tempfile.mkdtemp(prefix=name + "-")
         return d
+
 
 def jupyter_config_dir():
     """Get the Jupyter config directory for this platform and user.
@@ -62,14 +66,14 @@ def jupyter_config_dir():
     """
 
     env = os.environ
-    if env.get('JUPYTER_NO_CONFIG'):
-        return _mkdtemp_once('jupyter-clean-cfg')
+    if env.get("JUPYTER_NO_CONFIG"):
+        return _mkdtemp_once("jupyter-clean-cfg")
 
-    if env.get('JUPYTER_CONFIG_DIR'):
-        return env['JUPYTER_CONFIG_DIR']
+    if env.get("JUPYTER_CONFIG_DIR"):
+        return env["JUPYTER_CONFIG_DIR"]
 
     home_dir = get_home_dir()
-    return pjoin(home_dir, '.jupyter')
+    return pjoin(home_dir, ".jupyter")
 
 
 def jupyter_data_dir():
@@ -81,25 +85,25 @@ def jupyter_data_dir():
     """
     env = os.environ
 
-    if env.get('JUPYTER_DATA_DIR'):
-        return env['JUPYTER_DATA_DIR']
+    if env.get("JUPYTER_DATA_DIR"):
+        return env["JUPYTER_DATA_DIR"]
 
     home = get_home_dir()
 
-    if sys.platform == 'darwin':
-        return os.path.join(home, 'Library', 'Jupyter')
-    elif os.name == 'nt':
-        appdata = os.environ.get('APPDATA', None)
+    if sys.platform == "darwin":
+        return os.path.join(home, "Library", "Jupyter")
+    elif os.name == "nt":
+        appdata = os.environ.get("APPDATA", None)
         if appdata:
-            return str(Path(appdata, 'jupyter').resolve())
+            return str(Path(appdata, "jupyter").resolve())
         else:
-            return pjoin(jupyter_config_dir(), 'data')
+            return pjoin(jupyter_config_dir(), "data")
     else:
         # Linux, non-OS X Unix, AIX, etc.
         xdg = env.get("XDG_DATA_HOME", None)
         if not xdg:
-            xdg = pjoin(home, '.local', 'share')
-        return pjoin(xdg, 'jupyter')
+            xdg = pjoin(home, ".local", "share")
+        return pjoin(xdg, "jupyter")
 
 
 def jupyter_runtime_dir():
@@ -112,25 +116,25 @@ def jupyter_runtime_dir():
     """
     env = os.environ
 
-    if env.get('JUPYTER_RUNTIME_DIR'):
-        return env['JUPYTER_RUNTIME_DIR']
+    if env.get("JUPYTER_RUNTIME_DIR"):
+        return env["JUPYTER_RUNTIME_DIR"]
 
-    return pjoin(jupyter_data_dir(), 'runtime')
+    return pjoin(jupyter_data_dir(), "runtime")
 
 
-if os.name == 'nt':
-    programdata = os.environ.get('PROGRAMDATA', None)
+if os.name == "nt":
+    programdata = os.environ.get("PROGRAMDATA", None)
     if programdata:
-        SYSTEM_JUPYTER_PATH = [pjoin(programdata, 'jupyter')]
+        SYSTEM_JUPYTER_PATH = [pjoin(programdata, "jupyter")]
     else:  # PROGRAMDATA is not defined by default on XP.
-        SYSTEM_JUPYTER_PATH = [os.path.join(sys.prefix, 'share', 'jupyter')]
+        SYSTEM_JUPYTER_PATH = [os.path.join(sys.prefix, "share", "jupyter")]
 else:
     SYSTEM_JUPYTER_PATH = [
         "/usr/local/share/jupyter",
         "/usr/share/jupyter",
     ]
 
-ENV_JUPYTER_PATH = [os.path.join(sys.prefix, 'share', 'jupyter')]
+ENV_JUPYTER_PATH = [os.path.join(sys.prefix, "share", "jupyter")]
 
 
 def jupyter_path(*subdirs):
@@ -158,28 +162,25 @@ def jupyter_path(*subdirs):
     paths = []
 
     # highest priority is explicit environment variable
-    if os.environ.get('JUPYTER_PATH'):
-        paths.extend(
-            p.rstrip(os.sep)
-            for p in os.environ['JUPYTER_PATH'].split(os.pathsep)
-        )
+    if os.environ.get("JUPYTER_PATH"):
+        paths.extend(p.rstrip(os.sep) for p in os.environ["JUPYTER_PATH"].split(os.pathsep))
 
     # Next is environment or user, depending on the JUPYTER_PREFER_ENV_PATH flag
     user = [jupyter_data_dir()]
     if site.ENABLE_USER_SITE:
         # Check if site.getuserbase() exists to be compatible with virtualenv,
         # which often does not have this method.
-        if hasattr(site, 'getuserbase'):
+        if hasattr(site, "getuserbase"):
             userbase = site.getuserbase()
         else:
             userbase = site.USER_BASE
-        userdir = os.path.join(userbase, 'share', 'jupyter')
+        userdir = os.path.join(userbase, "share", "jupyter")
         if userdir not in user:
             user.append(userdir)
 
     env = [p for p in ENV_JUPYTER_PATH if p not in SYSTEM_JUPYTER_PATH]
 
-    if envset('JUPYTER_PREFER_ENV_PATH'):
+    if envset("JUPYTER_PREFER_ENV_PATH"):
         paths.extend(env)
         paths.extend(user)
     else:
@@ -191,14 +192,14 @@ def jupyter_path(*subdirs):
 
     # add subdir, if requested
     if subdirs:
-        paths = [ pjoin(p, *subdirs) for p in paths ]
+        paths = [pjoin(p, *subdirs) for p in paths]
     return paths
 
 
-if os.name == 'nt':
-    programdata = os.environ.get('PROGRAMDATA', None)
+if os.name == "nt":
+    programdata = os.environ.get("PROGRAMDATA", None)
     if programdata:
-        SYSTEM_CONFIG_PATH = [os.path.join(programdata, 'jupyter')]
+        SYSTEM_CONFIG_PATH = [os.path.join(programdata, "jupyter")]
     else:  # PROGRAMDATA is not defined by default on XP.
         SYSTEM_CONFIG_PATH = []
 else:
@@ -207,7 +208,7 @@ else:
         "/etc/jupyter",
     ]
 
-ENV_CONFIG_PATH = [os.path.join(sys.prefix, 'etc', 'jupyter')]
+ENV_CONFIG_PATH = [os.path.join(sys.prefix, "etc", "jupyter")]
 
 
 def jupyter_config_path():
@@ -220,36 +221,33 @@ def jupyter_config_path():
     If the Python site.ENABLE_USER_SITE variable is True, we also add the
     appropriate Python user site subdirectory to the user-level directories.
     """
-    if os.environ.get('JUPYTER_NO_CONFIG'):
+    if os.environ.get("JUPYTER_NO_CONFIG"):
         # jupyter_config_dir makes a blank config when JUPYTER_NO_CONFIG is set.
         return [jupyter_config_dir()]
 
     paths = []
 
     # highest priority is explicit environment variable
-    if os.environ.get('JUPYTER_CONFIG_PATH'):
-        paths.extend(
-            p.rstrip(os.sep)
-            for p in os.environ['JUPYTER_CONFIG_PATH'].split(os.pathsep)
-        )
+    if os.environ.get("JUPYTER_CONFIG_PATH"):
+        paths.extend(p.rstrip(os.sep) for p in os.environ["JUPYTER_CONFIG_PATH"].split(os.pathsep))
 
     # Next is environment or user, depending on the JUPYTER_PREFER_ENV_PATH flag
     user = [jupyter_config_dir()]
     if site.ENABLE_USER_SITE:
         # Check if site.getuserbase() exists to be compatible with virtualenv,
         # which often does not have this method.
-        if hasattr(site, 'getuserbase'):
+        if hasattr(site, "getuserbase"):
             userbase = site.getuserbase()
         else:
             userbase = site.USER_BASE
 
-        userdir = os.path.join(userbase, 'etc', 'jupyter')
+        userdir = os.path.join(userbase, "etc", "jupyter")
         if userdir not in user:
             user.append(userdir)
 
     env = [p for p in ENV_CONFIG_PATH if p not in SYSTEM_CONFIG_PATH]
 
-    if envset('JUPYTER_PREFER_ENV_PATH'):
+    if envset("JUPYTER_PREFER_ENV_PATH"):
         paths.extend(env)
         paths.extend(user)
     else:
@@ -288,7 +286,7 @@ def is_file_hidden_win(abs_path, stat_res=None):
         The result of calling stat() on abs_path. If not passed, this function
         will call stat() internally.
     """
-    if os.path.basename(abs_path).startswith('.'):
+    if os.path.basename(abs_path).startswith("."):
         return True
 
     if stat_res is None:
@@ -306,7 +304,9 @@ def is_file_hidden_win(abs_path, stat_res=None):
         # allow AttributeError on PyPy for Windows
         # 'stat_result' object has no attribute 'st_file_attributes'
         # https://foss.heptapod.net/pypy/pypy/-/issues/3469
-        warnings.warn("hidden files are not detectable on this system, so no file will be marked as hidden.")
+        warnings.warn(
+            "hidden files are not detectable on this system, so no file will be marked as hidden."
+        )
         pass
 
     return False
@@ -328,7 +328,7 @@ def is_file_hidden_posix(abs_path, stat_res=None):
         The result of calling stat() on abs_path. If not passed, this function
         will call stat() internally.
     """
-    if os.path.basename(abs_path).startswith('.'):
+    if os.path.basename(abs_path).startswith("."):
         return True
 
     if stat_res is None or stat.S_ISLNK(stat_res.st_mode):
@@ -346,19 +346,19 @@ def is_file_hidden_posix(abs_path, stat_res=None):
             return True
 
     # check UF_HIDDEN
-    if getattr(stat_res, 'st_flags', 0) & UF_HIDDEN:
+    if getattr(stat_res, "st_flags", 0) & UF_HIDDEN:
         return True
 
     return False
 
 
-if sys.platform == 'win32':
+if sys.platform == "win32":
     is_file_hidden = is_file_hidden_win
 else:
     is_file_hidden = is_file_hidden_posix
 
 
-def is_hidden(abs_path, abs_root=''):
+def is_hidden(abs_path, abs_root=""):
     """Is a file hidden or contained in a hidden directory?
 
     This will start with the rightmost path element and work backwards to the
@@ -386,8 +386,8 @@ def is_hidden(abs_path, abs_root=''):
 
     if not abs_root:
         abs_root = abs_path.split(os.sep, 1)[0] + os.sep
-    inside_root = abs_path[len(abs_root):]
-    if any(part.startswith('.') for part in inside_root.split(os.sep)):
+    inside_root = abs_path[len(abs_root) :]
+    if any(part.startswith(".") for part in inside_root.split(os.sep)):
         return True
 
     # check UF_HIDDEN on any location up to root.
@@ -402,7 +402,7 @@ def is_hidden(abs_path, abs_root=''):
             st = os.lstat(path)
         except OSError:
             return True
-        if getattr(st, 'st_flags', 0) & UF_HIDDEN:
+        if getattr(st, "st_flags", 0) & UF_HIDDEN:
             return True
         path = os.path.dirname(path)
 
@@ -428,18 +428,24 @@ def win32_restrict_file_to_user(fname):
     except ImportError:
         return _win32_restrict_file_to_user_ctypes(fname)
 
-    import win32security
     import ntsecuritycon as con
+    import win32security
 
     # everyone, _domain, _type = win32security.LookupAccountName("", "Everyone")
     admins = win32security.CreateWellKnownSid(win32security.WinBuiltinAdministratorsSid)
-    user, _domain, _type = win32security.LookupAccountName("", win32api.GetUserNameEx(win32api.NameSamCompatible))
+    user, _domain, _type = win32security.LookupAccountName(
+        "", win32api.GetUserNameEx(win32api.NameSamCompatible)
+    )
 
     sd = win32security.GetFileSecurity(fname, win32security.DACL_SECURITY_INFORMATION)
 
     dacl = win32security.ACL()
     # dacl.AddAccessAllowedAce(win32security.ACL_REVISION, con.FILE_ALL_ACCESS, everyone)
-    dacl.AddAccessAllowedAce(win32security.ACL_REVISION, con.FILE_GENERIC_READ | con.FILE_GENERIC_WRITE | con.DELETE, user)
+    dacl.AddAccessAllowedAce(
+        win32security.ACL_REVISION,
+        con.FILE_GENERIC_READ | con.FILE_GENERIC_WRITE | con.DELETE,
+        user,
+    )
     dacl.AddAccessAllowedAce(win32security.ACL_REVISION, con.FILE_ALL_ACCESS, admins)
 
     sd.SetSecurityDescriptorDacl(1, dacl, 0)
@@ -464,8 +470,8 @@ def _win32_restrict_file_to_user_ctypes(fname):
     import ctypes
     from ctypes import wintypes
 
-    advapi32 = ctypes.WinDLL('advapi32', use_last_error=True)
-    secur32 = ctypes.WinDLL('secur32', use_last_error=True)
+    advapi32 = ctypes.WinDLL("advapi32", use_last_error=True)
+    secur32 = ctypes.WinDLL("secur32", use_last_error=True)
 
     NameSamCompatible = 2
     WinBuiltinAdministratorsSid = 26
@@ -488,11 +494,7 @@ def _win32_restrict_file_to_user_ctypes(fname):
     FILE_WRITE_ATTRIBUTES = 256
     FILE_ALL_ACCESS = STANDARD_RIGHTS_REQUIRED | SYNCHRONIZE | 0x1FF
     FILE_GENERIC_READ = (
-        STANDARD_RIGHTS_READ
-        | FILE_READ_DATA
-        | FILE_READ_ATTRIBUTES
-        | FILE_READ_EA
-        | SYNCHRONIZE
+        STANDARD_RIGHTS_READ | FILE_READ_DATA | FILE_READ_ATTRIBUTES | FILE_READ_EA | SYNCHRONIZE
     )
     FILE_GENERIC_WRITE = (
         STANDARD_RIGHTS_WRITE
@@ -505,11 +507,11 @@ def _win32_restrict_file_to_user_ctypes(fname):
 
     class ACL(ctypes.Structure):
         _fields_ = [
-            ('AclRevision', wintypes.BYTE),
-            ('Sbz1', wintypes.BYTE),
-            ('AclSize', wintypes.WORD),
-            ('AceCount', wintypes.WORD),
-            ('Sbz2', wintypes.WORD),
+            ("AclRevision", wintypes.BYTE),
+            ("Sbz1", wintypes.BYTE),
+            ("AclSize", wintypes.WORD),
+            ("AceCount", wintypes.WORD),
+            ("Sbz2", wintypes.WORD),
         ]
 
     PSID = ctypes.c_void_p
@@ -623,16 +625,12 @@ def _win32_restrict_file_to_user_ctypes(fname):
         pSid = (ctypes.c_char * 1)()
         cbSid = wintypes.DWORD()
         try:
-            advapi32.CreateWellKnownSid(
-                WellKnownSidType, None, pSid, ctypes.byref(cbSid)
-            )
+            advapi32.CreateWellKnownSid(WellKnownSidType, None, pSid, ctypes.byref(cbSid))
         except OSError as e:
             if e.winerror != ERROR_INSUFFICIENT_BUFFER:
                 raise
             pSid = (ctypes.c_char * cbSid.value)()
-            advapi32.CreateWellKnownSid(
-                WellKnownSidType, None, pSid, ctypes.byref(cbSid)
-            )
+            advapi32.CreateWellKnownSid(WellKnownSidType, None, pSid, ctypes.byref(cbSid))
         return pSid[:]
 
     def GetUserNameEx(NameFormat):
@@ -641,7 +639,7 @@ def _win32_restrict_file_to_user_ctypes(fname):
         nSize = ctypes.pointer(ctypes.c_ulong(0))
         try:
             secur32.GetUserNameExW(NameFormat, None, nSize)
-        except WindowsError as e:
+        except OSError as e:
             if e.winerror != ERROR_MORE_DATA:
                 raise
         if not nSize.contents.value:
@@ -666,14 +664,12 @@ def _win32_restrict_file_to_user_ctypes(fname):
                 ctypes.byref(cchReferencedDomainName),
                 ctypes.byref(peUse),
             )
-        except WindowsError as e:
+        except OSError as e:
             if e.winerror != ERROR_INSUFFICIENT_BUFFER:
                 raise
-        Sid = ctypes.create_unicode_buffer('', cbSid.value)
+        Sid = ctypes.create_unicode_buffer("", cbSid.value)
         pSid = ctypes.cast(ctypes.pointer(Sid), wintypes.LPVOID)
-        lpReferencedDomainName = ctypes.create_unicode_buffer(
-            '', cchReferencedDomainName.value + 1
-        )
+        lpReferencedDomainName = ctypes.create_unicode_buffer("", cchReferencedDomainName.value + 1)
         success = advapi32.LookupAccountNameW(
             lpSystemName,
             lpAccountName,
@@ -703,7 +699,7 @@ def _win32_restrict_file_to_user_ctypes(fname):
                 0,
                 ctypes.byref(nLength),
             )
-        except WindowsError as e:
+        except OSError as e:
             if e.winerror != ERROR_INSUFFICIENT_BUFFER:
                 raise
         if not nLength.value:
@@ -720,17 +716,11 @@ def _win32_restrict_file_to_user_ctypes(fname):
 
     def SetFileSecurity(lpFileName, RequestedInformation, pSecurityDescriptor):
         # set the security of a file or directory object
-        advapi32.SetFileSecurityW(
-            lpFileName, RequestedInformation, pSecurityDescriptor
-        )
+        advapi32.SetFileSecurityW(lpFileName, RequestedInformation, pSecurityDescriptor)
 
-    def SetSecurityDescriptorDacl(
-        pSecurityDescriptor, bDaclPresent, pDacl, bDaclDefaulted
-    ):
+    def SetSecurityDescriptorDacl(pSecurityDescriptor, bDaclPresent, pDacl, bDaclDefaulted):
         # set information in a discretionary access control list (DACL)
-        advapi32.SetSecurityDescriptorDacl(
-            pSecurityDescriptor, bDaclPresent, pDacl, bDaclDefaulted
-        )
+        advapi32.SetSecurityDescriptorDacl(pSecurityDescriptor, bDaclPresent, pDacl, bDaclDefaulted)
 
     def MakeAbsoluteSD(pSelfRelativeSecurityDescriptor):
         # return a security descriptor in absolute format
@@ -759,12 +749,10 @@ def _win32_restrict_file_to_user_ctypes(fname):
                 pPrimaryGroup,
                 ctypes.byref(lpdwPrimaryGroupSize),
             )
-        except WindowsError as e:
+        except OSError as e:
             if e.winerror != ERROR_INSUFFICIENT_BUFFER:
                 raise
-        pAbsoluteSecurityDescriptor = (
-            wintypes.BYTE * lpdwAbsoluteSecurityDescriptorSize.value
-        )()
+        pAbsoluteSecurityDescriptor = (wintypes.BYTE * lpdwAbsoluteSecurityDescriptorSize.value)()
         pDaclData = (wintypes.BYTE * lpdwDaclSize.value)()
         pDacl = ctypes.cast(pDaclData, PACL).contents
         pSaclData = (wintypes.BYTE * lpdwSaclSize.value)()
@@ -799,12 +787,10 @@ def _win32_restrict_file_to_user_ctypes(fname):
                 pSelfRelativeSecurityDescriptor,
                 ctypes.byref(lpdwBufferLength),
             )
-        except WindowsError as e:
+        except OSError as e:
             if e.winerror != ERROR_INSUFFICIENT_BUFFER:
                 raise
-        pSelfRelativeSecurityDescriptor = (
-            wintypes.BYTE * lpdwBufferLength.value
-        )()
+        pSelfRelativeSecurityDescriptor = (wintypes.BYTE * lpdwBufferLength.value)()
         advapi32.MakeSelfRelativeSD(
             pAbsoluteSecurityDescriptor,
             pSelfRelativeSecurityDescriptor,
@@ -821,7 +807,7 @@ def _win32_restrict_file_to_user_ctypes(fname):
         return pAcl
 
     SidAdmins = CreateWellKnownSid(WinBuiltinAdministratorsSid)
-    SidUser = LookupAccountName('', GetUserNameEx(NameSamCompatible))[0]
+    SidUser = LookupAccountName("", GetUserNameEx(NameSamCompatible))[0]
 
     Acl = NewAcl()
     AddAccessAllowedAce(Acl, ACL_REVISION, FILE_ALL_ACCESS, SidAdmins)
@@ -854,10 +840,12 @@ def get_file_mode(fname):
     # should tolerate the execute bit on the file's owner when validating permissions - thus
     # the missing least significant bit on the third octal digit. In addition, we also tolerate
     # the sticky bit being set, so the lsb from the fourth octal digit is also removed.
-    return stat.S_IMODE(os.stat(fname).st_mode) & 0o6677  # Use 4 octal digits since S_IMODE does the same
+    return (
+        stat.S_IMODE(os.stat(fname).st_mode) & 0o6677
+    )  # Use 4 octal digits since S_IMODE does the same
 
 
-allow_insecure_writes = os.getenv('JUPYTER_ALLOW_INSECURE_WRITES', 'false').lower() in ('true', '1')
+allow_insecure_writes = os.getenv("JUPYTER_ALLOW_INSECURE_WRITES", "false").lower() in ("true", "1")
 
 
 @contextmanager
@@ -875,16 +863,16 @@ def secure_write(fname, binary=False):
     binary: boolean
         Indicates that the file is binary
     """
-    mode = 'wb' if binary else 'w'
-    encoding = None if binary else 'utf-8'
+    mode = "wb" if binary else "w"
+    encoding = None if binary else "utf-8"
     open_flag = os.O_CREAT | os.O_WRONLY | os.O_TRUNC
     try:
         os.remove(fname)
-    except (IOError, OSError):
+    except OSError:
         # Skip any issues with the file not existing
         pass
 
-    if os.name == 'nt':
+    if os.name == "nt":
         if allow_insecure_writes:
             # Mounted file systems can have a number of failure modes inside this block.
             # For windows machines in insecure mode we simply skip this to avoid failures :/
@@ -899,24 +887,29 @@ def secure_write(fname, binary=False):
             win32_restrict_file_to_user(fname)
 
     with os.fdopen(os.open(fname, open_flag, 0o0600), mode, encoding=encoding) as f:
-        if os.name != 'nt':
+        if os.name != "nt":
             # Enforce that the file got the requested permissions before writing
             file_mode = get_file_mode(fname)
             if 0o0600 != file_mode:
                 if allow_insecure_writes:
                     issue_insecure_write_warning()
                 else:
-                    raise RuntimeError("Permissions assignment failed for secure file: '{file}'."
-                        " Got '{permissions}' instead of '0o0600'."
-                        .format(file=fname, permissions=oct(file_mode)))
+                    raise RuntimeError(
+                        "Permissions assignment failed for secure file: '{file}'."
+                        " Got '{permissions}' instead of '0o0600'.".format(
+                            file=fname, permissions=oct(file_mode)
+                        )
+                    )
         yield f
 
 
 def issue_insecure_write_warning():
     def format_warning(msg, *args, **kwargs):
-        return str(msg) + '\n'
+        return str(msg) + "\n"
 
     warnings.formatwarning = format_warning
-    warnings.warn("WARNING: Insecure writes have been enabled via environment variable "
-                  "'JUPYTER_ALLOW_INSECURE_WRITES'! If this is not intended, remove the "
-                  "variable or set its value to 'False'.")
+    warnings.warn(
+        "WARNING: Insecure writes have been enabled via environment variable "
+        "'JUPYTER_ALLOW_INSECURE_WRITES'! If this is not intended, remove the "
+        "variable or set its value to 'False'."
+    )

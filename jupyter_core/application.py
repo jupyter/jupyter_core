@@ -7,23 +7,26 @@ All Jupyter applications should inherit from this.
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from copy import deepcopy
 import logging
 import os
-from shutil import which
 import sys
+from copy import deepcopy
+from shutil import which
 
+from traitlets import Bool, List, Unicode, observe
 from traitlets.config.application import Application, catch_config_error
 from traitlets.config.loader import ConfigFileNotFound
-from traitlets import Unicode, Bool, List, observe
-
-from .utils import ensure_dir_exists
 
 from .paths import (
-    jupyter_config_dir, jupyter_data_dir, jupyter_runtime_dir,
-    jupyter_path, jupyter_config_path, allow_insecure_writes,
-    issue_insecure_write_warning
+    allow_insecure_writes,
+    issue_insecure_write_warning,
+    jupyter_config_dir,
+    jupyter_config_path,
+    jupyter_data_dir,
+    jupyter_path,
+    jupyter_runtime_dir,
 )
+from .utils import ensure_dir_exists
 
 # aliases and flags
 
@@ -32,8 +35,8 @@ if isinstance(Application.aliases, dict):
     # traitlets 5
     base_aliases.update(Application.aliases)
 _jupyter_aliases = {
-    'log-level' : 'Application.log_level',
-    'config' : 'JupyterApp.config_file',
+    "log-level": "Application.log_level",
+    "config": "JupyterApp.config_file",
 }
 base_aliases.update(_jupyter_aliases)
 
@@ -42,38 +45,45 @@ if isinstance(Application.flags, dict):
     # traitlets 5
     base_flags.update(Application.flags)
 _jupyter_flags = {
-    'debug': ({'Application' : {'log_level' : logging.DEBUG}},
-            "set log level to logging.DEBUG (maximize logging output)"),
-    'generate-config': ({'JupyterApp': {'generate_config': True}},
-        "generate default config file"),
-    'y': ({'JupyterApp': {'answer_yes': True}},
-        "Answer yes to any questions instead of prompting."),
+    "debug": (
+        {"Application": {"log_level": logging.DEBUG}},
+        "set log level to logging.DEBUG (maximize logging output)",
+    ),
+    "generate-config": ({"JupyterApp": {"generate_config": True}}, "generate default config file"),
+    "y": (
+        {"JupyterApp": {"answer_yes": True}},
+        "Answer yes to any questions instead of prompting.",
+    ),
 }
 base_flags.update(_jupyter_flags)
+
 
 class NoStart(Exception):
     """Exception to raise when an application shouldn't start"""
 
+
 class JupyterApp(Application):
     """Base class for Jupyter applications"""
-    name = 'jupyter' # override in subclasses
+
+    name = "jupyter"  # override in subclasses
     description = "A Jupyter Application"
-    
+
     aliases = base_aliases
     flags = base_flags
 
     def _log_level_default(self):
         return logging.INFO
-    
+
     jupyter_path = List(Unicode())
+
     def _jupyter_path_default(self):
         return jupyter_path()
-    
+
     config_dir = Unicode()
-    
+
     def _config_dir_default(self):
         return jupyter_config_dir()
-    
+
     @property
     def config_file_paths(self):
         path = jupyter_config_path()
@@ -81,78 +91,77 @@ class JupyterApp(Application):
             path.insert(0, self.config_dir)
         path.insert(0, os.getcwd())
         return path
-    
+
     data_dir = Unicode()
-    
+
     def _data_dir_default(self):
         d = jupyter_data_dir()
         ensure_dir_exists(d, mode=0o700)
         return d
+
     runtime_dir = Unicode()
-    
+
     def _runtime_dir_default(self):
         rd = jupyter_runtime_dir()
         ensure_dir_exists(rd, mode=0o700)
         return rd
 
-    @observe('runtime_dir')
+    @observe("runtime_dir")
     def _runtime_dir_changed(self, change):
-        ensure_dir_exists(change['new'], mode=0o700)
+        ensure_dir_exists(change["new"], mode=0o700)
 
-    generate_config = Bool(False, config=True,
-        help="""Generate default config file."""
-    )
-    
-    config_file_name = Unicode(config=True,
-        help="Specify a config file to load."
-    )
+    generate_config = Bool(False, config=True, help="""Generate default config file.""")
+
+    config_file_name = Unicode(config=True, help="Specify a config file to load.")
+
     def _config_file_name_default(self):
         if not self.name:
-            return ''
-        return self.name.replace('-','_') + '_config'
-    
-    config_file = Unicode(config=True,
+            return ""
+        return self.name.replace("-", "_") + "_config"
+
+    config_file = Unicode(
+        config=True,
         help="""Full path of a config file.""",
     )
-    
-    answer_yes = Bool(False, config=True,
-        help="""Answer yes to any prompts."""
-    )
-    
+
+    answer_yes = Bool(False, config=True, help="""Answer yes to any prompts.""")
+
     def write_default_config(self):
         """Write our default config to a .py config file"""
         if self.config_file:
             config_file = self.config_file
         else:
-            config_file = os.path.join(self.config_dir, self.config_file_name + '.py')
-        
+            config_file = os.path.join(self.config_dir, self.config_file_name + ".py")
+
         if os.path.exists(config_file) and not self.answer_yes:
-            answer = ''
+            answer = ""
+
             def ask():
                 prompt = "Overwrite %s with default config? [y/N]" % config_file
                 try:
-                    return input(prompt).lower() or 'n'
+                    return input(prompt).lower() or "n"
                 except KeyboardInterrupt:
-                    print('') # empty line
-                    return 'n'
+                    print("")  # empty line
+                    return "n"
+
             answer = ask()
-            while not answer.startswith(('y', 'n')):
+            while not answer.startswith(("y", "n")):
                 print("Please answer 'yes' or 'no'")
                 answer = ask()
-            if answer.startswith('n'):
+            if answer.startswith("n"):
                 return
-        
+
         config_text = self.generate_config_file()
         if isinstance(config_text, bytes):
-            config_text = config_text.decode('utf8')
+            config_text = config_text.decode("utf8")
         print("Writing default config to: %s" % config_file)
         ensure_dir_exists(os.path.abspath(os.path.dirname(config_file)), 0o700)
-        with open(config_file, mode='w', encoding='utf-8') as f:
+        with open(config_file, mode="w", encoding="utf-8") as f:
             f.write(config_text)
-    
+
     def migrate_config(self):
         """Migrate config/data from IPython 3"""
-        if os.path.exists(os.path.join(self.config_dir, 'migrated')):
+        if os.path.exists(os.path.join(self.config_dir, "migrated")):
             # already migrated
             return
 
@@ -172,9 +181,9 @@ class JupyterApp(Application):
         to False, so errors will make tests fail.
         """
         self.log.debug("Searching %s for config files", self.config_file_paths)
-        base_config = 'jupyter_config'
+        base_config = "jupyter_config"
         try:
-            super(JupyterApp, self).load_config_file(
+            super().load_config_file(
                 base_config,
                 path=self.config_file_paths,
             )
@@ -192,10 +201,7 @@ class JupyterApp(Application):
                 return
 
         try:
-            super(JupyterApp, self).load_config_file(
-                config_file_name,
-                path=path
-            )
+            super().load_config_file(config_file_name, path=path)
         except ConfigFileNotFound:
             self.log.debug("Config file not found, skipping: %s", config_file_name)
         except Exception:
@@ -203,24 +209,23 @@ class JupyterApp(Application):
             # self.raise_config_file_errors
             if (not suppress_errors) or self.raise_config_file_errors:
                 raise
-            self.log.warning("Error loading config file: %s" %
-                            config_file_name, exc_info=True)
+            self.log.warning("Error loading config file: %s" % config_file_name, exc_info=True)
 
     # subcommand-related
     def _find_subcommand(self, name):
-        name = '{}-{}'.format(self.name, name)
+        name = f"{self.name}-{name}"
         return which(name)
-    
+
     @property
     def _dispatching(self):
         """Return whether we are dispatching to another command
-        
+
         or running ourselves.
         """
         return bool(self.generate_config or self.subapp or self.subcommand)
-    
+
     subcommand = Unicode()
-    
+
     @catch_config_error
     def initialize(self, argv=None):
         # don't hook up crash handler before parsing command-line
@@ -248,22 +253,23 @@ class JupyterApp(Application):
         if self.subcommand:
             os.execv(self.subcommand, [self.subcommand] + self.argv[1:])
             raise NoStart()
-        
+
         if self.subapp:
             self.subapp.start()
             raise NoStart()
-        
+
         if self.generate_config:
             self.write_default_config()
             raise NoStart()
-    
+
     @classmethod
     def launch_instance(cls, argv=None, **kwargs):
         """Launch an instance of a Jupyter Application"""
         try:
-            return super(JupyterApp, cls).launch_instance(argv=argv, **kwargs)
+            return super().launch_instance(argv=argv, **kwargs)
         except NoStart:
             return
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     JupyterApp.launch_instance()

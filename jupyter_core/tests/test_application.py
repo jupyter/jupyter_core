@@ -20,33 +20,37 @@ def test_default_traits():
     for trait_name in app.traits():
         getattr(app, trait_name)
 
+
 class DummyApp(JupyterApp):
     name = "dummy-app"
     m = Integer(0, config=True)
     n = Integer(0, config=True)
 
+
 _dummy_config = """
 c.DummyApp.n = 10
 """
 
+
 def test_custom_config():
     app = DummyApp()
     td = mkdtemp()
-    fname = pjoin(td, 'config.py')
-    with open(fname, 'w', encoding='utf-8') as f:
+    fname = pjoin(td, "config.py")
+    with open(fname, "w", encoding="utf-8") as f:
         f.write(_dummy_config)
-    app.initialize(['--config', fname])
+    app.initialize(["--config", fname])
     shutil.rmtree(td)
     assert app.config_file == fname
     assert app.n == 10
 
+
 def test_cli_override():
     app = DummyApp()
     td = mkdtemp()
-    fname = pjoin(td, 'config.py')
-    with open(fname, 'w', encoding='utf-8') as f:
+    fname = pjoin(td, "config.py")
+    with open(fname, "w", encoding="utf-8") as f:
         f.write(_dummy_config)
-    app.initialize(['--config', fname, '--DummyApp.n=20'])
+    app.initialize(["--config", fname, "--DummyApp.n=20"])
     shutil.rmtree(td)
     assert app.n == 20
 
@@ -54,37 +58,37 @@ def test_cli_override():
 def test_generate_config():
     td = mkdtemp()
     app = DummyApp(config_dir=td)
-    app.initialize(['--generate-config'])
+    app.initialize(["--generate-config"])
     assert app.generate_config
-    
+
     with pytest.raises(NoStart):
         app.start()
-    
-    assert os.path.exists(os.path.join(td, 'dummy_app_config.py'))
+
+    assert os.path.exists(os.path.join(td, "dummy_app_config.py"))
 
 
 def test_load_config():
     config_dir = mkdtemp()
     wd = mkdtemp()
-    with open(pjoin(config_dir, 'dummy_app_config.py'), 'w', encoding='utf-8') as f:
-        f.write('c.DummyApp.m = 1\n')
-        f.write('c.DummyApp.n = 1')
-    with patch.object(os, 'getcwd', lambda : wd):
+    with open(pjoin(config_dir, "dummy_app_config.py"), "w", encoding="utf-8") as f:
+        f.write("c.DummyApp.m = 1\n")
+        f.write("c.DummyApp.n = 1")
+    with patch.object(os, "getcwd", lambda: wd):
         app = DummyApp(config_dir=config_dir)
         app.initialize([])
 
     assert app.n == 1, "Loaded config from config dir"
-    
-    with open(pjoin(wd, 'dummy_app_config.py'), 'w', encoding='utf-8') as f:
-        f.write('c.DummyApp.n = 2')
 
-    with patch.object(os, 'getcwd', lambda : wd):
+    with open(pjoin(wd, "dummy_app_config.py"), "w", encoding="utf-8") as f:
+        f.write("c.DummyApp.n = 2")
+
+    with patch.object(os, "getcwd", lambda: wd):
         app = DummyApp(config_dir=config_dir)
         app.initialize([])
 
     assert app.m == 1, "Loaded config from config dir"
     assert app.n == 2, "Loaded config from CWD"
-    
+
     shutil.rmtree(config_dir)
     shutil.rmtree(wd)
 
@@ -92,12 +96,12 @@ def test_load_config():
 def test_load_bad_config():
     config_dir = mkdtemp()
     wd = mkdtemp()
-    with open(pjoin(config_dir, 'dummy_app_config.py'), 'w', encoding='utf-8') as f:
-        f.write('c.DummyApp.m = "a\n') # Syntax error
-    with patch.object(os, 'getcwd', lambda : wd):
+    with open(pjoin(config_dir, "dummy_app_config.py"), "w", encoding="utf-8") as f:
+        f.write('c.DummyApp.m = "a\n')  # Syntax error
+    with patch.object(os, "getcwd", lambda: wd):
         with pytest.raises(SyntaxError):
             app = DummyApp(config_dir=config_dir)
-            app.raise_config_file_errors=True
+            app.raise_config_file_errors = True
             app.initialize([])
 
     shutil.rmtree(config_dir)

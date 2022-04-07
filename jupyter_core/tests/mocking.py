@@ -8,24 +8,25 @@ import sys
 from unittest.mock import patch
 
 
-class MultiPatch(object):
+class MultiPatch:
     def __init__(self, *patchers):
         self.patchers = patchers
-    
+
     def __enter__(self):
         for p in self.patchers:
             p.start()
-    
+
     def __exit__(self, *args):
         for p in self.patchers:
             p.stop()
 
+
 darwin = MultiPatch(
-    patch.object(os, 'name', 'posix'),
-    patch.object(sys, 'platform', 'darwin'),
+    patch.object(os, "name", "posix"),
+    patch.object(sys, "platform", "darwin"),
 )
 
 linux = MultiPatch(
-    patch.object(os, 'name', 'posix'),
-    patch.object(sys, 'platform', 'linux2'),
+    patch.object(os, "name", "posix"),
+    patch.object(sys, "platform", "linux2"),
 )

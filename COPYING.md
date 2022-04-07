@@ -24,7 +24,7 @@ software without specific prior written permission.
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
 FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
 SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ## About the Jupyter Development Team
 
 The Jupyter Development Team is the set of all contributors to the Jupyter
-project.  This includes all of the Jupyter subprojects. A full list with
+project. This includes all of the Jupyter subprojects. A full list with
 details is kept in the documentation directory, in the file
 `about/credits.txt`.
 
@@ -48,8 +48,8 @@ Jupyter uses a shared copyright model. Each contributor maintains copyright
 over their contributions to Jupyter. It is important to note that these
 contributions are typically only changes to the repositories. Thus, the Jupyter
 source code in its entirety is not the copyright of any single person or
-institution.  Instead, it is the collective copyright of the entire Jupyter
-Development Team.  If individual contributors want to maintain a record of what
+institution. Instead, it is the collective copyright of the entire Jupyter
+Development Team. If individual contributors want to maintain a record of what
 changes/contributions they have specific copyright on, they should indicate
 their copyright in the commit message of the change, when they commit the
 change to one of the Jupyter repositories.

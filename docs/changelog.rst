@@ -33,7 +33,11 @@ See the `jupyter_core
 4.9 <https://github.com/jupyter/jupyter_core/milestone/21?closed=1>`__
 milestone on GitHub for the full list of pull requests and issues closed.
 
-- Add Python site user base subdirectories to config and data user-level paths if ``site.ENABLE_USER_SITE`` is True. One way to disable these directory additions is to set the ``PYTHONNOUSERSITE`` environment variable. These locations can be customized by setting the ``PYTHONUSERBASE`` environment variable. (:ghpull:`242`)
+- Add Python site user base subdirectories to config and data user-level paths
+  if ``site.ENABLE_USER_SITE`` is True. One way to disable these directory
+  additions is to set the ``PYTHONNOUSERSITE`` environment variable. These
+  locations can be customized by setting the ``PYTHONUSERBASE`` environment
+  variable. (:ghpull:`242`)
 
 
 4.8
@@ -44,7 +48,10 @@ milestone on GitHub for the full list of pull requests and issues closed.
 `on
 GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.8.2>`__
 
-jupyter_core 4.8.1 was released the same day as 4.8.0 and also included the fix below for the Windows tests. Unfortunately, the 4.8.1 release commit and tag were not pushed to GitHub. We are releasing 4.8.2 so we have a commit and tag in version control.
+jupyter_core 4.8.1 was released the same day as 4.8.0 and also included the fix
+below for the Windows tests. Unfortunately, the 4.8.1 release commit and tag
+were not pushed to GitHub. We are releasing 4.8.2 so we have a commit and tag
+in version control.
 
 - Fix windows test regression (:ghpull:`240`)
 
@@ -89,7 +96,13 @@ See the `jupyter_core
 4.7 <https://github.com/jupyter/jupyter_core/milestone/19?closed=1>`__
 milestone on GitHub for the full list of pull requests and issues closed.
 
-- Add a new ``JUPYTER_PREFER_ENV_PATH`` variable, which can be set to switch the order of the environment-level path and the user-level path in the Jupyter path hierarchy (e.g., ``jupyter --paths``). It is considered set if it is a value that is not one of 'no', 'n', 'off', 'false', '0', or '0.0' (case insensitive). If you are running Jupyter in multiple virtual environments as the same user, you will likely want to set this environment variable.
+- Add a new ``JUPYTER_PREFER_ENV_PATH`` variable, which can be set to switch
+  the order of the environment-level path and the user-level path in the
+  Jupyter path hierarchy (e.g., ``jupyter --paths``). It is considered set if
+  it is a value that is not one of 'no', 'n', 'off', 'false', '0', or '0.0'
+  (case insensitive). If you are running Jupyter in multiple virtual
+  environments as the same user, you will likely want to set this environment
+  variable.
 - Drop Python 2.x and 3.5 support, as they have reached end of life.
 - Add Python 3.9 builds to testing, and expand testing to cover Windows, macOS, and Linux platforms.
 - ``jupyter --paths --debug`` now explains the environment variables that affect the current path list.
