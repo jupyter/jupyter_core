@@ -5,9 +5,8 @@ name: Python package
 
 on:
   push:
-    branches: '*'
   pull_request:
-    branches: [ master ]
+    branches: [ "master" ]
 
 jobs:
   build:
@@ -49,3 +48,7 @@ jobs:
     - name: Test with pytest
       run: |
         pytest -vv jupyter_core --timeout 60 --cov jupyter_core --cov-report term-missing:skip-covered
+    - name: Check manifest
+      run: |
+        pip install check-manifest
+        check-manifest -v

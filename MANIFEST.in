@@ -3,6 +3,10 @@ include CONTRIBUTING.md
 include README.md
 include dev-requirements.txt
 
+exclude .pre-commit-config.yaml
+exclude .git-blame-ignore-revs
+exclude readthedocs.yml
+
 # Documentation
 graft docs
 graft examples
@@ -11,7 +15,8 @@ graft examples
 graft jupyter_core/tests/dotipython
 graft jupyter_core/tests/dotipython_empty
 
-# docs subdirs we want to skip
+# dirs we want to skip
+prune scripts
 prune docs/_build
 
 # Patterns to exclude from any directory
