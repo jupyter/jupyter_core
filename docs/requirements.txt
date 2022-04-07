@@ -1,2 +1,2 @@
-traitlets>=4.0
 sphinxcontrib_github_alt
+traitlets>=4.0

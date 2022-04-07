@@ -1,6 +1,7 @@
 import errno
 import os
 
+
 def ensure_dir_exists(path, mode=0o777):
     """ensure that a directory exists
     If it doesn't exist, try to create it, protecting against a race condition
@@ -13,4 +14,4 @@ def ensure_dir_exists(path, mode=0o777):
         if e.errno != errno.EEXIST:
             raise
     if not os.path.isdir(path):
-        raise IOError("%r exists but is not a directory" % path)
+        raise OSError("%r exists but is not a directory" % path)

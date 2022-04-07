@@ -5,7 +5,6 @@ Core common functionality of Jupyter projects.
 This package contains base application classes and configuration inherited by other projects.
 It doesn't do much on its own.
 
-
 # Development Setup
 
 The [Jupyter Contributor Guides](http://jupyter.readthedocs.io/en/latest/contributor/content-contributor.html) provide extensive information on contributing code or documentation to Jupyter projects. The limited instructions below for setting up a development environment are for your convenience.
@@ -23,8 +22,8 @@ and download the dependencies of code and test suite by executing:
 
 The last command runs the test suite to verify the setup. During development, you can pass filenames to `py.test`, and it will execute only those tests.
 
-
 ## Code Styling
+
 `jupyter_core` has adopted automatic code formatting so you shouldn't
 need to worry too much about your code style.
 As long as your code is valid,
@@ -69,5 +68,4 @@ The following commands build the documentation in HTML format and check for brok
 
 Point your browser to the following URL to access the generated documentation:
 
-_file:///my/projects/jupyter\_core/docs/\_build/html/index.html_
-
+_file:///my/projects/jupyter_core/docs/\_build/html/index.html_

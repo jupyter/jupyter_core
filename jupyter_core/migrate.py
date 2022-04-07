@@ -25,40 +25,39 @@ import re
 import shutil
 from datetime import datetime
 
-from traitlets.config import PyFileConfigLoader, JSONFileConfigLoader
+from traitlets.config import JSONFileConfigLoader, PyFileConfigLoader
 from traitlets.log import get_logger
 
-from .utils import ensure_dir_exists
-
-from .paths import jupyter_config_dir, jupyter_data_dir
 from .application import JupyterApp
+from .paths import jupyter_config_dir, jupyter_data_dir
+from .utils import ensure_dir_exists
 
 pjoin = os.path.join
 
 migrations = {
-    pjoin('{ipython_dir}', 'nbextensions'): pjoin('{jupyter_data}', 'nbextensions'),
-    pjoin('{ipython_dir}', 'kernels'): pjoin('{jupyter_data}', 'kernels'),
-    pjoin('{profile}', 'nbconfig'): pjoin('{jupyter_config}', 'nbconfig'),
+    pjoin("{ipython_dir}", "nbextensions"): pjoin("{jupyter_data}", "nbextensions"),
+    pjoin("{ipython_dir}", "kernels"): pjoin("{jupyter_data}", "kernels"),
+    pjoin("{profile}", "nbconfig"): pjoin("{jupyter_config}", "nbconfig"),
 }
 
-custom_src_t = pjoin('{profile}', 'static', 'custom')
-custom_dst_t = pjoin('{jupyter_config}', 'custom')
+custom_src_t = pjoin("{profile}", "static", "custom")
+custom_dst_t = pjoin("{jupyter_config}", "custom")
 
-for security_file in ('notebook_secret', 'notebook_cookie_secret', 'nbsignatures.db'):
-    src = pjoin('{profile}', 'security', security_file)
-    dst = pjoin('{jupyter_data}', security_file)
+for security_file in ("notebook_secret", "notebook_cookie_secret", "nbsignatures.db"):
+    src = pjoin("{profile}", "security", security_file)
+    dst = pjoin("{jupyter_data}", security_file)
     migrations[src] = dst
 
-config_migrations = ['notebook', 'nbconvert', 'qtconsole']
+config_migrations = ["notebook", "nbconvert", "qtconsole"]
 
 regex = re.compile
 
 config_substitutions = {
-    regex(r'\bIPythonQtConsoleApp\b'): 'JupyterQtConsoleApp',
-    regex(r'\bIPythonWidget\b'): 'JupyterWidget',
-    regex(r'\bRichIPythonWidget\b'): 'RichJupyterWidget',
-    regex(r'\bIPython\.html\b'): 'notebook',
-    regex(r'\bIPython\.nbconvert\b'): 'nbconvert',
+    regex(r"\bIPythonQtConsoleApp\b"): "JupyterQtConsoleApp",
+    regex(r"\bIPythonWidget\b"): "JupyterWidget",
+    regex(r"\bRichIPythonWidget\b"): "RichJupyterWidget",
+    regex(r"\bIPython\.html\b"): "notebook",
+    regex(r"\bIPython\.nbconvert\b"): "nbconvert",
 }
 
 
@@ -73,7 +72,7 @@ def get_ipython_dir():
     We only need to support the IPython < 4 behavior for migration,
     so importing for forward-compatibility and edge cases is not important.
     """
-    return os.environ.get('IPYTHONDIR', os.path.expanduser('~/.ipython'))
+    return os.environ.get("IPYTHONDIR", os.path.expanduser("~/.ipython"))
 
 
 def migrate_dir(src, dst):
@@ -89,7 +88,7 @@ def migrate_dir(src, dst):
             return False
         else:
             os.rmdir(dst)
-    log.info("Copying %s -> %s" % (src, dst))
+    log.info(f"Copying {src} -> {dst}")
     ensure_dir_exists(os.path.dirname(dst))
     shutil.copytree(src, dst, symlinks=True)
     return True
@@ -97,7 +96,7 @@ def migrate_dir(src, dst):
 
 def migrate_file(src, dst, substitutions=None):
     """Migrate a single file from src to dst
-    
+
     substitutions is an optional dict of {regex: replacement} for performing replacements on the file.
     """
     log = get_logger()
@@ -105,22 +104,22 @@ def migrate_file(src, dst, substitutions=None):
         # already exists
         log.debug("%s already exists" % dst)
         return False
-    log.info("Copying %s -> %s" % (src, dst))
+    log.info(f"Copying {src} -> {dst}")
     ensure_dir_exists(os.path.dirname(dst))
     shutil.copy(src, dst)
     if substitutions:
-        with open(dst, encoding='utf-8') as f:
+        with open(dst, encoding="utf-8") as f:
             text = f.read()
         for pat, replacement in substitutions.items():
             text = pat.sub(replacement, text)
-        with open(dst, 'w', encoding='utf-8') as f:
+        with open(dst, "w", encoding="utf-8") as f:
             f.write(text)
     return True
 
 
 def migrate_one(src, dst):
     """Migrate one item
-    
+
     dispatches to migrate_dir/_file
     """
     log = get_logger()
@@ -135,71 +134,68 @@ def migrate_one(src, dst):
 
 def migrate_static_custom(src, dst):
     """Migrate non-empty custom.js,css from src to dst
-    
+
     src, dst are 'custom' directories containing custom.{js,css}
     """
     log = get_logger()
     migrated = False
-    
-    custom_js = pjoin(src, 'custom.js')
-    custom_css = pjoin(src, 'custom.css')
+
+    custom_js = pjoin(src, "custom.js")
+    custom_css = pjoin(src, "custom.css")
     # check if custom_js is empty:
     custom_js_empty = True
     if os.path.isfile(custom_js):
-        with open(custom_js, encoding='utf-8') as f:
+        with open(custom_js, encoding="utf-8") as f:
             js = f.read().strip()
             for line in js.splitlines():
-                if not (
-                    line.isspace()
-                    or line.strip().startswith(('/*', '*', '//'))
-                ):
+                if not (line.isspace() or line.strip().startswith(("/*", "*", "//"))):
                     custom_js_empty = False
                     break
-    
+
     # check if custom_css is empty:
     custom_css_empty = True
     if os.path.isfile(custom_css):
-        with open(custom_css, encoding='utf-8') as f:
+        with open(custom_css, encoding="utf-8") as f:
             css = f.read().strip()
-            custom_css_empty = css.startswith('/*') and css.endswith('*/')
-    
+            custom_css_empty = css.startswith("/*") and css.endswith("*/")
+
     if custom_js_empty:
         log.debug("Ignoring empty %s" % custom_js)
     if custom_css_empty:
         log.debug("Ignoring empty %s" % custom_css)
-    
+
     if custom_js_empty and custom_css_empty:
         # nothing to migrate
         return False
     ensure_dir_exists(dst)
-    
+
     if not custom_js_empty or not custom_css_empty:
         ensure_dir_exists(dst)
-    
+
     if not custom_js_empty:
-        if migrate_file(custom_js, pjoin(dst, 'custom.js')):
+        if migrate_file(custom_js, pjoin(dst, "custom.js")):
             migrated = True
     if not custom_css_empty:
-        if migrate_file(custom_css, pjoin(dst, 'custom.css')):
+        if migrate_file(custom_css, pjoin(dst, "custom.css")):
             migrated = True
-    
+
     return migrated
 
 
 def migrate_config(name, env):
     """Migrate a config file
-    
+
     Includes substitutions for updated configurable names.
     """
     log = get_logger()
-    src_base = pjoin('{profile}', 'ipython_{name}_config').format(name=name, **env)
-    dst_base = pjoin('{jupyter_config}', 'jupyter_{name}_config').format(name=name, **env)
+    src_base = pjoin("{profile}", "ipython_{name}_config").format(name=name, **env)
+    dst_base = pjoin("{jupyter_config}", "jupyter_{name}_config").format(name=name, **env)
     loaders = {
-        '.py': PyFileConfigLoader,
-        '.json': JSONFileConfigLoader,
+        ".py": PyFileConfigLoader,
+        ".json": JSONFileConfigLoader,
     }
     migrated = []
-    for ext in ('.py', '.json'):
+    for ext in (".py", ".json"):
         src = src_base + ext
         dst = dst_base + ext
         if os.path.exists(src):
@@ -216,10 +212,10 @@ def migrate_config(name, env):
 def migrate():
     """Migrate IPython configuration to Jupyter"""
     env = {
-        'jupyter_data': jupyter_data_dir(),
-        'jupyter_config': jupyter_config_dir(),
-        'ipython_dir': get_ipython_dir(),
-        'profile': os.path.join(get_ipython_dir(), 'profile_default'),
+        "jupyter_data": jupyter_data_dir(),
+        "jupyter_config": jupyter_config_dir(),
+        "ipython_dir": get_ipython_dir(),
+        "profile": os.path.join(get_ipython_dir(), "profile_default"),
     }
     migrated = False
     for src_t, dst_t in migrations.items():
@@ -228,45 +224,44 @@ def migrate():
         if os.path.exists(src):
             if migrate_one(src, dst):
                 migrated = True
-    
+
     for name in config_migrations:
         if migrate_config(name, env):
             migrated = True
-    
+
     custom_src = custom_src_t.format(**env)
     custom_dst = custom_dst_t.format(**env)
-    
+
     if os.path.exists(custom_src):
         if migrate_static_custom(custom_src, custom_dst):
             migrated = True
-    
+
     # write a marker to avoid re-running migration checks
-    ensure_dir_exists(env['jupyter_config'])
-    with open(os.path.join(env['jupyter_config'], 'migrated'), 'w', encoding='utf-8') as f:
+    ensure_dir_exists(env["jupyter_config"])
+    with open(os.path.join(env["jupyter_config"], "migrated"), "w", encoding="utf-8") as f:
         f.write(datetime.utcnow().isoformat())
-    
+
     return migrated
 
 
-
 class JupyterMigrate(JupyterApp):
-    name = 'jupyter-migrate'
+    name = "jupyter-migrate"
     description = """
     Migrate configuration and data from .ipython prior to 4.0 to Jupyter locations.
-    
+
     This migrates:
-    
+
     - config files in the default profile
     - kernels in ~/.ipython/kernels
     - notebook javascript extensions in ~/.ipython/extensions
     - custom.js/css to .jupyter/custom
-    
+
     to their new Jupyter locations.
-    
+
     All files are copied, not moved.
     If the destinations already exist, nothing will be done.
     """
-    
+
     def start(self):
         if not migrate():
             self.log.info("Found nothing to migrate.")
@@ -275,6 +270,5 @@ class JupyterMigrate(JupyterApp):
 main = JupyterMigrate.launch_instance
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
-

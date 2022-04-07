@@ -2,9 +2,9 @@
 
 c = get_config()
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # ZMQTerminalIPythonApp configuration
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # ZMQTerminalIPythonApp will inherit config from: TerminalIPythonApp,
 # BaseIPythonApplication, Application, InteractiveShellApp, IPythonConsoleApp,
@@ -88,7 +88,7 @@ c = get_config()
 # c.ZMQTerminalIPythonApp.stdin_port = 0
 
 # Path to an extra config file to load.
-# 
+#
 # If specified, load this config file in addition to any other IPython config.
 # c.ZMQTerminalIPythonApp.extra_config_file = ''
 
@@ -111,11 +111,11 @@ c = get_config()
 # set the iopub (PUB) port [default: random]
 # c.ZMQTerminalIPythonApp.iopub_port = 0
 
-# 
+#
 # c.ZMQTerminalIPythonApp.transport = 'tcp'
 
 # JSON file in which to store connection info [default: kernel-<pid>.json]
-# 
+#
 # This file will contain the IP, ports, and authentication key needed to connect
 # clients to this kernel. By default, this file will be created in the security
 # dir of the current profile, but can be specified by absolute path.
@@ -142,7 +142,7 @@ c = get_config()
 
 # If true, IPython will populate the user namespace with numpy, pylab, etc. and
 # an ``import *`` is done from numpy and pylab, when using pylab mode.
-# 
+#
 # When False, pylab mode should not import any names into the user namespace.
 # c.ZMQTerminalIPythonApp.pylab_import_all = True
 
@@ -154,16 +154,16 @@ c = get_config()
 # to connect to the Kernel, so be careful!
 # c.ZMQTerminalIPythonApp.ip = ''
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # ZMQTerminalInteractiveShell configuration
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # A subclass of TerminalInteractiveShell that uses the 0MQ kernel
 
 # ZMQTerminalInteractiveShell will inherit config from:
 # TerminalInteractiveShell, InteractiveShell
 
-# 
+#
 # c.ZMQTerminalInteractiveShell.history_length = 10000
 
 # auto editing of files with syntax errors.
@@ -173,7 +173,7 @@ c = get_config()
 # regular output instead.
 # c.ZMQTerminalInteractiveShell.display_page = False
 
-# 
+#
 # c.ZMQTerminalInteractiveShell.debug = False
 
 # 'all', 'last', 'last_expr' or 'none', specifying which nodes should be run
@@ -201,18 +201,18 @@ c = get_config()
 # Save multi-line entries as one entry in readline history
 # c.ZMQTerminalInteractiveShell.multiline_history = True
 
-# 
+#
 # c.ZMQTerminalInteractiveShell.readline_remove_delims = '-/~'
 
 # Enable magic commands to be called without the leading %.
 # c.ZMQTerminalInteractiveShell.automagic = True
 
 # Prefix to add to outputs coming from clients other than this one.
-# 
+#
 # Only relevant if include_other_output is True.
 # c.ZMQTerminalInteractiveShell.other_output_prefix = '[remote] '
 
-# 
+#
 # c.ZMQTerminalInteractiveShell.readline_parse_and_bind = ['tab: complete', '"\\C-l": clear-screen', 'set show-all-if-ambiguous on', '"\\C-o": tab-insert', '"\\C-r": reverse-search-history', '"\\C-s": forward-search-history', '"\\C-p": history-search-backward', '"\\C-n": history-search-forward', '"\\e[A": history-search-backward', '"\\e[B": history-search-forward', '"\\C-k": kill-line', '"\\C-u": unix-line-discard']
 
 # Use colors for displaying information about objects. Because this information
@@ -232,7 +232,7 @@ c = get_config()
 # is given as STDIN to the program.
 # c.ZMQTerminalInteractiveShell.stream_image_handler = []
 
-# 
+#
 # c.ZMQTerminalInteractiveShell.separate_out2 = ''
 
 # Autoindent IPython code entered interactively.
@@ -247,10 +247,10 @@ c = get_config()
 # Deprecated, use PromptManager.out_template
 # c.ZMQTerminalInteractiveShell.prompt_out = 'Out[\\#]: '
 
-# 
+#
 # c.ZMQTerminalInteractiveShell.object_info_string_level = 0
 
-# 
+#
 # c.ZMQTerminalInteractiveShell.separate_out = ''
 
 # Automatically call the pdb debugger after every exception.
@@ -259,10 +259,10 @@ c = get_config()
 # Deprecated, use PromptManager.in_template
 # c.ZMQTerminalInteractiveShell.prompt_in1 = 'In [\\#]: '
 
-# 
+#
 # c.ZMQTerminalInteractiveShell.separate_in = '\n'
 
-# 
+#
 # c.ZMQTerminalInteractiveShell.wildcards_case_sensitive = True
 
 # Enable auto setting the terminal title.
@@ -281,7 +281,7 @@ c = get_config()
 
 # Whether to include output from clients other than this one sharing the same
 # kernel.
-# 
+#
 # Outputs are not displayed until enter is pressed.
 # c.ZMQTerminalInteractiveShell.include_other_output = False
 
@@ -289,7 +289,7 @@ c = get_config()
 # will be used.
 # c.ZMQTerminalInteractiveShell.mime_preference = ['image/png', 'image/jpeg', 'image/svg+xml']
 
-# 
+#
 # c.ZMQTerminalInteractiveShell.readline_use = True
 
 # Make IPython automatically call any callable object even if you didn't type
@@ -324,17 +324,17 @@ c = get_config()
 # Show rewritten input, e.g. for autocall.
 # c.ZMQTerminalInteractiveShell.show_rewritten_input = True
 
-# 
+#
 # c.ZMQTerminalInteractiveShell.xmode = 'Context'
 
-# 
+#
 # c.ZMQTerminalInteractiveShell.quiet = False
 
 # A list of ast.NodeTransformer subclass instances, which will be applied to
 # user input before code is run.
 # c.ZMQTerminalInteractiveShell.ast_transformers = []
 
-# 
+#
 # c.ZMQTerminalInteractiveShell.ipython_dir = ''
 
 # Set to confirm when you try to exit IPython with an EOF (Control-D in Unix,
@@ -346,7 +346,7 @@ c = get_config()
 # c.ZMQTerminalInteractiveShell.prompts_pad_left = True
 
 # Timeout for giving up on a kernel (in seconds).
-# 
+#
 # On first connect and restart, the console tests whether the kernel is running
 # and responsive by sending kernel_info_requests. This sets the timeout in
 # seconds for how long the kernel can take before being presumed dead.
@@ -373,12 +373,12 @@ c = get_config()
 # image file and image format.
 # c.ZMQTerminalInteractiveShell.tempfile_image_handler = []
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # KernelManager configuration
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # Manages a single kernel in a subprocess on this host.
-# 
+#
 # This version starts kernels with Popen.
 
 # KernelManager will inherit config from: ConnectionFileMixin
@@ -389,11 +389,11 @@ c = get_config()
 # set the stdin (ROUTER) port [default: random]
 # c.KernelManager.stdin_port = 0
 
-# 
+#
 # c.KernelManager.transport = 'tcp'
 
 # JSON file in which to store connection info [default: kernel-<pid>.json]
-# 
+#
 # This file will contain the IP, ports, and authentication key needed to connect
 # clients to this kernel. By default, this file will be created in the security
 # dir of the current profile, but can be specified by absolute path.
@@ -409,7 +409,7 @@ c = get_config()
 # c.KernelManager.autorestart = False
 
 # DEPRECATED: Use kernel_name instead.
-# 
+#
 # The Popen Command to launch the kernel. Override this if you have a custom
 # kernel. If kernel_cmd is specified in a configuration file, IPython does not
 # pass any arguments to the kernel, because it cannot make any assumptions about
@@ -426,15 +426,15 @@ c = get_config()
 # set the iopub (PUB) port [default: random]
 # c.KernelManager.iopub_port = 0
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # ProfileDir configuration
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # An object to manage the profile directory and its resources.
-# 
+#
 # The profile directory is used by all IPython applications, to manage
 # configuration, logging and security.
-# 
+#
 # This object knows how to find, create and manage these directories. This
 # should be used by any code that wants to handle profiles.
 
@@ -442,32 +442,32 @@ c = get_config()
 # `profile` option.
 # c.ProfileDir.location = ''
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Session configuration
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # Object for handling serialization and sending of messages.
-# 
+#
 # The Session object handles building messages and sending them with ZMQ sockets
 # or ZMQStream objects.  Objects can communicate with each other over the
 # network via Session objects, and only need to work with the dict-based IPython
 # message spec. The Session will handle serialization/deserialization, security,
 # and metadata.
-# 
+#
 # Sessions support configurable serialization via packer/unpacker traits, and
 # signing with HMAC digests via the key/keyfile traits.
-# 
+#
 # Parameters ----------
-# 
+#
 # debug : bool
 #     whether to trigger extra debugging statements
 # packer/unpacker : str : 'json', 'pickle' or import_string
 #     importstrings for methods to serialize message parts.  If just
 #     'json' or 'pickle', predefined JSON and pickle packers will be used.
 #     Otherwise, the entire importstring must be used.
-# 
+#
 #     The functions must accept at least valid JSON input, and output *bytes*.
-# 
+#
 #     For example, to use msgpack:
 #     packer = 'msgpack.packb', unpacker='msgpack.unpackb'
 # pack/unpack : callables
@@ -488,7 +488,7 @@ c = get_config()
 # c.Session.signature_scheme = 'hmac-sha256'
 
 # The maximum number of digests to remember.
-# 
+#
 # The digest history will be culled when it exceeds this value.
 # c.Session.digest_history_size = 65536
 
