@@ -73,10 +73,10 @@ repos:
             )$
 
   - repo: https://github.com/mgedmin/check-manifest
-    rev: '0.48'
+    rev: "0.48"
     hooks:
-    - id: check-manifest
-      stages: [manual]
+      - id: check-manifest
+        stages: [manual]
 
   - repo: https://github.com/sirosen/check-jsonschema
     rev: 0.14.2
