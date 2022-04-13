@@ -36,7 +36,7 @@ jobs:
       - with: jupyterlab/maintainer-tools/.github/actions/base-action@v1
       - name: Install dependencies
         run: |
-          pip install -r dev-requirements.txt .
+          pip install -e ".[test]"
       - name: Test with pytest
         run: |
           python -m pytest -vv jupyter_core --timeout 60 --cov jupyter_core --cov-report term-missing:skip-covered
