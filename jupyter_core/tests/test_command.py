@@ -9,7 +9,6 @@ from unittest.mock import patch
 
 import pytest
 
-from jupyter_core import __version__
 from jupyter_core.command import list_subcommands
 from jupyter_core.paths import (
     jupyter_config_dir,
@@ -95,7 +94,7 @@ def test_paths_json():
     output = get_jupyter_output(["--paths", "--json"])
     data = json.loads(output)
     assert sorted(data) == ["config", "data", "runtime"]
-    for key, path in data.items():
+    for _, path in data.items():
         assert isinstance(path, list)
 
 

@@ -21,7 +21,7 @@ from .version import __version__
 
 
 class JupyterParser(argparse.ArgumentParser):
-    @property
+    @property  # type:ignore[override]
     def epilog(self):
         """Add subcommands to epilog on request
 

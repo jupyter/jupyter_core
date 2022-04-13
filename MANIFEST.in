@@ -2,6 +2,7 @@ include COPYING.md
 include CONTRIBUTING.md
 include README.md
 include dev-requirements.txt
+include jupyter_core/py.typed
 
 exclude .pre-commit-config.yaml
 exclude .git-blame-ignore-revs

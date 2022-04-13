@@ -25,7 +25,7 @@ def get_data():
     """
     returns a dict of various user environment data
     """
-    env = {}
+    env: dict = {}
     env["path"] = os.environ.get("PATH")
     env["sys_path"] = sys.path
     env["sys_exe"] = sys.executable
@@ -54,49 +54,49 @@ def main():
 
     print("$PATH:")
     for directory in environment_data["path"].split(os.pathsep):
-        print("\t" + directory)
+        print(f"\t{directory}")
 
-    print("\n" + "sys.path:")
+    print("\nsys.path:")
     for directory in environment_data["sys_path"]:
-        print("\t" + directory)
+        print(f"\t{directory}")
 
-    print("\n" + "sys.executable:")
-    print("\t" + environment_data["sys_exe"])
+    print("\nsys.executable:")
+    print(f'\t{environment_data["sys_exe"]}')
 
-    print("\n" + "sys.version:")
+    print("\nsys.version:")
     if "\n" in environment_data["sys_version"]:
         for data in environment_data["sys_version"].split("\n"):
-            print("\t" + data)
+            print(f"\t{data}")
     else:
-        print("\t" + environment_data["sys_version"])
+        print(f'\t{environment_data["sys_version"]}')
 
-    print("\n" + "platform.platform():")
-    print("\t" + environment_data["platform"])
+    print("\nplatform.platform():")
+    print(f'\t{environment_data["platform"]}')
 
     if environment_data["which"]:
-        print("\n" + "which -a jupyter:")
+        print("\nwhich -a jupyter:")
         for line in environment_data["which"].split("\n"):
-            print("\t" + line)
+            print(f"\t{line}")
 
     if environment_data["where"]:
-        print("\n" + "where jupyter:")
+        print("\nwhere jupyter:")
         for line in environment_data["where"].split("\n"):
-            print("\t" + line)
+            print(f"\t{line}")
 
     if environment_data["pip"]:
-        print("\n" + "pip list:")
+        print("\npip list:")
         for package in environment_data["pip"].split("\n"):
-            print("\t" + package)
+            print(f"\t{package}")
 
     if environment_data["conda"]:
-        print("\n" + "conda list:")
+        print("\nconda list:")
         for package in environment_data["conda"].split("\n"):
-            print("\t" + package)
+            print(f"\t{package}")
 
     if environment_data["conda-env"]:
-        print("\n" + "conda env:")
+        print("\nconda env:")
         for package in environment_data["conda-env"].split("\n"):
-            print("\t" + package)
+            print(f"\t{package}")
 
 
 if __name__ == "__main__":

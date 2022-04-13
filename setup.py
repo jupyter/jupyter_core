@@ -4,8 +4,8 @@
 # Distributed under the terms of the Modified BSD License.
 import sys
 
-from setuptools import setup
-from setuptools.command.bdist_egg import bdist_egg
+from setuptools import setup  # type:ignore[import]
+from setuptools.command.bdist_egg import bdist_egg  # type:ignore[import]
 
 
 class bdist_egg_disabled(bdist_egg):
