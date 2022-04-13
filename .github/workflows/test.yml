@@ -33,7 +33,7 @@ jobs:
             python-version: "3.8"
     steps:
       - uses: actions/checkout@v2
-      - with: jupyterlab/maintainer-tools/.github/actions/base-action@v1
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-action@v1
       - name: Install dependencies
         run: |
           pip install -e ".[test]"
