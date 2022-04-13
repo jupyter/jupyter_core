@@ -36,5 +36,5 @@ testpaths = [
 ]
 filterwarnings= [
   # Fail on warnings
-  "error"
+  "error",
 ]
