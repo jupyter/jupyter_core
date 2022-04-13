@@ -39,7 +39,7 @@ jobs:
           pip install -e ".[test]"
       - name: Test with pytest
         run: |
-          python -m pytest -vv jupyter_core --timeout 60 --cov jupyter_core --cov-report term-missing:skip-covered
+          python -m pytest -vv --timeout 60 --cov jupyter_core --cov-report term-missing:skip-covered
 
   test_miniumum_versions:
     name: Test Minimum Versions
@@ -54,7 +54,7 @@ jobs:
       - name: Install miniumum versions
         uses: jupyterlab/maintainer-tools/.github/actions/install-minimums@v1
       - name: Run the unit tests
-        run: pytest -vv -W default traitlets || pytest -vv -W default traitlets --lf
+        run: pytest -vv -W default || pytest -vv -W default --lf
 
   test_prereleases:
     name: Test Prereleases
@@ -74,7 +74,7 @@ jobs:
           pip check
       - name: Run the tests
         run: |
-          pytest -vv traitlets || pytest -vv traitlets --lf
+          pytest -vv || pytest -vv --lf
 
   make_sdist:
     name: Make SDist
