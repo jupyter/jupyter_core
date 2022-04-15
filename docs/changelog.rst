@@ -1,6 +1,21 @@
 Changes in jupyter-core
 =======================
 
+4.10
+---
+
+4.10.0
+~~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.10.0>`__
+
+* Include all files from ``jupyter_core`` by @jonringe in https://github.com/jupyter/jupyter_core/pull/253
+* Add project URLs to ``setup.cfg`` by @tlinhart in https://github.com/jupyter/jupyter_core/pull/254
+* Set up pre-commit by @blink1073 in https://github.com/jupyter/jupyter_core/pull/255
+* Add flake8 and mypy settings by @blink1073 in https://github.com/jupyter/jupyter_core/pull/256
+* Clean up CI by @blink1073 in https://github.com/jupyter/jupyter_core/pull/258
+
 4.9
 ---
 
