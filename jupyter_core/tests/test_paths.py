@@ -417,7 +417,10 @@ def test_secure_write_win32():
     def fetch_win32_permissions(filename):
         """Extracts file permissions on windows using icacls"""
         role_permissions = {}
-        for index, line in enumerate(os.popen("icacls %s" % filename).read().splitlines()):
+        proc = os.popen("icacls %s" % filename)
+        lines = proc.read().splitlines()
+        proc.close()
+        for index, line in enumerate(lines):
             if index == 0:
                 line = line.split(filename)[-1].strip().lower()
             match = re.match(r"\s*([^:]+):\(([^\)]*)\)", line)

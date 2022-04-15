@@ -16,8 +16,7 @@ Now create an [editable install](https://pip.pypa.io/en/stable/reference/pip_ins
 and download the dependencies of code and test suite by executing:
 
     cd /my/projects/jupyter_core/
-    pip install -e .
-    pip install -r dev-requirements.txt
+    pip install -e ".[test]"
     py.test
 
 The last command runs the test suite to verify the setup. During development, you can pass filenames to `py.test`, and it will execute only those tests.

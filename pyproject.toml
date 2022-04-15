@@ -27,3 +27,14 @@ module = [
     "entrypoints"
 ]
 ignore_missing_imports = true
+
+
+[tool.pytest.ini_options]
+addopts = "-raXs --durations 10 --color=yes --doctest-modules --ignore-glob=jupyter_core/tests/dotipython*"
+testpaths = [
+    "jupyter_core/tests/"
+]
+filterwarnings= [
+  # Fail on warnings
+  "error",
+]

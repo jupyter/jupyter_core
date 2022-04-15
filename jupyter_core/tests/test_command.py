@@ -56,7 +56,7 @@ def write_executable(path, source):
             import pkg_resources
 
             w = pkg_resources.resource_string("setuptools", "cli-32.exe")
-        except (ImportError, FileNotFoundError):
+        except (ImportError, FileNotFoundError, SystemError):
             pytest.skip("Need pkg_resources/setuptools to make scripts executable on Windows")
         exe.write(w, "wb")
         exe.chmod(0o700)
