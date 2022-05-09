@@ -1,6 +1,55 @@
 [build-system]
-requires = ["setuptools>=60.0"]
-build-backend = "setuptools.build_meta"
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "jupyter_core"
+description = "Jupyter core package. A base package on which Jupyter projects rely."
+license = { file = "COPYING.md" }
+classifiers = [
+  "Framework :: Jupyter",
+  "Intended Audience :: Developers",
+  "Intended Audience :: System Administrators",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: BSD License",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3"
+]
+requires-python = ">=3.7"
+dependencies = [
+  "traitlets",
+  "pywin32>=1.0 ; sys_platform == 'win32' and platform_python_implementation != 'PyPy'"
+]
+dynamic = ["version"]
+
+[[project.authors]]
+name = "Jupyter Development Team"
+email = "jupyter@googlegroups.org"
+
+[project.readme]
+text = "There is no reason to install this package on its own."
+content-type = "text/plain"
+
+[project.urls]
+Homepage = "https://jupyter.org"
+Documentation = "https://jupyter-core.readthedocs.io/"
+Funding = "https://numfocus.org/"
+Source = "https://github.com/jupyter/jupyter_core"
+Tracker = "https://github.com/jupyter/jupyter_core/issues"
+
+[project.optional-dependencies]
+test = [
+  "ipykernel",
+  "pre-commit",
+  "pytest",
+  "pytest-cov",
+  "pytest-timeout"
+]
+
+[project.scripts]
+jupyter = "jupyter_core.command:main"
+jupyter-migrate = "jupyter_core.migrate:main"
+jupyter-troubleshoot = "jupyter_core.troubleshoot:main"
 
 [tool.mypy]
 check_untyped_defs = true
