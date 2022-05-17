@@ -6,6 +6,7 @@ from collections import namedtuple
 VersionInfo = namedtuple("VersionInfo", ["major", "minor", "micro", "releaselevel", "serial"])
 
 version_info = VersionInfo(4, 10, 0, "final", 0)
+__version__ = "4.10.0"
 
 _specifier_ = {"alpha": "a", "beta": "b", "candidate": "rc", "final": "", "dev": "dev"}
 
@@ -16,4 +17,4 @@ elif version_info.releaselevel == "dev":
 else:
     _suffix_ = f"{_specifier_[version_info.releaselevel]}{version_info.serial}"
 
-__version__ = f"{version_info.major}.{version_info.minor}.{version_info.micro}{_suffix_}"
+assert __version__ == f"{version_info.major}.{version_info.minor}.{version_info.micro}{_suffix_}"
