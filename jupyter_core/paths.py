@@ -384,7 +384,10 @@ def is_hidden(abs_path, abs_root=""):
         The absolute path of the root directory in which hidden directories
         should be checked for.
     """
-    if os.path.normpath(abs_path) == os.path.normpath(abs_root):
+    abs_path = os.path.normpath(abs_path)
+    abs_root = os.path.normpath(abs_root)
+
+    if abs_path == abs_root:
         return False
 
     if is_file_hidden(abs_path):
