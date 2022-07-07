@@ -1,6 +1,18 @@
 Changes in jupyter-core
 =======================
 
+4.11
+----
+
+4.11.0
+~~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.11.0>`__
+
+* Use hatch build backend. (:ghpull:`265`)
+* ``is_hidden``: Use normalized paths. (:ghpull:`271`)
+
 4.10
 ----
 
