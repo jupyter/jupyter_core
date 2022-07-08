@@ -4,6 +4,14 @@ Changes in jupyter-core
 4.11
 ----
 
+4.11.1
+~~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/4.11.1>`__
+
+* Fix inclusion of jupyter file and check in CI. (:ghpull:`276`)
+
 4.11.0
 ~~~~~~
 
