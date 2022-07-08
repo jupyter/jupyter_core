@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling>=1.0"]
+requires = ["hatchling>=1.4"]
 build-backend = "hatchling.build"
 
 [project]
@@ -53,6 +53,9 @@ jupyter-troubleshoot = "jupyter_core.troubleshoot:main"
 
 [tool.hatch.version]
 path = "jupyter_core/version.py"
+
+[tool.hatch.build.force-include]
+"./jupyter.py" = "jupyter.py"
 
 [tool.mypy]
 check_untyped_defs = true

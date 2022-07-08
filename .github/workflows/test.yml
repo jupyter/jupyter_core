@@ -40,6 +40,10 @@ jobs:
       - name: Test with pytest
         run: |
           python -m pytest -vv --timeout 60 --cov jupyter_core --cov-report term-missing:skip-covered
+      - name: Check CLI
+        run: |
+          cd $HOME
+          jupyter troubleshoot
 
   test_miniumum_versions:
     name: Test Minimum Versions
