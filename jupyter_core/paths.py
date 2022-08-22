@@ -51,10 +51,11 @@ def get_home_dir():
 
 _dtemps: dict = {}
 
+
 def prefer_environment_over_user():
     """Determine if environment-level paths should take precedence over user-level paths."""
     # If JUPYTER_PREFER_ENV_PATH is defined, that signals user intent, so return its value
-    if 'JUPYTER_PREFER_ENV_PATH' in os.environ:
+    if "JUPYTER_PREFER_ENV_PATH" in os.environ:
         return envset("JUPYTER_PREFER_ENV_PATH")
 
     # If we are in a Python virtualenv, default to True (see https://docs.python.org/3/library/venv.html#venv-def)
@@ -62,7 +63,7 @@ def prefer_environment_over_user():
         return True
 
     # If sys.prefix indicates Python comes from a conda/mamba environment, default to True
-    if 'CONDA_PREFIX' in os.environ and sys.prefix.startswith(os.environ['CONDA_PREFIX']):
+    if "CONDA_PREFIX" in os.environ and sys.prefix.startswith(os.environ["CONDA_PREFIX"]):
         return True
 
     return False
