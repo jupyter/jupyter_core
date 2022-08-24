@@ -67,7 +67,9 @@ resetenv = patch.dict(os.environ)
 
 def setup_module():
     resetenv.start()
-    os.environ.pop("JUPYTER_PREFER_ENV_PATH", None)
+    # For these tests, default to preferring the user-level over environment-level paths
+    # Tests can override this preference using the prefer_env decorator/context manager
+    os.environ["JUPYTER_PREFER_ENV_PATH"] = "no"
 
 
 def teardown_module():
