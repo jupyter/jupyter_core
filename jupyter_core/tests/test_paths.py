@@ -89,7 +89,10 @@ def test_envset():
             assert paths.envset(f"FOO_{v}")
         for v in false_values:
             assert not paths.envset(f"FOO_{v}")
-        assert not paths.envset("THIS_VARIABLE_SHOULD_NOT_BE_SET")
+        # Test default value is False
+        assert paths.envset("THIS_VARIABLE_SHOULD_NOT_BE_SET") is False
+        # Test envset returns the given default if supplied
+        assert paths.envset("THIS_VARIABLE_SHOULD_NOT_BE_SET", None) is None
 
 
 @pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
