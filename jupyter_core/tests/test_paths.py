@@ -25,6 +25,7 @@ from jupyter_core.paths import (
     jupyter_data_dir,
     jupyter_path,
     jupyter_runtime_dir,
+    prefer_environment_over_user,
     secure_write,
 )
 
@@ -61,6 +62,7 @@ no_config_env = patch.dict(
 jupyter_config_env = "/jupyter-cfg"
 config_env = patch.dict("os.environ", {"JUPYTER_CONFIG_DIR": jupyter_config_env})
 prefer_env = patch.dict("os.environ", {"JUPYTER_PREFER_ENV_PATH": "True"})
+prefer_user = patch.dict("os.environ", {"JUPYTER_PREFER_ENV_PATH": "False"})
 
 resetenv = patch.dict(os.environ)
 
@@ -332,6 +334,18 @@ def test_jupyter_config_path_env():
         path = jupyter_config_path()
     assert path[:2] == [pjoin("foo", "bar"), pjoin("bar", "baz")]
 
+
+def test_prefer_environment_over_user():
+    with prefer_env:
+        assert prefer_environment_over_user() is True
+
+    with prefer_user:
+        assert prefer_environment_over_user() is False
+
+    # Test default if environment variable is not set, and try to determine if we are in a virtual environment
+    os.environ.pop("JUPYTER_PREFER_ENV_PATH", None)
+    in_venv = sys.prefix != sys.base_prefix or ("CONDA_PREFIX" in os.environ and sys.prefix.startswith(os.environ["CONDA_PREFIX"]))
+    assert prefer_environment_over_user() is in_venv
 
 def test_is_hidden():
     with tempfile.TemporaryDirectory() as root:
