@@ -23,7 +23,6 @@ resetenv = patch.dict(os.environ)
 
 def setup_module():
     resetenv.start()
-    os.environ.pop("JUPYTER_PREFER_ENV_PATH", None)
 
 
 def teardown_module():

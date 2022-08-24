@@ -233,11 +233,11 @@ def main():
 
                     if paths.prefer_environment_over_user():
                         print(
-                            "JUPYTER_PREFER_ENV_PATH is set to a true value or we detected a virtual environment, making the environment-level path preferred over the user-level path for data and config"
+                            "JUPYTER_PREFER_ENV_PATH is set to a true value, or JUPYTER_PREFER_ENV_PATH is not set and we detected a virtual environment, making the environment-level path preferred over the user-level path for data and config"
                         )
                     else:
                         print(
-                            "JUPYTER_PREFER_ENV_PATH is not set and we did not detect a virtual environment, or JUPYTER_PREFER_ENV_PATH is set to a false value, making the user-level path preferred over the environment-level path for data and config"
+                            "JUPYTER_PREFER_ENV_PATH is set to a false value, or JUPYTER_PREFER_ENV_PATH is not set and we did not detect a virtual environment, making the user-level path preferred over the environment-level path for data and config"
                         )
 
                     # config path list
