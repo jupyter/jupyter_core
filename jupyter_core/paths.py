@@ -26,13 +26,18 @@ pjoin = os.path.join
 UF_HIDDEN = getattr(stat, "UF_HIDDEN", 32768)
 
 
-def envset(name):
-    """Return True if the given environment variable is set
+def envset(name, default=False):
+    """Return the boolean value of a given environment variable.
 
     An environment variable is considered set if it is assigned to a value
     other than 'no', 'n', 'false', 'off', '0', or '0.0' (case insensitive)
+
+    If the environment variable is not defined, the default value is returned.
     """
-    return os.environ.get(name, "no").lower() not in ["no", "n", "false", "off", "0", "0.0"]
+    if name not in os.environ:
+        return default
+
+    return os.environ[name].lower() not in ["no", "n", "false", "off", "0", "0.0"]
 
 
 def get_home_dir():
@@ -45,6 +50,23 @@ def get_home_dir():
 
 
 _dtemps: dict = {}
+
+
+def prefer_environment_over_user():
+    """Determine if environment-level paths should take precedence over user-level paths."""
+    # If JUPYTER_PREFER_ENV_PATH is defined, that signals user intent, so return its value
+    if "JUPYTER_PREFER_ENV_PATH" in os.environ:
+        return envset("JUPYTER_PREFER_ENV_PATH")
+
+    # If we are in a Python virtualenv, default to True (see https://docs.python.org/3/library/venv.html#venv-def)
+    if sys.prefix != sys.base_prefix:
+        return True
+
+    # If sys.prefix indicates Python comes from a conda/mamba environment, default to True
+    if "CONDA_PREFIX" in os.environ and sys.prefix.startswith(os.environ["CONDA_PREFIX"]):
+        return True
+
+    return False
 
 
 def _mkdtemp_once(name):
@@ -184,7 +206,7 @@ def jupyter_path(*subdirs):
 
     env = [p for p in ENV_JUPYTER_PATH if p not in SYSTEM_JUPYTER_PATH]
 
-    if envset("JUPYTER_PREFER_ENV_PATH"):
+    if prefer_environment_over_user():
         paths.extend(env)
         paths.extend(user)
     else:
@@ -253,7 +275,7 @@ def jupyter_config_path():
 
     env = [p for p in ENV_CONFIG_PATH if p not in SYSTEM_CONFIG_PATH]
 
-    if envset("JUPYTER_PREFER_ENV_PATH"):
+    if prefer_environment_over_user():
         paths.extend(env)
         paths.extend(user)
     else:

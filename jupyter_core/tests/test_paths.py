@@ -25,6 +25,7 @@ from jupyter_core.paths import (
     jupyter_data_dir,
     jupyter_path,
     jupyter_runtime_dir,
+    prefer_environment_over_user,
     secure_write,
 )
 
@@ -61,13 +62,16 @@ no_config_env = patch.dict(
 jupyter_config_env = "/jupyter-cfg"
 config_env = patch.dict("os.environ", {"JUPYTER_CONFIG_DIR": jupyter_config_env})
 prefer_env = patch.dict("os.environ", {"JUPYTER_PREFER_ENV_PATH": "True"})
+prefer_user = patch.dict("os.environ", {"JUPYTER_PREFER_ENV_PATH": "False"})
 
 resetenv = patch.dict(os.environ)
 
 
 def setup_module():
     resetenv.start()
-    os.environ.pop("JUPYTER_PREFER_ENV_PATH", None)
+    # For these tests, default to preferring the user-level over environment-level paths
+    # Tests can override this preference using the prefer_env decorator/context manager
+    os.environ["JUPYTER_PREFER_ENV_PATH"] = "no"
 
 
 def teardown_module():
@@ -89,7 +93,10 @@ def test_envset():
             assert paths.envset(f"FOO_{v}")
         for v in false_values:
             assert not paths.envset(f"FOO_{v}")
-        assert not paths.envset("THIS_VARIABLE_SHOULD_NOT_BE_SET")
+        # Test default value is False
+        assert paths.envset("THIS_VARIABLE_SHOULD_NOT_BE_SET") is False
+        # Test envset returns the given default if supplied
+        assert paths.envset("THIS_VARIABLE_SHOULD_NOT_BE_SET", None) is None
 
 
 @pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
@@ -326,6 +333,21 @@ def test_jupyter_config_path_env():
     with patch.dict("os.environ", {"JUPYTER_CONFIG_PATH": path_env}):
         path = jupyter_config_path()
     assert path[:2] == [pjoin("foo", "bar"), pjoin("bar", "baz")]
+
+
+def test_prefer_environment_over_user():
+    with prefer_env:
+        assert prefer_environment_over_user() is True
+
+    with prefer_user:
+        assert prefer_environment_over_user() is False
+
+    # Test default if environment variable is not set, and try to determine if we are in a virtual environment
+    os.environ.pop("JUPYTER_PREFER_ENV_PATH", None)
+    in_venv = sys.prefix != sys.base_prefix or (
+        "CONDA_PREFIX" in os.environ and sys.prefix.startswith(os.environ["CONDA_PREFIX"])
+    )
+    assert prefer_environment_over_user() is in_venv
 
 
 def test_is_hidden():
