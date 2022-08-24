@@ -275,7 +275,7 @@ def jupyter_config_path():
 
     env = [p for p in ENV_CONFIG_PATH if p not in SYSTEM_CONFIG_PATH]
 
-    if prefer_environment_over_user:
+    if prefer_environment_over_user():
         paths.extend(env)
         paths.extend(user)
     else:
