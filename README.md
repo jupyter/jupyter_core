@@ -7,7 +7,7 @@ It doesn't do much on its own.
 
 # Development Setup
 
-The [Jupyter Contributor Guides](http://jupyter.readthedocs.io/en/latest/contributor/content-contributor.html) provide extensive information on contributing code or documentation to Jupyter projects. The limited instructions below for setting up a development environment are for your convenience.
+The [Jupyter Contributor Guides](https://docs.jupyter.org/en/latest/contributing/content-contributor.html) provide extensive information on contributing code or documentation to Jupyter projects. The limited instructions below for setting up a development environment are for your convenience.
 
 ## Coding
 
