@@ -19,7 +19,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Optional
 
-import appdirs  # type:ignore
+import platformdirs
 
 pjoin = os.path.join
 
@@ -98,7 +98,7 @@ def jupyter_config_dir():
     if env.get("JUPYTER_CONFIG_DIR"):
         return env["JUPYTER_CONFIG_DIR"]
 
-    return appdirs.user_config_dir("Jupyter", False)  # type: ignore
+    return platformdirs.user_config_dir("Jupyter", False)
 
 
 def jupyter_data_dir():
@@ -113,7 +113,7 @@ def jupyter_data_dir():
     if env.get("JUPYTER_DATA_DIR"):
         return env["JUPYTER_DATA_DIR"]
 
-    base_dir = appdirs.user_data_dir("Jupyter", False)  # type: ignore
+    base_dir = platformdirs.user_data_dir("Jupyter", False)
     return os.path.join(base_dir, "data")
 
 
@@ -133,7 +133,7 @@ def jupyter_runtime_dir():
     return pjoin(jupyter_data_dir(), "runtime")
 
 
-SYSTEM_JUPYTER_PATH = [appdirs.site_data_dir("Jupyter", False)]  # type: ignore
+SYSTEM_JUPYTER_PATH = [platformdirs.site_data_dir("Jupyter", False)]
 ENV_JUPYTER_PATH = [os.path.join(sys.prefix, "share", "jupyter")]
 
 
@@ -199,7 +199,7 @@ def jupyter_path(*subdirs):
     return paths
 
 
-SYSTEM_CONFIG_PATH = appdirs.site_config_dir("Jupyter", False)  # type: ignore
+SYSTEM_CONFIG_PATH = platformdirs.site_config_dir("Jupyter", False)
 ENV_CONFIG_PATH = [os.path.join(sys.prefix, "etc", "jupyter")]
 
 

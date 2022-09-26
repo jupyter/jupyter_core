@@ -92,11 +92,11 @@ def test_envset():
 
 @pytest.mark.skipif(sys.platform != "darwin", reason="only run on osx")
 def test_config_dir_darwin():
-    with darwin, no_config_env:
+    with no_config_env:
         config = jupyter_config_dir()
     assert config.startswith(os.path.expanduser("~"))
 
-    with darwin, config_env:
+    with config_env:
         config = jupyter_config_dir()
     assert config == jupyter_config_env
 
@@ -139,7 +139,7 @@ def test_data_dir_darwin():
 @pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
 def test_data_dir_windows():
     data = jupyter_data_dir()
-    assert data == realpath(pjoin(os.environ.get("APPDATA", ""), "jupyter"))
+    assert data.endswith(r"AppData\Local\Jupyter\data")
 
 
 @pytest.mark.skipif(sys.platform != "linux", reason="only run on linux")
@@ -169,7 +169,7 @@ def test_runtime_dir_darwin():
 @pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
 def test_runtime_dir_windows():
     runtime = jupyter_runtime_dir()
-    assert runtime == realpath(pjoin(os.environ.get("APPDATA", ""), "jupyter", "runtime"))
+    assert runtime.endswith(r"AppData\Local\Jupyter\data\runtime")
 
 
 @pytest.mark.skipif(sys.platform != "linux", reason="only run on linux")
