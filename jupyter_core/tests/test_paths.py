@@ -35,7 +35,7 @@ pjoin = os.path.join
 
 
 xdg_env = {
-    "USER": os.environ["USER"],
+    "HOME": os.environ["HOME"],
     "XDG_CONFIG_HOME": "/tmp/xdg/config",
     "XDG_DATA_HOME": "/tmp/xdg/data",
     "XDG_RUNTIME_DIR": "/tmp/xdg/runtime",
@@ -44,7 +44,7 @@ xdg = patch.dict("os.environ", xdg_env)
 no_xdg = patch.dict(
     "os.environ",
     {
-        "USER": os.environ["USER"],
+        "HOME": os.environ["HOME"],
         "XDG_CONFIG_HOME": "",
         "XDG_DATA_HOME": "",
         "XDG_RUNTIME_DIR": "",
@@ -54,7 +54,7 @@ no_xdg = patch.dict(
 no_config_env = patch.dict(
     "os.environ",
     {
-        "USER": os.environ["USER"],
+        "HOME": os.environ["HOME"],
         "JUPYTER_CONFIG_DIR": "",
         "JUPYTER_DATA_DIR": "",
         "JUPYTER_RUNTIME_DIR": "",
