@@ -35,6 +35,7 @@ pjoin = os.path.join
 
 
 xdg_env = {
+    "USER": os.environ["USER"],
     "XDG_CONFIG_HOME": "/tmp/xdg/config",
     "XDG_DATA_HOME": "/tmp/xdg/data",
     "XDG_RUNTIME_DIR": "/tmp/xdg/runtime",
@@ -43,6 +44,7 @@ xdg = patch.dict("os.environ", xdg_env)
 no_xdg = patch.dict(
     "os.environ",
     {
+        "USER": os.environ["USER"],
         "XDG_CONFIG_HOME": "",
         "XDG_DATA_HOME": "",
         "XDG_RUNTIME_DIR": "",
@@ -52,6 +54,7 @@ no_xdg = patch.dict(
 no_config_env = patch.dict(
     "os.environ",
     {
+        "USER": os.environ["USER"],
         "JUPYTER_CONFIG_DIR": "",
         "JUPYTER_DATA_DIR": "",
         "JUPYTER_RUNTIME_DIR": "",
@@ -60,9 +63,15 @@ no_config_env = patch.dict(
 )
 
 jupyter_config_env = "/jupyter-cfg"
-config_env = patch.dict("os.environ", {"JUPYTER_CONFIG_DIR": jupyter_config_env})
-prefer_env = patch.dict("os.environ", {"JUPYTER_PREFER_ENV_PATH": "True"})
-prefer_user = patch.dict("os.environ", {"JUPYTER_PREFER_ENV_PATH": "False"})
+config_env = patch.dict(
+    "os.environ", {"USER": os.environ["USER"], "JUPYTER_CONFIG_DIR": jupyter_config_env}
+)
+prefer_env = patch.dict(
+    "os.environ", {"USER": os.environ["USER"], "JUPYTER_PREFER_ENV_PATH": "True"}
+)
+prefer_user = patch.dict(
+    "os.environ", {"USER": os.environ["USER"], "JUPYTER_PREFER_ENV_PATH": "False"}
+)
 
 resetenv = patch.dict(os.environ)
 
@@ -136,7 +145,7 @@ def test_data_dir_env():
     assert data == data_env
 
 
-@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
+@pytest.mark.skipif(sys.platform != "darwin", reason="only run on osx")
 def test_data_dir_darwin():
     with darwin:
         data = jupyter_data_dir()

@@ -19,7 +19,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Optional
 
-import appdirs
+import appdirs  # type:ignore
 
 pjoin = os.path.join
 
