@@ -19,6 +19,8 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Optional
 
+import appdirs
+
 pjoin = os.path.join
 
 # UF_HIDDEN is a stat flag not defined in the stat module.
@@ -85,7 +87,8 @@ def _mkdtemp_once(name):
 def jupyter_config_dir():
     """Get the Jupyter config directory for this platform and user.
 
-    Returns JUPYTER_CONFIG_DIR if defined, else ~/.jupyter
+    Returns JUPYTER_CONFIG_DIR if defined, otherwise the appropriate
+    directory for the platform.
     """
 
     env = os.environ
@@ -95,8 +98,7 @@ def jupyter_config_dir():
     if env.get("JUPYTER_CONFIG_DIR"):
         return env["JUPYTER_CONFIG_DIR"]
 
-    home_dir = get_home_dir()
-    return pjoin(home_dir, ".jupyter")
+    return appdirs.user_config_dir("Jupyter")
 
 
 def jupyter_data_dir():
@@ -111,22 +113,7 @@ def jupyter_data_dir():
     if env.get("JUPYTER_DATA_DIR"):
         return env["JUPYTER_DATA_DIR"]
 
-    home = get_home_dir()
-
-    if sys.platform == "darwin":
-        return os.path.join(home, "Library", "Jupyter")
-    elif os.name == "nt":
-        appdata = os.environ.get("APPDATA", None)
-        if appdata:
-            return str(Path(appdata, "jupyter").resolve())
-        else:
-            return pjoin(jupyter_config_dir(), "data")
-    else:
-        # Linux, non-OS X Unix, AIX, etc.
-        xdg = env.get("XDG_DATA_HOME", None)
-        if not xdg:
-            xdg = pjoin(home, ".local", "share")
-        return pjoin(xdg, "jupyter")
+    return os.path.join(appdirs.user_data_dir("Jupyter"), "data")
 
 
 def jupyter_runtime_dir():
@@ -145,18 +132,7 @@ def jupyter_runtime_dir():
     return pjoin(jupyter_data_dir(), "runtime")
 
 
-if os.name == "nt":
-    programdata = os.environ.get("PROGRAMDATA", None)
-    if programdata:
-        SYSTEM_JUPYTER_PATH = [pjoin(programdata, "jupyter")]
-    else:  # PROGRAMDATA is not defined by default on XP.
-        SYSTEM_JUPYTER_PATH = [os.path.join(sys.prefix, "share", "jupyter")]
-else:
-    SYSTEM_JUPYTER_PATH = [
-        "/usr/local/share/jupyter",
-        "/usr/share/jupyter",
-    ]
-
+SYSTEM_JUPYTER_PATH = [appdirs.user_data_dir("Jupyter")]
 ENV_JUPYTER_PATH = [os.path.join(sys.prefix, "share", "jupyter")]
 
 
@@ -222,18 +198,7 @@ def jupyter_path(*subdirs):
     return paths
 
 
-if os.name == "nt":
-    programdata = os.environ.get("PROGRAMDATA", None)
-    if programdata:
-        SYSTEM_CONFIG_PATH = [os.path.join(programdata, "jupyter")]
-    else:  # PROGRAMDATA is not defined by default on XP.
-        SYSTEM_CONFIG_PATH = []
-else:
-    SYSTEM_CONFIG_PATH = [
-        "/usr/local/etc/jupyter",
-        "/etc/jupyter",
-    ]
-
+SYSTEM_CONFIG_PATH = appdirs.site_config_dir("Jupyter")
 ENV_CONFIG_PATH = [os.path.join(sys.prefix, "etc", "jupyter")]
 
 
