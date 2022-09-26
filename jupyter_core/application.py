@@ -88,8 +88,8 @@ class JupyterApp(Application):
     def config_file_paths(self):
         path = jupyter_config_path()
         if self.config_dir not in path:
-            path.insert(0, self.config_dir)
-        path.insert(0, os.getcwd())
+            # Insert config dir after cwd.
+            path.insert(1, self.config_dir)
         return path
 
     data_dir = Unicode()
