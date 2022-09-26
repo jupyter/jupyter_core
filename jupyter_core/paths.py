@@ -98,7 +98,7 @@ def jupyter_config_dir():
     if env.get("JUPYTER_CONFIG_DIR"):
         return env["JUPYTER_CONFIG_DIR"]
 
-    return appdirs.user_config_dir("Jupyter")
+    return appdirs.user_config_dir("Jupyter", False)  # type: ignore
 
 
 def jupyter_data_dir():
@@ -113,7 +113,8 @@ def jupyter_data_dir():
     if env.get("JUPYTER_DATA_DIR"):
         return env["JUPYTER_DATA_DIR"]
 
-    return os.path.join(appdirs.user_data_dir("Jupyter"), "data")
+    base_dir = appdirs.user_data_dir("Jupyter", False)  # type: ignore
+    return os.path.join(base_dir, "data")
 
 
 def jupyter_runtime_dir():
@@ -132,7 +133,7 @@ def jupyter_runtime_dir():
     return pjoin(jupyter_data_dir(), "runtime")
 
 
-SYSTEM_JUPYTER_PATH = [appdirs.user_data_dir("Jupyter")]
+SYSTEM_JUPYTER_PATH = [appdirs.site_data_dir("Jupyter", False)]  # type: ignore
 ENV_JUPYTER_PATH = [os.path.join(sys.prefix, "share", "jupyter")]
 
 
@@ -198,7 +199,7 @@ def jupyter_path(*subdirs):
     return paths
 
 
-SYSTEM_CONFIG_PATH = appdirs.site_config_dir("Jupyter")
+SYSTEM_CONFIG_PATH = appdirs.site_config_dir("Jupyter", False)  # type: ignore
 ENV_CONFIG_PATH = [os.path.join(sys.prefix, "etc", "jupyter")]
 
 
