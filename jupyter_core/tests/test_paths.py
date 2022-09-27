@@ -100,41 +100,48 @@ def test_envset():
 
 
 @macos
-def test_config_dir_darwin():
+def test_config_dir_darwin_legacy():
     config = jupyter_config_dir()
     assert config == home_jupyter
 
-    with use_platformdirs:
-        config = jupyter_config_dir()
-        assert config == realpath("~/Library/Preferences/Jupyter")
-
-    with config_env:
-        config = jupyter_config_dir()
-    assert config == jupyter_config_env
-
+@macos
+@use_platformdirs
+def test_config_dir_darwin():
+    config = jupyter_config_dir()
+    assert config == realpath("~/Library/Preferences/Jupyter")
 
 @windows
+def test_config_dir_windows_legacy():
+    config = jupyter_config_dir()
+    assert config.startswith(os.path.expanduser("~"))
+
+@windows
+@use_platformdirs
 def test_config_dir_windows():
     config = jupyter_config_dir()
     assert config.startswith(os.path.expanduser("~"))
 
-    with config_env:
-        config = jupyter_config_dir()
-    assert config == jupyter_config_env
-
-
 @linux
-def test_config_dir_linux():
+def test_config_dir_linux_legacy():
     config = jupyter_config_dir()
     assert config == home_jupyter
 
-    with use_platformdirs:
-        config = jupyter_config_dir()
-        assert config.startswith(os.path.expanduser("~"))
+@linux
+@use_platformdirs
+def test_config_dir_linux():
+    config = jupyter_config_dir()
+    assert config.startswith(os.path.expanduser("~"))
 
+def test_config_env_legacy():
     with config_env:
         config = jupyter_config_dir()
-    assert config == jupyter_config_env
+        assert config == jupyter_config_env
+
+@use_platformdirs
+def test_config_env():
+    with config_env:
+        config = jupyter_config_dir()
+        assert config == jupyter_config_env
 
 
 def test_data_dir_env():
