@@ -43,6 +43,13 @@ def envset(name, default=False):
 
     return os.environ[name].lower() not in ["no", "n", "false", "off", "0", "0.0"]
 
+def use_platform_dirs():
+    """Determine if platformdirs should be used for system-specific paths.
+
+    We plan for this to default to False in jupyter_core version 5 and to True
+    in jupyter_core version 6.
+    """
+    return envset("JUPYTER_PLATFORM_DIRS", False)
 
 def get_home_dir():
     """Get the real path of the home directory"""
@@ -100,7 +107,7 @@ def jupyter_config_dir():
     if env.get("JUPYTER_CONFIG_DIR"):
         return env["JUPYTER_CONFIG_DIR"]
 
-    if env.get("JUPYTER_PLATFORM_DIRS"):
+    if use_platform_dirs():
         return platformdirs.user_config_dir("Jupyter", False)
 
     home_dir = get_home_dir()
@@ -119,7 +126,7 @@ def jupyter_data_dir():
     if env.get("JUPYTER_DATA_DIR"):
         return env["JUPYTER_DATA_DIR"]
 
-    if env.get("JUPYTER_PLATFORM_DIRS"):
+    if use_platform_dirs():
         base_dir = platformdirs.user_data_dir("Jupyter", False)
         return os.path.join(base_dir, "data")
 
@@ -157,7 +164,7 @@ def jupyter_runtime_dir():
     return pjoin(jupyter_data_dir(), "runtime")
 
 
-if os.environ.get("JUPYTER_PLATFORM_DIRS"):
+if use_platform_dirs():
     SYSTEM_JUPYTER_PATH = [platformdirs.site_data_dir("Jupyter", False)]
 else:
     deprecation(
@@ -244,7 +251,7 @@ def jupyter_path(*subdirs):
     return paths
 
 
-if os.environ.get("JUPYTER_PLATFORM_DIRS"):
+if use_platform_dirs():
     SYSTEM_CONFIG_PATH = platformdirs.site_config_dir("Jupyter", False)
 else:
     if os.name == "nt":
