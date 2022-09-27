@@ -235,8 +235,7 @@ def test_runtime_dir_windows_legacy():
 @use_platformdirs
 def test_runtime_dir_windows():
     runtime = jupyter_runtime_dir()
-    assert runtime == realpath(pjoin(os.environ.get("APPDATA", ""), "Local", "Jupyter", "runtime"))
-
+    assert runtime == realpath(pjoin(os.environ.get("CSIDL_LOCAL_APPDATA", ""), "Jupyter", "runtime"))
 
 @linux
 def test_runtime_dir_linux_legacy():
