@@ -93,4 +93,6 @@ testpaths = [
 filterwarnings= [
   # Fail on warnings
   "error",
+  # Expected internal warnings
+  "module:Jupyter is migrating its paths to use standard platformdirs:DeprecationWarning",
 ]
