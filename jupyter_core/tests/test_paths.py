@@ -144,7 +144,7 @@ def test_config_env():
         assert config == jupyter_config_env
 
 
-def test_data_dir_env():
+def test_data_dir_env_legacy():
     data_env = "runtime-dir"
     with patch.dict("os.environ", {"JUPYTER_DATA_DIR": data_env}):
         data = jupyter_data_dir()
@@ -201,7 +201,7 @@ def test_data_dir_linux():
         assert data == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter")
 
 
-def test_runtime_dir_env():
+def test_runtime_dir_env_legacy():
     rtd_env = "runtime-dir"
     with patch.dict("os.environ", {"JUPYTER_RUNTIME_DIR": rtd_env}):
         runtime = jupyter_runtime_dir()
@@ -264,7 +264,7 @@ def test_jupyter_path():
     with no_config_env, patch.object(paths, "SYSTEM_JUPYTER_PATH", system_path):
         path = jupyter_path()
         assert path[0] == jupyter_data_dir()
-    assert path[-2:] == system_path
+        assert path[-2:] == system_path
 
 
 def test_jupyter_path_user_site():
@@ -289,14 +289,14 @@ def test_jupyter_path_no_user_site():
     with no_config_env, patch.object(site, "ENABLE_USER_SITE", False):
         path = jupyter_path()
         assert path[0] == jupyter_data_dir()
-    assert path[1] == paths.ENV_JUPYTER_PATH[0]
+        assert path[1] == paths.ENV_JUPYTER_PATH[0]
 
 
 def test_jupyter_path_prefer_env():
     with prefer_env:
         path = jupyter_path()
-    assert path[0] == paths.ENV_JUPYTER_PATH[0]
-    assert path[1] == jupyter_data_dir()
+        assert path[0] == paths.ENV_JUPYTER_PATH[0]
+        assert path[1] == jupyter_data_dir()
 
 
 def test_jupyter_path_env():
