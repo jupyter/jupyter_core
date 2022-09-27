@@ -43,6 +43,7 @@ def envset(name, default=False):
 
     return os.environ[name].lower() not in ["no", "n", "false", "off", "0", "0.0"]
 
+
 def use_platform_dirs():
     """Determine if platformdirs should be used for system-specific paths.
 
@@ -50,6 +51,7 @@ def use_platform_dirs():
     in jupyter_core version 6.
     """
     return envset("JUPYTER_PLATFORM_DIRS", False)
+
 
 def get_home_dir():
     """Get the real path of the home directory"""
