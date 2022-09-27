@@ -25,6 +25,9 @@ from jupyter_core.utils import deprecation
 
 pjoin = os.path.join
 
+# Capitalize Jupyter in paths only on Windows and MacOS
+APPNAME = "Jupyter" if sys.platform in ("win32", "darwin") else "jupyter"
+
 # UF_HIDDEN is a stat flag not defined in the stat module.
 # It is used by BSD to indicate hidden files.
 UF_HIDDEN = getattr(stat, "UF_HIDDEN", 32768)
@@ -110,7 +113,7 @@ def jupyter_config_dir():
         return env["JUPYTER_CONFIG_DIR"]
 
     if use_platform_dirs():
-        return platformdirs.user_config_dir("Jupyter", appauthor=False)
+        return platformdirs.user_config_dir(APPNAME, appauthor=False)
 
     home_dir = get_home_dir()
     return pjoin(home_dir, ".jupyter")
@@ -129,7 +132,7 @@ def jupyter_data_dir():
         return env["JUPYTER_DATA_DIR"]
 
     if use_platform_dirs():
-        return platformdirs.user_data_dir("Jupyter", False)
+        return platformdirs.user_data_dir(APPNAME, appauthor=False)
 
     home = get_home_dir()
 
@@ -167,7 +170,7 @@ def jupyter_runtime_dir():
 
 if use_platform_dirs():
     SYSTEM_JUPYTER_PATH = platformdirs.site_data_dir(
-        "Jupyter", appauthor=False, multipath=True
+        APPNAME, appauthor=False, multipath=True
     ).split(os.pathsep)
 else:
     deprecation(
@@ -256,7 +259,7 @@ def jupyter_path(*subdirs):
 
 if use_platform_dirs():
     SYSTEM_CONFIG_PATH = platformdirs.site_config_dir(
-        "Jupyter", appauthor=False, multipath=True
+        APPNAME, appauthor=False, multipath=True
     ).split(os.pathsep)
 else:
     if os.name == "nt":

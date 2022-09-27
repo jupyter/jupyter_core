@@ -176,11 +176,12 @@ def test_data_dir_linux():
 
     with patch.dict("os.environ", {"JUPYTER_PLATFORM_DIRS": "1"}):
         data = jupyter_data_dir()
-    assert data == realpath("~/.local/share/Jupyter")
+    assert data == realpath("~/.local/share/jupyter")
 
     with patch.dict("os.environ", {"JUPYTER_PLATFORM_DIRS": "1", "XDG_DATA_HOME": "tmp/xdg/data"}):
         data = jupyter_data_dir()
-    assert data == pjoin(xdg_env["XDG_DATA_HOME"], "Jupyter")
+    # TODO: Should this be titlecase "Juptyer" by xdg convention?
+    assert data == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter")
 
 
 def test_runtime_dir_env():
@@ -220,11 +221,12 @@ def test_runtime_dir_linux():
 
     with patch.dict("os.environ", {"JUPYTER_PLATFORM_DIRS": "1"}):
         runtime = jupyter_runtime_dir()
-    assert runtime == realpath("~/.local/share/Jupyter/runtime")
+    assert runtime == realpath("~/.local/share/jupyter/runtime")
 
     with patch.dict("os.environ", {"JUPYTER_PLATFORM_DIRS": "1", "XDG_DATA_HOME": "tmp/xdg/data"}):
         runtime = jupyter_runtime_dir()
-    assert runtime == pjoin(xdg_env["XDG_DATA_HOME"], "Jupyter", "runtime")
+    # TODO: Should this be title case "Jupyter" by xdg convention?
+    assert runtime == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter", "runtime")
 
 
 def test_jupyter_path():
