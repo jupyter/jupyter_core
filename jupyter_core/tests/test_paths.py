@@ -157,7 +157,6 @@ def test_data_dir_env():
         data = jupyter_data_dir()
         assert data == data_env
 
-
 @macos
 def test_data_dir_darwin_legacy():
     data = jupyter_data_dir()
@@ -206,46 +205,59 @@ def test_runtime_dir_env():
     rtd_env = "runtime-dir"
     with patch.dict("os.environ", {"JUPYTER_RUNTIME_DIR": rtd_env}):
         runtime = jupyter_runtime_dir()
-    assert runtime == rtd_env
+        assert runtime == rtd_env
 
+@use_platformdirs
+def test_runtime_dir_env():
+    rtd_env = "runtime-dir"
+    with patch.dict("os.environ", {"JUPYTER_RUNTIME_DIR": rtd_env}):
+        runtime = jupyter_runtime_dir()
+        assert runtime == rtd_env
 
 @macos
-def test_runtime_dir_darwin():
-    with use_platformdirs:
-        runtime = jupyter_runtime_dir()
-        assert runtime == realpath("~/Library/Application Support/Jupyter/runtime")
+def test_runtime_dir_darwin_legacy():
     runtime = jupyter_runtime_dir()
     assert runtime == realpath("~/Library/Jupyter/runtime")
 
+@macos
+@use_platformdirs
+def test_runtime_dir_darwin():
+    runtime = jupyter_runtime_dir()
+    assert runtime == realpath("~/Library/Application Support/Jupyter/runtime")
+
 
 @windows
-def test_runtime_dir_windows():
+def test_runtime_dir_windows_legacy():
     runtime = jupyter_runtime_dir()
     assert runtime == realpath(pjoin(os.environ.get("APPDATA", ""), "jupyter", "runtime"))
-    with use_platformdirs:
-        runtime = jupyter_runtime_dir()
-        assert runtime.endswith(r"AppData\Local\Jupyter\runtime")
+
+@windows
+@use_platformdirs
+def test_runtime_dir_windows():
+    runtime = jupyter_runtime_dir()
+    assert runtime.endswith(r"AppData\Local\Jupyter\runtime")
 
 
 @linux
-def test_runtime_dir_linux():
+def test_runtime_dir_linux_legacy():
     with no_xdg:
         runtime = jupyter_runtime_dir()
-    assert runtime == realpath("~/.local/share/jupyter/runtime")
+        assert runtime == realpath("~/.local/share/jupyter/runtime")
 
     with xdg:
         runtime = jupyter_runtime_dir()
-    assert runtime == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter", "runtime")
+        assert runtime == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter", "runtime")
 
-    with use_platformdirs:
+@linux
+@use_platformdirs
+def test_runtime_dir_linux():
+    with no_xdg:
         runtime = jupyter_runtime_dir()
-    assert runtime == realpath("~/.local/share/jupyter/runtime")
+        assert runtime == realpath("~/.local/share/jupyter/runtime")
 
-    with patch.dict("os.environ", {"JUPYTER_PLATFORM_DIRS": "1", "XDG_DATA_HOME": "/tmp/xdg/data"}):
+    with xdg:
         runtime = jupyter_runtime_dir()
-    # TODO: Should this be title case "Jupyter" by xdg convention?
-    assert runtime == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter", "runtime")
-
+        assert runtime == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter", "runtime")
 
 def test_jupyter_path():
     system_path = ["system", "path"]
