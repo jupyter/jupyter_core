@@ -174,7 +174,7 @@ if use_platform_dirs():
     ).split(os.pathsep)
 else:
     deprecation(
-        "Jupyter is migrating its paths to use standard platformdirs\n"
+        "Jupyter is migrating its paths to use standard platformdirs\n"  # noqa
         + "given by the platformdirs library.  To remove this warning and\n"
         + "see the appropriate new directories, set the environment variable\n"
         + "`JUPYTER_PLATFORM_DIRS=1` and then run `jupyter --paths`.\n"
