@@ -233,7 +233,7 @@ def test_jupyter_path():
     system_path = ["system", "path"]
     with no_config_env, patch.object(paths, "SYSTEM_JUPYTER_PATH", system_path):
         path = jupyter_path()
-    assert path[0] == jupyter_data_dir()
+        assert path[0] == jupyter_data_dir()
     assert path[-2:] == system_path
 
 
@@ -258,7 +258,7 @@ def test_jupyter_path_user_site():
 def test_jupyter_path_no_user_site():
     with no_config_env, patch.object(site, "ENABLE_USER_SITE", False):
         path = jupyter_path()
-    assert path[0] == jupyter_data_dir()
+        assert path[0] == jupyter_data_dir()
     assert path[1] == paths.ENV_JUPYTER_PATH[0]
 
 
