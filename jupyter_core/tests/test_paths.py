@@ -113,12 +113,14 @@ def test_config_dir_darwin():
 @use_platformdirs
 def test_config_dir_windows():
     config = jupyter_config_dir()
+    assert config==''
     assert config.startswith(os.path.expanduser("~"))
 
 @linux
 @use_platformdirs
 def test_config_dir_linux():
     config = jupyter_config_dir()
+    assert config==''
     assert config.startswith(os.path.expanduser("~"))
 
 def test_config_env_legacy():
