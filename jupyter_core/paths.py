@@ -156,15 +156,17 @@ def jupyter_runtime_dir():
 
     return pjoin(jupyter_data_dir(), "runtime")
 
+
 if os.environ.get("JUPYTER_PLATFORM_DIRS"):
     SYSTEM_JUPYTER_PATH = [platformdirs.site_data_dir("Jupyter", False)]
 else:
     deprecation(
-        "Jupyter is migrating its paths to use standard platformdirs\n" +
-        "given by the platformdirs library.  To remove this warning and\n" +
-        "see the appropriate new directories, set the environment variable\n" +
-        "`JUPYTER_PLATFORM_DIRS=1` and then run `jupyter --paths`.\n" +
-        "The use of platformdirs will be the default in `jupyter_core` v6")
+        "Jupyter is migrating its paths to use standard platformdirs\n"
+        + "given by the platformdirs library.  To remove this warning and\n"
+        + "see the appropriate new directories, set the environment variable\n"
+        + "`JUPYTER_PLATFORM_DIRS=1` and then run `jupyter --paths`.\n"
+        + "The use of platformdirs will be the default in `jupyter_core` v6"
+    )
     if os.name == "nt":
         programdata = os.environ.get("PROGRAMDATA", None)
         if programdata:

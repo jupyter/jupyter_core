@@ -153,6 +153,7 @@ def test_data_dir_darwin():
         data = jupyter_data_dir()
         assert data == realpath("~/Library/Application Support/Jupyter/data")
 
+
 @pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
 def test_data_dir_windows():
     data = jupyter_data_dir()
