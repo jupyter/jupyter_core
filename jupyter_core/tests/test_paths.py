@@ -104,16 +104,19 @@ def test_config_dir_darwin_legacy():
     config = jupyter_config_dir()
     assert config == home_jupyter
 
+
 @macos
 @use_platformdirs
 def test_config_dir_darwin():
     config = jupyter_config_dir()
     assert config == realpath("~/Library/Preferences/Jupyter")
 
+
 @windows
 def test_config_dir_windows_legacy():
     config = jupyter_config_dir()
     assert config.startswith(os.path.expanduser("~"))
+
 
 @windows
 @use_platformdirs
@@ -121,10 +124,12 @@ def test_config_dir_windows():
     config = jupyter_config_dir()
     assert config.startswith(os.path.expanduser("~"))
 
+
 @linux
 def test_config_dir_linux_legacy():
     config = jupyter_config_dir()
     assert config == home_jupyter
+
 
 @linux
 @use_platformdirs
@@ -132,10 +137,12 @@ def test_config_dir_linux():
     config = jupyter_config_dir()
     assert config.startswith(os.path.expanduser("~"))
 
+
 def test_config_env_legacy():
     with config_env:
         config = jupyter_config_dir()
         assert config == jupyter_config_env
+
 
 @use_platformdirs
 def test_config_env():
@@ -150,6 +157,7 @@ def test_data_dir_env_legacy():
         data = jupyter_data_dir()
         assert data == data_env
 
+
 @use_platformdirs
 def test_data_dir_env():
     data_env = "runtime-dir"
@@ -157,10 +165,12 @@ def test_data_dir_env():
         data = jupyter_data_dir()
         assert data == data_env
 
+
 @macos
 def test_data_dir_darwin_legacy():
     data = jupyter_data_dir()
     assert data == realpath("~/Library/Jupyter")
+
 
 @macos
 @use_platformdirs
@@ -168,16 +178,19 @@ def test_data_dir_darwin():
     data = jupyter_data_dir()
     assert data == realpath("~/Library/Application Support/Jupyter")
 
+
 @windows
 def test_data_dir_windows_legacy():
     data = jupyter_data_dir()
     assert data == realpath(pjoin(os.environ.get("APPDATA", ""), "jupyter"))
+
 
 @windows
 @use_platformdirs
 def test_data_dir_windows():
     data = jupyter_data_dir()
     assert data.endswith(r"AppData\Local\Jupyter")
+
 
 @linux
 def test_data_dir_linux_legacy():
@@ -188,6 +201,7 @@ def test_data_dir_linux_legacy():
     with xdg:
         data = jupyter_data_dir()
         assert data == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter")
+
 
 @linux
 @use_platformdirs
@@ -207,6 +221,7 @@ def test_runtime_dir_env_legacy():
         runtime = jupyter_runtime_dir()
         assert runtime == rtd_env
 
+
 @use_platformdirs
 def test_runtime_dir_env():
     rtd_env = "runtime-dir"
@@ -214,10 +229,12 @@ def test_runtime_dir_env():
         runtime = jupyter_runtime_dir()
         assert runtime == rtd_env
 
+
 @macos
 def test_runtime_dir_darwin_legacy():
     runtime = jupyter_runtime_dir()
     assert runtime == realpath("~/Library/Jupyter/runtime")
+
 
 @macos
 @use_platformdirs
@@ -230,6 +247,7 @@ def test_runtime_dir_darwin():
 def test_runtime_dir_windows_legacy():
     runtime = jupyter_runtime_dir()
     assert runtime == realpath(pjoin(os.environ.get("APPDATA", ""), "jupyter", "runtime"))
+
 
 @windows
 @use_platformdirs
@@ -248,6 +266,7 @@ def test_runtime_dir_linux_legacy():
         runtime = jupyter_runtime_dir()
         assert runtime == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter", "runtime")
 
+
 @linux
 @use_platformdirs
 def test_runtime_dir_linux():
@@ -258,6 +277,7 @@ def test_runtime_dir_linux():
     with xdg:
         runtime = jupyter_runtime_dir()
         assert runtime == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter", "runtime")
+
 
 def test_jupyter_path():
     system_path = ["system", "path"]
