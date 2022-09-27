@@ -110,7 +110,7 @@ def jupyter_config_dir():
         return env["JUPYTER_CONFIG_DIR"]
 
     if use_platform_dirs():
-        return platformdirs.user_config_dir("Jupyter", False)
+        return platformdirs.user_config_dir("Jupyter", appauthor=False)
 
     home_dir = get_home_dir()
     return pjoin(home_dir, ".jupyter")
@@ -166,7 +166,7 @@ def jupyter_runtime_dir():
 
 
 if use_platform_dirs():
-    SYSTEM_JUPYTER_PATH = [platformdirs.site_data_dir("Jupyter", False)]
+    SYSTEM_JUPYTER_PATH = platformdirs.site_data_dir("Jupyter", appauthor=False, multipath=True).split(os.pathsep)
 else:
     deprecation(
         "Jupyter is migrating its paths to use standard platformdirs\n"
@@ -253,7 +253,7 @@ def jupyter_path(*subdirs):
 
 
 if use_platform_dirs():
-    SYSTEM_CONFIG_PATH = [platformdirs.site_config_dir("Jupyter", False)]
+    SYSTEM_CONFIG_PATH = platformdirs.site_config_dir("Jupyter", appauthor=False, multipath=True).split(os.pathsep)
 else:
     if os.name == "nt":
         programdata = os.environ.get("PROGRAMDATA", None)
