@@ -231,6 +231,15 @@ def main():
                 if args.debug:
                     env = os.environ
 
+                    if paths.use_platform_dirs():
+                        print(
+                            "JUPYTER_PLATFORM_DIRS is set to a true value, so we use platformdirs to find platform-specific directories"
+                        )
+                    else:
+                        print(
+                            "JUPYTER_PLATFORM_DIRS is set to a false value, or is not set, so we use hardcoded legacy paths for platform-specific directories"
+                        )
+
                     if paths.prefer_environment_over_user():
                         print(
                             "JUPYTER_PREFER_ENV_PATH is set to a true value, or JUPYTER_PREFER_ENV_PATH is not set and we detected a virtual environment, making the environment-level path preferred over the user-level path for data and config"

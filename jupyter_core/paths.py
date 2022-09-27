@@ -19,7 +19,14 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Optional
 
+import platformdirs
+
+from jupyter_core.utils import deprecation
+
 pjoin = os.path.join
+
+# Capitalize Jupyter in paths only on Windows and MacOS
+APPNAME = "Jupyter" if sys.platform in ("win32", "darwin") else "jupyter"
 
 # UF_HIDDEN is a stat flag not defined in the stat module.
 # It is used by BSD to indicate hidden files.
@@ -38,6 +45,15 @@ def envset(name, default=False):
         return default
 
     return os.environ[name].lower() not in ["no", "n", "false", "off", "0", "0.0"]
+
+
+def use_platform_dirs():
+    """Determine if platformdirs should be used for system-specific paths.
+
+    We plan for this to default to False in jupyter_core version 5 and to True
+    in jupyter_core version 6.
+    """
+    return envset("JUPYTER_PLATFORM_DIRS", False)
 
 
 def get_home_dir():
@@ -85,7 +101,8 @@ def _mkdtemp_once(name):
 def jupyter_config_dir():
     """Get the Jupyter config directory for this platform and user.
 
-    Returns JUPYTER_CONFIG_DIR if defined, else ~/.jupyter
+    Returns JUPYTER_CONFIG_DIR if defined, otherwise the appropriate
+    directory for the platform.
     """
 
     env = os.environ
@@ -94,6 +111,9 @@ def jupyter_config_dir():
 
     if env.get("JUPYTER_CONFIG_DIR"):
         return env["JUPYTER_CONFIG_DIR"]
+
+    if use_platform_dirs():
+        return platformdirs.user_config_dir(APPNAME, appauthor=False)
 
     home_dir = get_home_dir()
     return pjoin(home_dir, ".jupyter")
@@ -110,6 +130,9 @@ def jupyter_data_dir():
 
     if env.get("JUPYTER_DATA_DIR"):
         return env["JUPYTER_DATA_DIR"]
+
+    if use_platform_dirs():
+        return platformdirs.user_data_dir(APPNAME, appauthor=False)
 
     home = get_home_dir()
 
@@ -145,17 +168,29 @@ def jupyter_runtime_dir():
     return pjoin(jupyter_data_dir(), "runtime")
 
 
-if os.name == "nt":
-    programdata = os.environ.get("PROGRAMDATA", None)
-    if programdata:
-        SYSTEM_JUPYTER_PATH = [pjoin(programdata, "jupyter")]
-    else:  # PROGRAMDATA is not defined by default on XP.
-        SYSTEM_JUPYTER_PATH = [os.path.join(sys.prefix, "share", "jupyter")]
+if use_platform_dirs():
+    SYSTEM_JUPYTER_PATH = platformdirs.site_data_dir(
+        APPNAME, appauthor=False, multipath=True
+    ).split(os.pathsep)
 else:
-    SYSTEM_JUPYTER_PATH = [
-        "/usr/local/share/jupyter",
-        "/usr/share/jupyter",
-    ]
+    deprecation(
+        "Jupyter is migrating its paths to use standard platformdirs\n"  # noqa
+        + "given by the platformdirs library.  To remove this warning and\n"
+        + "see the appropriate new directories, set the environment variable\n"
+        + "`JUPYTER_PLATFORM_DIRS=1` and then run `jupyter --paths`.\n"
+        + "The use of platformdirs will be the default in `jupyter_core` v6"
+    )
+    if os.name == "nt":
+        programdata = os.environ.get("PROGRAMDATA", None)
+        if programdata:
+            SYSTEM_JUPYTER_PATH = [pjoin(programdata, "jupyter")]
+        else:  # PROGRAMDATA is not defined by default on XP.
+            SYSTEM_JUPYTER_PATH = [os.path.join(sys.prefix, "share", "jupyter")]
+    else:
+        SYSTEM_JUPYTER_PATH = [
+            "/usr/local/share/jupyter",
+            "/usr/share/jupyter",
+        ]
 
 ENV_JUPYTER_PATH = [os.path.join(sys.prefix, "share", "jupyter")]
 
@@ -222,18 +257,22 @@ def jupyter_path(*subdirs):
     return paths
 
 
-if os.name == "nt":
-    programdata = os.environ.get("PROGRAMDATA", None)
-    if programdata:
-        SYSTEM_CONFIG_PATH = [os.path.join(programdata, "jupyter")]
-    else:  # PROGRAMDATA is not defined by default on XP.
-        SYSTEM_CONFIG_PATH = []
+if use_platform_dirs():
+    SYSTEM_CONFIG_PATH = platformdirs.site_config_dir(
+        APPNAME, appauthor=False, multipath=True
+    ).split(os.pathsep)
 else:
-    SYSTEM_CONFIG_PATH = [
-        "/usr/local/etc/jupyter",
-        "/etc/jupyter",
-    ]
-
+    if os.name == "nt":
+        programdata = os.environ.get("PROGRAMDATA", None)
+        if programdata:
+            SYSTEM_CONFIG_PATH = [os.path.join(programdata, "jupyter")]
+        else:  # PROGRAMDATA is not defined by default on XP.
+            SYSTEM_CONFIG_PATH = []
+    else:
+        SYSTEM_CONFIG_PATH = [
+            "/usr/local/etc/jupyter",
+            "/etc/jupyter",
+        ]
 ENV_CONFIG_PATH = [os.path.join(sys.prefix, "etc", "jupyter")]
 
 

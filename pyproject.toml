@@ -17,6 +17,7 @@ classifiers = [
 ]
 requires-python = ">=3.7"
 dependencies = [
+  "platformdirs",
   "traitlets",
   "pywin32>=1.0 ; sys_platform == 'win32' and platform_python_implementation != 'PyPy'"
 ]
@@ -92,4 +93,6 @@ testpaths = [
 filterwarnings= [
   # Fail on warnings
   "error",
+  # Expected internal warnings
+  "module:Jupyter is migrating its paths to use standard platformdirs:DeprecationWarning",
 ]

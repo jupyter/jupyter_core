@@ -29,10 +29,11 @@ from jupyter_core.paths import (
     secure_write,
 )
 
-from .mocking import darwin, linux
-
 pjoin = os.path.join
 
+macos = pytest.mark.skipif(sys.platform != "darwin", reason="only run on macos")
+windows = pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
+linux = pytest.mark.skipif(sys.platform != "linux", reason="only run on linux")
 
 xdg_env = {
     "XDG_CONFIG_HOME": "/tmp/xdg/config",
@@ -42,22 +43,21 @@ xdg_env = {
 xdg = patch.dict("os.environ", xdg_env)
 no_xdg = patch.dict(
     "os.environ",
-    {
-        "XDG_CONFIG_HOME": "",
-        "XDG_DATA_HOME": "",
-        "XDG_RUNTIME_DIR": "",
-    },
+    {},
 )
 
 no_config_env = patch.dict(
     "os.environ",
     {
+        "JUPYTER_PLATFORM_DIRS": "",
         "JUPYTER_CONFIG_DIR": "",
         "JUPYTER_DATA_DIR": "",
         "JUPYTER_RUNTIME_DIR": "",
         "JUPYTER_PATH": "",
     },
 )
+
+use_platformdirs = patch.dict("os.environ", {"JUPYTER_PLATFORM_DIRS": "1"})
 
 jupyter_config_env = "/jupyter-cfg"
 config_env = patch.dict("os.environ", {"JUPYTER_CONFIG_DIR": jupyter_config_env})
@@ -99,159 +99,211 @@ def test_envset():
         assert paths.envset("THIS_VARIABLE_SHOULD_NOT_BE_SET", None) is None
 
 
-@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
+def test_config_dir():
+    config = jupyter_config_dir()
+    assert config == home_jupyter
+
+
+@macos
+@use_platformdirs
 def test_config_dir_darwin():
-    with darwin, no_config_env:
-        config = jupyter_config_dir()
-    assert config == home_jupyter
-
-    with darwin, config_env:
-        config = jupyter_config_dir()
-    assert config == jupyter_config_env
+    config = jupyter_config_dir()
+    assert config == realpath("~/Library/Preferences/Jupyter")
 
 
-@pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
+@windows
+@use_platformdirs
 def test_config_dir_windows():
-    with no_config_env:
-        config = jupyter_config_dir()
-    assert config == home_jupyter
+    config = jupyter_config_dir()
+    assert config == realpath(pjoin(os.environ.get("LOCALAPPDATA", ""), "Jupyter"))
 
+
+@linux
+@use_platformdirs
+def test_config_dir_linux():
+    config = jupyter_config_dir()
+    assert config == realpath("~/.config/jupyter")
+
+
+def test_config_env_legacy():
     with config_env:
         config = jupyter_config_dir()
-    assert config == jupyter_config_env
+        assert config == jupyter_config_env
 
 
-@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
-def test_config_dir_linux():
-    with linux, no_config_env:
+@use_platformdirs
+def test_config_env():
+    with config_env:
         config = jupyter_config_dir()
-    assert config == home_jupyter
-
-    with linux, config_env:
-        config = jupyter_config_dir()
-    assert config == jupyter_config_env
+        assert config == jupyter_config_env
 
 
+def test_data_dir_env_legacy():
+    data_env = "runtime-dir"
+    with patch.dict("os.environ", {"JUPYTER_DATA_DIR": data_env}):
+        data = jupyter_data_dir()
+        assert data == data_env
+
+
+@use_platformdirs
 def test_data_dir_env():
     data_env = "runtime-dir"
     with patch.dict("os.environ", {"JUPYTER_DATA_DIR": data_env}):
         data = jupyter_data_dir()
-    assert data == data_env
+        assert data == data_env
 
 
-@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
+@macos
+def test_data_dir_darwin_legacy():
+    data = jupyter_data_dir()
+    assert data == realpath("~/Library/Jupyter")
+
+
+@macos
+@use_platformdirs
 def test_data_dir_darwin():
-    with darwin:
-        data = jupyter_data_dir()
-    assert data == realpath("~/Library/Jupyter")
-
-    with darwin, xdg:
-        # darwin should ignore xdg
-        data = jupyter_data_dir()
-    assert data == realpath("~/Library/Jupyter")
+    data = jupyter_data_dir()
+    assert data == realpath("~/Library/Application Support/Jupyter")
 
 
-@pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
-def test_data_dir_windows():
+@windows
+def test_data_dir_windows_legacy():
     data = jupyter_data_dir()
     assert data == realpath(pjoin(os.environ.get("APPDATA", ""), "jupyter"))
 
+
+@windows
+@use_platformdirs
+def test_data_dir_windows():
+    data = jupyter_data_dir()
+    assert data == realpath(pjoin(os.environ.get("LOCALAPPDATA", ""), "Jupyter"))
+
+
+@linux
+def test_data_dir_linux_legacy():
+    with no_xdg:
+        data = jupyter_data_dir()
+        assert data == realpath("~/.local/share/jupyter")
+
     with xdg:
-        # windows should ignore xdg
         data = jupyter_data_dir()
-    assert data == realpath(pjoin(os.environ.get("APPDATA", ""), "jupyter"))
+        assert data == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter")
 
 
-@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
+@linux
+@use_platformdirs
 def test_data_dir_linux():
-    with linux, no_xdg:
+    with no_xdg:
         data = jupyter_data_dir()
-    assert data == realpath("~/.local/share/jupyter")
+        assert data == realpath("~/.local/share/jupyter")
 
-    with linux, xdg:
+    with xdg:
         data = jupyter_data_dir()
-    assert data == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter")
+        assert data == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter")
 
 
+def test_runtime_dir_env_legacy():
+    rtd_env = "runtime-dir"
+    with patch.dict("os.environ", {"JUPYTER_RUNTIME_DIR": rtd_env}):
+        runtime = jupyter_runtime_dir()
+        assert runtime == rtd_env
+
+
+@use_platformdirs
 def test_runtime_dir_env():
     rtd_env = "runtime-dir"
     with patch.dict("os.environ", {"JUPYTER_RUNTIME_DIR": rtd_env}):
         runtime = jupyter_runtime_dir()
-    assert runtime == rtd_env
+        assert runtime == rtd_env
 
 
-@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
+@macos
+def test_runtime_dir_darwin_legacy():
+    runtime = jupyter_runtime_dir()
+    assert runtime == realpath("~/Library/Jupyter/runtime")
+
+
+@macos
+@use_platformdirs
 def test_runtime_dir_darwin():
-    with darwin:
-        runtime = jupyter_runtime_dir()
-    assert runtime == realpath("~/Library/Jupyter/runtime")
-
-    with darwin, xdg:
-        # darwin should ignore xdg
-        runtime = jupyter_runtime_dir()
-    assert runtime == realpath("~/Library/Jupyter/runtime")
+    runtime = jupyter_runtime_dir()
+    assert runtime == realpath("~/Library/Application Support/Jupyter/runtime")
 
 
-@pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
-def test_runtime_dir_windows():
+@windows
+def test_runtime_dir_windows_legacy():
     runtime = jupyter_runtime_dir()
     assert runtime == realpath(pjoin(os.environ.get("APPDATA", ""), "jupyter", "runtime"))
 
+
+@windows
+@use_platformdirs
+def test_runtime_dir_windows():
+    runtime = jupyter_runtime_dir()
+    assert runtime == realpath(pjoin(os.environ.get("LOCALAPPDATA", ""), "Jupyter", "runtime"))
+
+
+@linux
+def test_runtime_dir_linux_legacy():
+    with no_xdg:
+        runtime = jupyter_runtime_dir()
+        assert runtime == realpath("~/.local/share/jupyter/runtime")
+
     with xdg:
-        # windows should ignore xdg
         runtime = jupyter_runtime_dir()
-    assert runtime == realpath(pjoin(os.environ.get("APPDATA", ""), "jupyter", "runtime"))
+        assert runtime == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter", "runtime")
 
 
-@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
+@linux
+@use_platformdirs
 def test_runtime_dir_linux():
-    with linux, no_xdg:
+    with no_xdg:
         runtime = jupyter_runtime_dir()
-    assert runtime == realpath("~/.local/share/jupyter/runtime")
+        assert runtime == realpath("~/.local/share/jupyter/runtime")
 
-    with linux, xdg:
+    with xdg:
         runtime = jupyter_runtime_dir()
-    assert runtime == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter", "runtime")
+        assert runtime == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter", "runtime")
 
 
 def test_jupyter_path():
     system_path = ["system", "path"]
     with no_config_env, patch.object(paths, "SYSTEM_JUPYTER_PATH", system_path):
         path = jupyter_path()
-    assert path[0] == jupyter_data_dir()
-    assert path[-2:] == system_path
+        assert path[0] == jupyter_data_dir()
+        assert path[-2:] == system_path
 
 
 def test_jupyter_path_user_site():
     with no_config_env, patch.object(site, "ENABLE_USER_SITE", True):
         path = jupyter_path()
 
-    # deduplicated expected values
-    values = list(
-        dict.fromkeys(
-            [
-                jupyter_data_dir(),
-                os.path.join(site.getuserbase(), "share", "jupyter"),
-                paths.ENV_JUPYTER_PATH[0],
-            ]
+        # deduplicated expected values
+        values = list(
+            dict.fromkeys(
+                [
+                    jupyter_data_dir(),
+                    os.path.join(site.getuserbase(), "share", "jupyter"),
+                    paths.ENV_JUPYTER_PATH[0],
+                ]
+            )
         )
-    )
-    for p, v in zip(path, values):
-        assert p == v
+        for p, v in zip(path, values):
+            assert p == v
 
 
 def test_jupyter_path_no_user_site():
     with no_config_env, patch.object(site, "ENABLE_USER_SITE", False):
         path = jupyter_path()
-    assert path[0] == jupyter_data_dir()
-    assert path[1] == paths.ENV_JUPYTER_PATH[0]
+        assert path[0] == jupyter_data_dir()
+        assert path[1] == paths.ENV_JUPYTER_PATH[0]
 
 
 def test_jupyter_path_prefer_env():
     with prefer_env:
         path = jupyter_path()
-    assert path[0] == paths.ENV_JUPYTER_PATH[0]
-    assert path[1] == jupyter_data_dir()
+        assert path[0] == paths.ENV_JUPYTER_PATH[0]
+        assert path[1] == jupyter_data_dir()
 
 
 def test_jupyter_path_env():
