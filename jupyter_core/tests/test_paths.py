@@ -103,11 +103,13 @@ def test_config_dir():
     config = jupyter_config_dir()
     assert config == home_jupyter
 
+
 @macos
 @use_platformdirs
 def test_config_dir_darwin():
     config = jupyter_config_dir()
     assert config == realpath("~/Library/Preferences/Jupyter")
+
 
 @windows
 @use_platformdirs
@@ -115,16 +117,19 @@ def test_config_dir_windows():
     config = jupyter_config_dir()
     assert config == realpath(pjoin(os.environ.get("LOCALAPPDATA", ""), "Jupyter"))
 
+
 @linux
 @use_platformdirs
 def test_config_dir_linux():
     config = jupyter_config_dir()
     assert config == realpath("~/.config/jupyter")
 
+
 def test_config_env_legacy():
     with config_env:
         config = jupyter_config_dir()
         assert config == jupyter_config_env
+
 
 @use_platformdirs
 def test_config_env():
@@ -236,6 +241,7 @@ def test_runtime_dir_windows_legacy():
 def test_runtime_dir_windows():
     runtime = jupyter_runtime_dir()
     assert runtime == realpath(pjoin(os.environ.get("LOCALAPPDATA", ""), "Jupyter", "runtime"))
+
 
 @linux
 def test_runtime_dir_linux_legacy():
