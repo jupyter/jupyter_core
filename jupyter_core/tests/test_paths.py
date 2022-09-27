@@ -174,7 +174,7 @@ def test_data_dir_windows_legacy():
 @use_platformdirs
 def test_data_dir_windows():
     data = jupyter_data_dir()
-    assert data.endswith(r"AppData\Local\Jupyter")
+    assert data == realpath(pjoin(os.environ.get("APPDATA", ""), "Local", "Jupyter"))
 
 
 @linux
@@ -238,7 +238,7 @@ def test_runtime_dir_windows_legacy():
 @use_platformdirs
 def test_runtime_dir_windows():
     runtime = jupyter_runtime_dir()
-    assert runtime.endswith(r"AppData\Local\Jupyter\runtime")
+    assert runtime == realpath(pjoin(os.environ.get("APPDATA", ""), "Local", "Jupyter", "runtime"))
 
 
 @linux
