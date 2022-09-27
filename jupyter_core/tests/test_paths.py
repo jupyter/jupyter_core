@@ -205,7 +205,7 @@ def test_runtime_dir_windows():
     runtime = jupyter_runtime_dir()
     assert runtime == realpath(pjoin(os.environ.get("APPDATA", ""), "jupyter", "runtime"))
     with patch.dict("os.environ", {"JUPYTER_PLATFORM_DIRS": "1"}):
-
+        runtime = jupyter_runtime_dir()
         assert runtime.endswith(r"AppData\Local\Jupyter\runtime")
 
 
