@@ -113,21 +113,18 @@ def test_config_dir_darwin():
 @use_platformdirs
 def test_config_dir_windows():
     config = jupyter_config_dir()
-    assert config==''
-    assert config.startswith(os.path.expanduser("~"))
+    assert config == realpath(pjoin(os.environ.get("APPDATA", ""), "Local", "Jupyter"))
 
 @linux
 @use_platformdirs
 def test_config_dir_linux():
     config = jupyter_config_dir()
-    assert config==''
-    assert config.startswith(os.path.expanduser("~"))
+    assert config == realpath("~/.config/jupyter")
 
 def test_config_env_legacy():
     with config_env:
         config = jupyter_config_dir()
         assert config == jupyter_config_env
-
 
 @use_platformdirs
 def test_config_env():
