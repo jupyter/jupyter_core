@@ -113,7 +113,7 @@ def test_config_dir_darwin():
 @use_platformdirs
 def test_config_dir_windows():
     config = jupyter_config_dir()
-    assert config == realpath(pjoin(os.environ.get("APPDATA", ""), "Local", "Jupyter"))
+    assert config == realpath(pjoin(os.environ.get("LOCALAPPDATA", ""), "Jupyter"))
 
 @linux
 @use_platformdirs
@@ -171,7 +171,7 @@ def test_data_dir_windows_legacy():
 @use_platformdirs
 def test_data_dir_windows():
     data = jupyter_data_dir()
-    assert data == realpath(pjoin(os.environ.get("APPDATA", ""), "Local", "Jupyter"))
+    assert data == realpath(pjoin(os.environ.get("LOCALAPPDATA", ""), "Jupyter"))
 
 
 @linux
@@ -235,7 +235,7 @@ def test_runtime_dir_windows_legacy():
 @use_platformdirs
 def test_runtime_dir_windows():
     runtime = jupyter_runtime_dir()
-    assert runtime == realpath(pjoin(os.environ.get("CSIDL_LOCAL_APPDATA", ""), "Jupyter", "runtime"))
+    assert runtime == realpath(pjoin(os.environ.get("LOCALAPPDATA", ""), "Jupyter", "runtime"))
 
 @linux
 def test_runtime_dir_linux_legacy():
