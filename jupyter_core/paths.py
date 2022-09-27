@@ -252,7 +252,7 @@ def jupyter_path(*subdirs):
 
 
 if use_platform_dirs():
-    SYSTEM_CONFIG_PATH = platformdirs.site_config_dir("Jupyter", False)
+    SYSTEM_CONFIG_PATH = [platformdirs.site_config_dir("Jupyter", False)]
 else:
     if os.name == "nt":
         programdata = os.environ.get("PROGRAMDATA", None)
