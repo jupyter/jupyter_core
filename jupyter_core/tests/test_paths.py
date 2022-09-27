@@ -151,7 +151,7 @@ def test_data_dir_darwin():
 
     with patch.dict("os.environ", {"JUPYTER_PLATFORM_DIRS": "1"}):
         data = jupyter_data_dir()
-        assert data == realpath("~/Library/Application Support/Jupyter/data")
+        assert data == realpath("~/Library/Application Support/Jupyter")
 
 
 @pytest.mark.skipif(sys.platform != "win32", reason="only run on windows")
@@ -161,7 +161,7 @@ def test_data_dir_windows():
 
     with patch.dict("os.environ", {"JUPYTER_PLATFORM_DIRS": "1"}):
         data = jupyter_data_dir()
-        assert data.endswith(r"AppData\Local\Jupyter\data")
+        assert data.endswith(r"AppData\Local\Jupyter")
 
 
 @pytest.mark.skipif(sys.platform != "linux", reason="only run on linux")
@@ -176,11 +176,11 @@ def test_data_dir_linux():
 
     with patch.dict("os.environ", {"JUPYTER_PLATFORM_DIRS": "1"}):
         data = jupyter_data_dir()
-    assert data == realpath("~/.local/share/Jupyter/data")
+    assert data == realpath("~/.local/share/Jupyter")
 
     with patch.dict("os.environ", {"JUPYTER_PLATFORM_DIRS": "1", "XDG_DATA_HOME": "tmp/xdg/data"}):
         data = jupyter_data_dir()
-    assert data == pjoin(xdg_env["XDG_DATA_HOME"], "Jupyter", "data")
+    assert data == pjoin(xdg_env["XDG_DATA_HOME"], "Jupyter")
 
 
 def test_runtime_dir_env():
@@ -194,7 +194,7 @@ def test_runtime_dir_env():
 def test_runtime_dir_darwin():
     with patch.dict("os.environ", {"JUPYTER_PLATFORM_DIRS": "1"}):
         runtime = jupyter_runtime_dir()
-        assert runtime == realpath("~/Library/Application Support/Jupyter/data/runtime")
+        assert runtime == realpath("~/Library/Application Support/Jupyter/runtime")
     runtime = jupyter_runtime_dir()
     assert runtime == realpath("~/Library/Jupyter/runtime")
 
@@ -205,7 +205,7 @@ def test_runtime_dir_windows():
     assert runtime == realpath(pjoin(os.environ.get("APPDATA", ""), "jupyter", "runtime"))
     with patch.dict("os.environ", {"JUPYTER_PLATFORM_DIRS": "1"}):
 
-        assert runtime.endswith(r"AppData\Local\Jupyter\data\runtime")
+        assert runtime.endswith(r"AppData\Local\Jupyter\runtime")
 
 
 @pytest.mark.skipif(sys.platform != "linux", reason="only run on linux")
@@ -220,11 +220,11 @@ def test_runtime_dir_linux():
 
     with patch.dict("os.environ", {"JUPYTER_PLATFORM_DIRS": "1"}):
         runtime = jupyter_runtime_dir()
-    assert runtime == realpath("~/.local/share/Jupyter/data/runtime")
+    assert runtime == realpath("~/.local/share/Jupyter/runtime")
 
     with patch.dict("os.environ", {"JUPYTER_PLATFORM_DIRS": "1", "XDG_DATA_HOME": "tmp/xdg/data"}):
         runtime = jupyter_runtime_dir()
-    assert runtime == pjoin(xdg_env["XDG_DATA_HOME"], "Jupyter", "data", "runtime")
+    assert runtime == pjoin(xdg_env["XDG_DATA_HOME"], "Jupyter", "runtime")
 
 
 def test_jupyter_path():

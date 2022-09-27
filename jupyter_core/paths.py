@@ -129,8 +129,7 @@ def jupyter_data_dir():
         return env["JUPYTER_DATA_DIR"]
 
     if use_platform_dirs():
-        base_dir = platformdirs.user_data_dir("Jupyter", False)
-        return os.path.join(base_dir, "data")
+        return platformdirs.user_data_dir("Jupyter", False)
 
     home = get_home_dir()
 
