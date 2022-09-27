@@ -180,7 +180,6 @@ def test_data_dir_linux():
 
     with patch.dict("os.environ", {"JUPYTER_PLATFORM_DIRS": "1", "XDG_DATA_HOME": "/tmp/xdg/data"}):
         data = jupyter_data_dir()
-    # TODO: Should this be titlecase "Juptyer" by xdg convention?
     assert data == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter")
 
 
