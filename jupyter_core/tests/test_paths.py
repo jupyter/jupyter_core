@@ -99,11 +99,9 @@ def test_envset():
         assert paths.envset("THIS_VARIABLE_SHOULD_NOT_BE_SET", None) is None
 
 
-@macos
-def test_config_dir_darwin_legacy():
+def test_config_dir():
     config = jupyter_config_dir()
     assert config == home_jupyter
-
 
 @macos
 @use_platformdirs
@@ -111,32 +109,17 @@ def test_config_dir_darwin():
     config = jupyter_config_dir()
     assert config == realpath("~/Library/Preferences/Jupyter")
 
-
-@windows
-def test_config_dir_windows_legacy():
-    config = jupyter_config_dir()
-    assert config.startswith(os.path.expanduser("~"))
-
-
 @windows
 @use_platformdirs
 def test_config_dir_windows():
     config = jupyter_config_dir()
     assert config.startswith(os.path.expanduser("~"))
 
-
-@linux
-def test_config_dir_linux_legacy():
-    config = jupyter_config_dir()
-    assert config == home_jupyter
-
-
 @linux
 @use_platformdirs
 def test_config_dir_linux():
     config = jupyter_config_dir()
     assert config.startswith(os.path.expanduser("~"))
-
 
 def test_config_env_legacy():
     with config_env:
