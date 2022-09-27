@@ -241,18 +241,18 @@ def test_jupyter_path_user_site():
     with no_config_env, patch.object(site, "ENABLE_USER_SITE", True):
         path = jupyter_path()
 
-    # deduplicated expected values
-    values = list(
-        dict.fromkeys(
-            [
-                jupyter_data_dir(),
-                os.path.join(site.getuserbase(), "share", "jupyter"),
-                paths.ENV_JUPYTER_PATH[0],
-            ]
+        # deduplicated expected values
+        values = list(
+            dict.fromkeys(
+                [
+                    jupyter_data_dir(),
+                    os.path.join(site.getuserbase(), "share", "jupyter"),
+                    paths.ENV_JUPYTER_PATH[0],
+                ]
+            )
         )
-    )
-    for p, v in zip(path, values):
-        assert p == v
+        for p, v in zip(path, values):
+            assert p == v
 
 
 def test_jupyter_path_no_user_site():
