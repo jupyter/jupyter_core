@@ -148,51 +148,58 @@ def test_data_dir_env():
     data_env = "runtime-dir"
     with patch.dict("os.environ", {"JUPYTER_DATA_DIR": data_env}):
         data = jupyter_data_dir()
-    assert data == data_env
+        assert data == data_env
+
+@use_platformdirs
+def test_data_dir_env():
+    data_env = "runtime-dir"
+    with patch.dict("os.environ", {"JUPYTER_DATA_DIR": data_env}):
+        data = jupyter_data_dir()
+        assert data == data_env
 
 
 @macos
-def test_data_dir_darwin():
+def test_data_dir_darwin_legacy():
     data = jupyter_data_dir()
     assert data == realpath("~/Library/Jupyter")
 
-    with xdg:
-        # darwin should ignore xdg
-        data = jupyter_data_dir()
-        assert data == realpath("~/Library/Jupyter")
-
-    with use_platformdirs:
-        data = jupyter_data_dir()
-        assert data == realpath("~/Library/Application Support/Jupyter")
-
+@macos
+@use_platformdirs
+def test_data_dir_darwin():
+    data = jupyter_data_dir()
+    assert data == realpath("~/Library/Application Support/Jupyter")
 
 @windows
-def test_data_dir_windows():
+def test_data_dir_windows_legacy():
     data = jupyter_data_dir()
     assert data == realpath(pjoin(os.environ.get("APPDATA", ""), "jupyter"))
 
-    with use_platformdirs:
-        data = jupyter_data_dir()
-        assert data.endswith(r"AppData\Local\Jupyter")
-
+@windows
+@use_platformdirs
+def test_data_dir_windows():
+    data = jupyter_data_dir()
+    assert data.endswith(r"AppData\Local\Jupyter")
 
 @linux
-def test_data_dir_linux():
+def test_data_dir_linux_legacy():
     with no_xdg:
         data = jupyter_data_dir()
-    assert data == realpath("~/.local/share/jupyter")
+        assert data == realpath("~/.local/share/jupyter")
 
     with xdg:
         data = jupyter_data_dir()
-    assert data == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter")
+        assert data == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter")
 
-    with use_platformdirs:
+@linux
+@use_platformdirs
+def test_data_dir_linux():
+    with no_xdg:
         data = jupyter_data_dir()
-    assert data == realpath("~/.local/share/jupyter")
+        assert data == realpath("~/.local/share/jupyter")
 
-    with patch.dict("os.environ", {"JUPYTER_PLATFORM_DIRS": "1", "XDG_DATA_HOME": "/tmp/xdg/data"}):
+    with xdg:
         data = jupyter_data_dir()
-    assert data == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter")
+        assert data == pjoin(xdg_env["XDG_DATA_HOME"], "jupyter")
 
 
 def test_runtime_dir_env():
