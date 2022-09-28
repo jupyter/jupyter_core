@@ -1,6 +1,21 @@
 Changes in jupyter-core
 =======================
 
+5.0
+---
+
+5.0.0rc0
+~~~~~~~~
+
+`on
+GitHub <https://github.com/jupyter/jupyter_core/releases/tag/5.0.0rc0>`__
+
+* Try to detect if we are in a virtual environment and change path precedence accordingly. (:ghpull:`286`)
+* Update broken link to `Contributing` guide. (:ghpull:`289`)
+* Add current working directory as first config path. (:ghpull:`291`)
+* Use platformdirs for path locations. (:ghpull:`292`)
+
+
 4.11
 ----
 

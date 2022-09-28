@@ -5,8 +5,8 @@ from collections import namedtuple
 
 VersionInfo = namedtuple("VersionInfo", ["major", "minor", "micro", "releaselevel", "serial"])
 
-version_info = VersionInfo(4, 11, 1, "final", 0)
-__version__ = "4.11.1"
+version_info = VersionInfo(5, 0, 0, "rc", 0)
+__version__ = "5.0.0rc0"
 
 _specifier_ = {"alpha": "a", "beta": "b", "candidate": "rc", "final": "", "dev": "dev"}
 
