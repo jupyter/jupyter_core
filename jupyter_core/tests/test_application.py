@@ -69,25 +69,33 @@ def test_generate_config():
 
 def test_load_config():
     config_dir = mkdtemp()
-    wd = mkdtemp()
+    os.environ["JUPYTER_CONFIG_PATH"] = str(config_dir)
     with open(pjoin(config_dir, "dummy_app_config.py"), "w", encoding="utf-8") as f:
+        f.write("c.DummyApp.m = 1\n")
+        f.write("c.DummyApp.n = 1")
+
+    app = DummyApp(config_dir=config_dir)
+    app.initialize([])
+
+    assert app.n == 1, "Loaded config from config dir"
+    assert app.m == 1, "Loaded config from config dir"
+
+    shutil.rmtree(config_dir)
+    del os.environ["JUPYTER_CONFIG_PATH"]
+
+
+def test_load_config_no_cwd():
+    config_dir = mkdtemp()
+    wd = mkdtemp()
+    with open(pjoin(wd, "dummy_app_config.py"), "w", encoding="utf-8") as f:
         f.write("c.DummyApp.m = 1\n")
         f.write("c.DummyApp.n = 1")
     with patch.object(os, "getcwd", lambda: wd):
         app = DummyApp(config_dir=config_dir)
         app.initialize([])
 
-    assert app.n == 1, "Loaded config from config dir"
-
-    with open(pjoin(wd, "dummy_app_config.py"), "w", encoding="utf-8") as f:
-        f.write("c.DummyApp.n = 2")
-
-    with patch.object(os, "getcwd", lambda: wd):
-        app = DummyApp(config_dir=config_dir)
-        app.initialize([])
-
-    assert app.m == 1, "Loaded config from config dir"
-    assert app.n == 2, "Loaded config from CWD"
+    assert app.n == 0
+    assert app.m == 0
 
     shutil.rmtree(config_dir)
     shutil.rmtree(wd)
@@ -95,17 +103,17 @@ def test_load_config():
 
 def test_load_bad_config():
     config_dir = mkdtemp()
-    wd = mkdtemp()
+    os.environ["JUPYTER_CONFIG_PATH"] = str(config_dir)
     with open(pjoin(config_dir, "dummy_app_config.py"), "w", encoding="utf-8") as f:
         f.write('c.DummyApp.m = "a\n')  # Syntax error
-    with patch.object(os, "getcwd", lambda: wd):
-        with pytest.raises(SyntaxError):
-            app = DummyApp(config_dir=config_dir)
-            app.raise_config_file_errors = True
-            app.initialize([])
+
+    with pytest.raises(SyntaxError):
+        app = DummyApp(config_dir=config_dir)
+        app.raise_config_file_errors = True
+        app.initialize([])
 
     shutil.rmtree(config_dir)
-    shutil.rmtree(wd)
+    del os.environ["JUPYTER_CONFIG_PATH"]
 
 
 def test_runtime_dir_changed():
