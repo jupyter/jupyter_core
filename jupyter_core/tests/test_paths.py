@@ -339,7 +339,6 @@ def test_jupyter_config_path():
     values = list(
         dict.fromkeys(
             [
-                os.getcwd(),
                 jupyter_config_dir(),
                 os.path.join(site.getuserbase(), "etc", "jupyter"),
                 paths.ENV_CONFIG_PATH[0],
@@ -353,9 +352,8 @@ def test_jupyter_config_path():
 def test_jupyter_config_path_no_user_site():
     with patch.object(site, "ENABLE_USER_SITE", False):
         path = jupyter_config_path()
-    assert path[0] == os.getcwd()
-    assert path[1] == jupyter_config_dir()
-    assert path[2] == paths.ENV_CONFIG_PATH[0]
+    assert path[0] == jupyter_config_dir()
+    assert path[1] == paths.ENV_CONFIG_PATH[0]
 
 
 def test_jupyter_config_path_prefer_env():
@@ -366,7 +364,6 @@ def test_jupyter_config_path_prefer_env():
     values = list(
         dict.fromkeys(
             [
-                os.getcwd(),
                 paths.ENV_CONFIG_PATH[0],
                 jupyter_config_dir(),
                 os.path.join(site.getuserbase(), "etc", "jupyter"),
@@ -387,7 +384,7 @@ def test_jupyter_config_path_env():
 
     with patch.dict("os.environ", {"JUPYTER_CONFIG_PATH": path_env}):
         path = jupyter_config_path()
-    assert path[1:3] == [pjoin("foo", "bar"), pjoin("bar", "baz")]
+    assert path[:2] == [pjoin("foo", "bar"), pjoin("bar", "baz")]
 
 
 def test_prefer_environment_over_user():

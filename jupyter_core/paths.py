@@ -290,7 +290,7 @@ def jupyter_config_path():
         # jupyter_config_dir makes a blank config when JUPYTER_NO_CONFIG is set.
         return [jupyter_config_dir()]
 
-    paths: list = [os.getcwd()]
+    paths: list = []
 
     # highest priority is explicit environment variable
     if os.environ.get("JUPYTER_CONFIG_PATH"):
