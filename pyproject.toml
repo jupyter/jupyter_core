@@ -15,7 +15,7 @@ classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3"
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 dependencies = [
   "platformdirs",
   "traitlets",
@@ -77,9 +77,6 @@ warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
 module = [
-    "traitlets.*",
-    "jupyter_core.*",
-    "ipykernel",
     "entrypoints"
 ]
 ignore_missing_imports = true

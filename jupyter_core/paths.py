@@ -17,7 +17,7 @@ import tempfile
 import warnings
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 import platformdirs
 
@@ -47,7 +47,7 @@ def envset(name, default=False):
     return os.environ[name].lower() not in ["no", "n", "false", "off", "0", "0.0"]
 
 
-def use_platform_dirs():
+def use_platform_dirs() -> bool:
     """Determine if platformdirs should be used for system-specific paths.
 
     We plan for this to default to False in jupyter_core version 5 and to True
@@ -56,7 +56,7 @@ def use_platform_dirs():
     return envset("JUPYTER_PLATFORM_DIRS", False)
 
 
-def get_home_dir():
+def get_home_dir() -> str:
     """Get the real path of the home directory"""
     homedir = os.path.expanduser("~")
     # Next line will make things work even when /home/ is a symlink to
@@ -68,7 +68,7 @@ def get_home_dir():
 _dtemps: dict = {}
 
 
-def prefer_environment_over_user():
+def prefer_environment_over_user() -> bool:
     """Determine if environment-level paths should take precedence over user-level paths."""
     # If JUPYTER_PREFER_ENV_PATH is defined, that signals user intent, so return its value
     if "JUPYTER_PREFER_ENV_PATH" in os.environ:
@@ -98,7 +98,7 @@ def _mkdtemp_once(name):
         return d
 
 
-def jupyter_config_dir():
+def jupyter_config_dir() -> str:
     """Get the Jupyter config directory for this platform and user.
 
     Returns JUPYTER_CONFIG_DIR if defined, otherwise the appropriate
@@ -119,7 +119,7 @@ def jupyter_config_dir():
     return pjoin(home_dir, ".jupyter")
 
 
-def jupyter_data_dir():
+def jupyter_data_dir() -> str:
     """Get the config directory for Jupyter data files for this platform and user.
 
     These are non-transient, non-configuration files.
@@ -195,7 +195,7 @@ else:
 ENV_JUPYTER_PATH = [os.path.join(sys.prefix, "share", "jupyter")]
 
 
-def jupyter_path(*subdirs):
+def jupyter_path(*subdirs: str) -> list[str]:
     """Return a list of directories to search for data files
 
     JUPYTER_PATH environment variable has highest priority.
@@ -276,7 +276,7 @@ else:
 ENV_CONFIG_PATH = [os.path.join(sys.prefix, "etc", "jupyter")]
 
 
-def jupyter_config_path():
+def jupyter_config_path() -> list[str]:
     """Return the search path for Jupyter config files as a list.
 
     If the JUPYTER_PREFER_ENV_PATH environment variable is set, the
@@ -326,7 +326,7 @@ def jupyter_config_path():
     return paths
 
 
-def exists(path):
+def exists(path: str) -> bool:
     """Replacement for `os.path.exists` which works for host mapped volumes
     on Windows containers
     """
@@ -337,7 +337,7 @@ def exists(path):
     return True
 
 
-def is_file_hidden_win(abs_path, stat_res=None):
+def is_file_hidden_win(abs_path: str, stat_res: Any = None) -> bool:
     """Is a file hidden?
 
     This only checks the file itself; it should be called in combination with
@@ -379,7 +379,7 @@ def is_file_hidden_win(abs_path, stat_res=None):
     return False
 
 
-def is_file_hidden_posix(abs_path, stat_res=None):
+def is_file_hidden_posix(abs_path: str, stat_res: Any = None) -> bool:
     """Is a file hidden?
 
     This only checks the file itself; it should be called in combination with
@@ -425,7 +425,7 @@ else:
     is_file_hidden = is_file_hidden_posix
 
 
-def is_hidden(abs_path, abs_root=""):
+def is_hidden(abs_path: str, abs_root: str = "") -> bool:
     """Is a file hidden or contained in a hidden directory?
 
     This will start with the rightmost path element and work backwards to the
@@ -479,7 +479,7 @@ def is_hidden(abs_path, abs_root=""):
     return False
 
 
-def win32_restrict_file_to_user(fname):
+def win32_restrict_file_to_user(fname: str) -> None:
     """Secure a windows file to read-only access for the user.
     Follows guidance from win32 library creator:
     http://timgolden.me.uk/python/win32_how_do_i/add-security-to-a-file.html
@@ -896,7 +896,7 @@ def _win32_restrict_file_to_user_ctypes(fname):
     SetFileSecurity(fname, DACL_SECURITY_INFORMATION, SelfRelativeSD)
 
 
-def get_file_mode(fname):
+def get_file_mode(fname: str) -> int:
     """Retrieves the file mode corresponding to fname in a filesystem-tolerant manner.
 
     Parameters
