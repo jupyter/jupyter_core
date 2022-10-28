@@ -15,7 +15,7 @@ classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3"
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 dependencies = [
   "platformdirs",
   "traitlets",
