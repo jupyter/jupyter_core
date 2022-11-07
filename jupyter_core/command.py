@@ -15,6 +15,7 @@ import sys
 import sysconfig
 from shutil import which
 from subprocess import Popen
+from typing import List
 
 from . import paths
 from .version import __version__
@@ -35,7 +36,7 @@ class JupyterParser(argparse.ArgumentParser):
         pass
 
 
-def jupyter_parser():
+def jupyter_parser() -> JupyterParser:
     parser = JupyterParser(
         description="Jupyter: Interactive Computing",
     )
@@ -60,7 +61,7 @@ def jupyter_parser():
     return parser
 
 
-def list_subcommands():
+def list_subcommands() -> List[str]:
     """List all jupyter subcommands
 
     searches PATH for `jupyter-name`
@@ -169,7 +170,7 @@ def _path_with_self():
     return path_list
 
 
-def main():
+def main() -> None:
     parser = jupyter_parser()
     if len(sys.argv) > 1 and not sys.argv[1].startswith("-"):
         # Don't parse if a subcommand is given

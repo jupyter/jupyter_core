@@ -25,7 +25,7 @@ import re
 import shutil
 from datetime import datetime
 
-from traitlets.config import JSONFileConfigLoader, PyFileConfigLoader
+from traitlets.config.loader import JSONFileConfigLoader, PyFileConfigLoader
 from traitlets.log import get_logger
 
 from .application import JupyterApp

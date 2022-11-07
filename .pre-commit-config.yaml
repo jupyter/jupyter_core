@@ -60,7 +60,7 @@ repos:
       - id: mypy
         args: ["--config-file", "pyproject.toml"]
         stages: [manual]
-        additional_dependencies: [pytest, platformdirs]
+        additional_dependencies: [pytest, platformdirs, traitlets, ipykernel]
         exclude: |
           exclude: |
             (?x)^(
