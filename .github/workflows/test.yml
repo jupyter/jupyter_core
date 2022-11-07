@@ -80,8 +80,19 @@ jobs:
         run: |
           pytest -vv || pytest -vv --lf
 
+  check_docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+      - run: |
+          pip install -e .
+          cd docs
+          pip install -r requirements.txt
+          make html SPHINXOPTS='-W'
+
   check_links:
-    name: Make SDist
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
