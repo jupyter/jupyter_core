@@ -1,6 +1,6 @@
 # Changes in jupyter-core
 
-## 5.0
+<!-- <START NEW CHANGELOG ENTRY> -->
 
 ### 5.0.0rc0
 
@@ -14,6 +14,8 @@ GitHub](https://github.com/jupyter/jupyter_core/releases/tag/5.0.0rc0)
 - Add current working directory as first config path.
   ([#291](https://github.com/jupyter/jupyter_core/pull/291))
 - Use platformdirs for path locations. ([#292](https://github.com/jupyter/jupyter_core/pull/292))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 4.11
 
