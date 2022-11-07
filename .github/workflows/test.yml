@@ -86,7 +86,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
-      - run: |
+      - name: "Build docs"
+        run: |
           pip install -e .
           cd docs
           pip install -r requirements.txt

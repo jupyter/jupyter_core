@@ -57,7 +57,7 @@ yourself after that.
 
 ## Documentation
 
-The documentation of Jupyter Core is generated from the files in `docs/` using Sphinx. Instructions for setting up Sphinx with a selection of optional modules are in the [Documentation Guide](http://jupyter.readthedocs.io/en/latest/contrib_docs/index.html). You'll also need the `make` command.
+The documentation of Jupyter Core is generated from the files in `docs/` using Sphinx. Instructions for setting up Sphinx with a selection of optional modules are in the [Documentation Guide](https://docs.jupyter.org/en/latest/contributing/content-contributor.html). You'll also need the `make` command.
 For a minimal Sphinx installation to process the Jupyter Core docs, execute:
 
 ```
