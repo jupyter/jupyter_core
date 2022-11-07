@@ -15,9 +15,11 @@ You'll need Python and `pip` on the search path. Clone the Jupyter Core git repo
 Now create an [editable install](https://pip.pypa.io/en/stable/reference/pip_install/#editable-installs)
 and download the dependencies of code and test suite by executing:
 
-    cd /my/projects/jupyter_core/
-    pip install -e ".[test]"
-    py.test
+```
+cd /my/projects/jupyter_core/
+pip install -e ".[test]"
+py.test
+```
 
 The last command runs the test suite to verify the setup. During development, you can pass filenames to `py.test`, and it will execute only those tests.
 
@@ -58,12 +60,16 @@ yourself after that.
 The documentation of Jupyter Core is generated from the files in `docs/` using Sphinx. Instructions for setting up Sphinx with a selection of optional modules are in the [Documentation Guide](http://jupyter.readthedocs.io/en/latest/contrib_docs/index.html). You'll also need the `make` command.
 For a minimal Sphinx installation to process the Jupyter Core docs, execute:
 
-    pip install sphinx
+```
+pip install sphinx
+```
 
 The following commands build the documentation in HTML format and check for broken links:
 
-    cd /my/projects/jupyter_core/docs/
-    make html linkcheck
+```
+cd /my/projects/jupyter_core/docs/
+make html linkcheck
+```
 
 Point your browser to the following URL to access the generated documentation:
 

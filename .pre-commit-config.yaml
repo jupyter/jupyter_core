@@ -28,10 +28,18 @@ repos:
         files: \.py$
         args: [--profile=black]
 
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.0.0-alpha.4
+  - repo: https://github.com/abravalheri/validate-pyproject
+    rev: v0.10.1
     hooks:
-      - id: prettier
+      - id: validate-pyproject
+        stages: [manual]
+
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 0.7.16
+    hooks:
+      - id: mdformat
+        additional_dependencies:
+          [mdformat-gfm, mdformat-frontmatter, mdformat-footnote]
 
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.2.0

@@ -137,8 +137,8 @@ closed.
 - Add a new `JUPYTER_PREFER_ENV_PATH` variable, which can be set to
   switch the order of the environment-level path and the user-level
   path in the Jupyter path hierarchy (e.g., `jupyter --paths`). It is
-  considered set if it is a value that is not one of \'no\', \'n\',
-  \'off\', \'false\', \'0\', or \'0.0\' (case insensitive). If you are
+  considered set if it is a value that is not one of 'no', 'n',
+  'off', 'false', '0', or '0.0' (case insensitive). If you are
   running Jupyter in multiple virtual environments as the same user,
   you will likely want to set this environment variable.
 - Drop Python 2.x and 3.5 support, as they have reached end of life.
@@ -185,7 +185,7 @@ closed.
 
 [on GitHub](https://github.com/jupyter/jupyter_core/releases/tag/4.6.0)
 
-- Unicode characters existing in the user\'s home directory name are
+- Unicode characters existing in the user's home directory name are
   properly handled ([#131](https://github.com/jupyter/jupyter_core/pull/131)).
 - `mock` is now only required for testing on Python 2
   ([#157](https://github.com/jupyter/jupyter_core/pull/157)).
@@ -216,7 +216,7 @@ closed.
   locations for config ([#139](https://github.com/jupyter/jupyter_core/pull/139)).
 - `jupyter subcommand` no longer modifies the `PATH` environment variable when it runs
   `jupyter-subcommand` ([#148](https://github.com/jupyter/jupyter_core/pull/148)).
-- Jupyter\'s \'runtime\' directory no longer uses `XDG_RUNTIME_DIR`
+- Jupyter's 'runtime' directory no longer uses `XDG_RUNTIME_DIR`
   ([#143](https://github.com/jupyter/jupyter_core/pull/143)). While it has some
   attractive properties, it has led to various problems; see the pull
   request for details.
@@ -236,7 +236,7 @@ closed.
 [on GitHub](https://github.com/jupyter/jupyter_core/releases/tag/4.4.0)
 
 - `jupyter troubleshoot` gets the list of packages from the Python
-  environment it\'s in, by using `sys.executable` to call `pip list`
+  environment it's in, by using `sys.executable` to call `pip list`
   ([#104](https://github.com/jupyter/jupyter_core/pull/104)).
 - Added utility function `ensure_dir_exists`, and switched to using it
   over the one from ipython_genutils, which does permissions wrong

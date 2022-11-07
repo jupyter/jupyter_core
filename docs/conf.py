@@ -62,7 +62,7 @@ from jupyter_core.version import __version__, version_info
 # built documents.
 #
 # The short X.Y version.
-version = "%d.%d" % version_info[:2]
+version = "%d.%d" % version_info[:2]  # type:ignore[str-format]
 # The full version, including alpha/beta/rc tags.
 release = __version__
 
