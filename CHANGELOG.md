@@ -2,7 +2,7 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
-### 5.0.0rc0
+## 5.0.0rc0
 
 [on
 GitHub](https://github.com/jupyter/jupyter_core/releases/tag/5.0.0rc0)
