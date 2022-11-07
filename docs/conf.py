@@ -12,6 +12,9 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+import os
+import shutil
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -286,3 +289,8 @@ texinfo_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {"https://docs.python.org/3/": None}
+
+
+def setup(app):
+    here = os.path.dirname(os.path.abspath(__file__))
+    shutil.copy(os.path.join(here, "..", "CHANGELOG.md"), "changelog.md")
