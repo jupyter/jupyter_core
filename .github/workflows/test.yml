@@ -80,6 +80,15 @@ jobs:
         run: |
           pytest -vv || pytest -vv --lf
 
+  check_links:
+    name: Make SDist
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+      - uses: jupyterlab/maintainer-tools/.github/actions/check-links@v1
+
   make_sdist:
     name: Make SDist
     runs-on: ubuntu-latest
