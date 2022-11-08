@@ -8,9 +8,10 @@ import os
 import platform
 import subprocess
 import sys
+from typing import Any, Dict, List, Optional, Union
 
 
-def subs(cmd):
+def subs(cmd: Union[List[str], str]) -> Optional[str]:
     """
     get data from commands that we need to run outside of python
     """
@@ -21,11 +22,11 @@ def subs(cmd):
         return None
 
 
-def get_data():
+def get_data() -> Dict[str, Any]:
     """
     returns a dict of various user environment data
     """
-    env: dict = {}
+    env: Dict[str, Any] = {}
     env["path"] = os.environ.get("PATH")
     env["sys_path"] = sys.path
     env["sys_exe"] = sys.executable
@@ -44,7 +45,7 @@ def get_data():
     return env
 
 
-def main():
+def main() -> None:
     """
     print out useful info
     """
