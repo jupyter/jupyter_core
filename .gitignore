@@ -17,3 +17,4 @@ __pycache__
 htmlcov
 .cache
 .idea
+docs/changelog.md

@@ -1,20 +1,17 @@
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
+"""
+store the current version info of the jupyter_core.
+"""
+import re
+from typing import List
 
-from collections import namedtuple
-
-VersionInfo = namedtuple("VersionInfo", ["major", "minor", "micro", "releaselevel", "serial"])
-
-version_info = VersionInfo(5, 0, 0, "candidate", 2)
+# Version string must appear intact for hatch versioning
 __version__ = "5.0.0rc2"
 
-_specifier_ = {"alpha": "a", "beta": "b", "candidate": "rc", "final": "", "dev": "dev"}
-
-if version_info.releaselevel == "final":
-    _suffix_ = ""
-elif version_info.releaselevel == "dev":
-    _suffix_ = f".dev{version_info.serial}"
-else:
-    _suffix_ = f"{_specifier_[version_info.releaselevel]}{version_info.serial}"
-
-assert __version__ == f"{version_info.major}.{version_info.minor}.{version_info.micro}{_suffix_}"
+# Build up version_info tuple for backwards compatibility
+pattern = r"(?P<major>\d+).(?P<minor>\d+).(?P<patch>\d+)(?P<rest>.*)"
+match = re.match(pattern, __version__)
+assert match is not None
+parts: List[object] = [int(match[part]) for part in ["major", "minor", "patch"]]
+if match["rest"]:
+    parts.append(match["rest"])
+version_info = tuple(parts)
