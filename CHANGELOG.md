@@ -2,6 +2,59 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 5.0.0
+
+([Full Changelog](https://github.com/jupyter/jupyter_core/compare/4.9.2...fdbb55b59575a3eb6aeb502998a835b013401412))
+
+### Major Changes
+
+#### Prefer Environment Level Configuration
+
+We now make the assumption that if we are running in a virtual environment, we should prioritize the environment-level `sys.prefix` over the user-level paths. Users can opt out of this behavior by setting `JUPYTER_PREFER_ENV_PATH`, which takes precedence over our autodetection.
+
+#### Migrate to Standard Platform Directories
+
+In version 5, we introduce a `JUPYTER_PLATFORM_DIRS` environment variable to opt in to using more appropriate platform-specific directories.  We raise a deprecation warning if the variable is not set.  In version 6,  `JUPYTER_PLATFORM_DIRS` will be opt-out.  In version 7, we will remove the environment variable checks and old directory logic.
+
+#### Drop Support for Python 3.7
+
+We are dropping support for Python 3.7 ahead of its official end of life, to reduce maintenance burden as we add support for Python 3.11.
+
+### Enhancements made
+
+- Use platformdirs for path locations [#292](https://github.com/jupyter/jupyter_core/pull/292) ([@blink1073](https://github.com/blink1073))
+- Try to detect if we are in a virtual environment and change path precedence accordingly [#286](https://github.com/jupyter/jupyter_core/pull/286) ([@jasongrout](https://github.com/jasongrout))
+
+### Bugs fixed
+
+- Add current working directory as first config path [#291](https://github.com/jupyter/jupyter_core/pull/291) ([@blink1073](https://github.com/blink1073))
+- Fix inclusion of jupyter file and check in CI [#276](https://github.com/jupyter/jupyter_core/pull/276) ([@blink1073](https://github.com/blink1073))
+
+### Maintenance and upkeep improvements
+
+- Bump github/codeql-action from 1 to 2 [#308](https://github.com/jupyter/jupyter_core/pull/308) ([@dependabot](https://github.com/dependabot))
+- Bump actions/checkout from 2 to 3 [#307](https://github.com/jupyter/jupyter_core/pull/307) ([@dependabot](https://github.com/dependabot))
+- Add dependabot [#306](https://github.com/jupyter/jupyter_core/pull/306) ([@blink1073](https://github.com/blink1073))
+- Adopt jupyter releaser [#305](https://github.com/jupyter/jupyter_core/pull/305) ([@blink1073](https://github.com/blink1073))
+- Add more typing [#304](https://github.com/jupyter/jupyter_core/pull/304) ([@blink1073](https://github.com/blink1073))
+- Require Python 3.8+ [#302](https://github.com/jupyter/jupyter_core/pull/302) ([@blink1073](https://github.com/blink1073))
+- Use hatch backend [#265](https://github.com/jupyter/jupyter_core/pull/265) ([@blink1073](https://github.com/blink1073))
+- Switch to flit build backend [#262](https://github.com/jupyter/jupyter_core/pull/262) ([@blink1073](https://github.com/blink1073))
+- is_hidden: Use normalized paths [#271](https://github.com/jupyter/jupyter_core/pull/271) ([@martinRenou](https://github.com/martinRenou))
+-
+
+### Documentation
+
+- Update broken link to `Contributing` guide [#289](https://github.com/jupyter/jupyter_core/pull/289) ([@jamesr66a](https://github.com/jamesr66a))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2022-02-15&to=2022-11-09&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2022-02-15..2022-11-09&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Abollwyvl+updated%3A2022-02-15..2022-11-09&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Adependabot+updated%3A2022-02-15..2022-11-09&type=Issues) | [@dlqqq](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Adlqqq+updated%3A2022-02-15..2022-11-09&type=Issues) | [@gaborbernat](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Agaborbernat+updated%3A2022-02-15..2022-11-09&type=Issues) | [@gutow](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Agutow+updated%3A2022-02-15..2022-11-09&type=Issues) | [@jamesr66a](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ajamesr66a+updated%3A2022-02-15..2022-11-09&type=Issues) | [@jaraco](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ajaraco+updated%3A2022-02-15..2022-11-09&type=Issues) | [@jasongrout](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ajasongrout+updated%3A2022-02-15..2022-11-09&type=Issues) | [@kevin-bates](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Akevin-bates+updated%3A2022-02-15..2022-11-09&type=Issues) | [@maartenbreddels](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Amaartenbreddels+updated%3A2022-02-15..2022-11-09&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3AmartinRenou+updated%3A2022-02-15..2022-11-09&type=Issues) | [@meeseeksmachine](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ameeseeksmachine+updated%3A2022-02-15..2022-11-09&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Apre-commit-ci+updated%3A2022-02-15..2022-11-09&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 5.0.0rc0
 
 [on
@@ -14,8 +67,6 @@ GitHub](https://github.com/jupyter/jupyter_core/releases/tag/5.0.0rc0)
 - Add current working directory as first config path.
   ([#291](https://github.com/jupyter/jupyter_core/pull/291))
 - Use platformdirs for path locations. ([#292](https://github.com/jupyter/jupyter_core/pull/292))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 4.11
 
