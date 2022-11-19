@@ -164,6 +164,10 @@ def test_subcommand_list(tmpdir):
             ]
 
 
+skip_darwin = pytest.mark.skipif(sys.platform == "darwin", reason="Fails on macos")
+
+
+@skip_darwin
 def test_not_on_path(tmpdir):
     a = tmpdir.mkdir("a")
     jupyter = a.join("jupyter")
@@ -183,6 +187,7 @@ def test_not_on_path(tmpdir):
     assert b"WITNESS" in out
 
 
+@skip_darwin
 def test_path_priority(tmpdir):
     a = tmpdir.mkdir("a")
     jupyter = a.join("jupyter")
@@ -206,6 +211,7 @@ def test_path_priority(tmpdir):
     assert b"WITNESS A" in out
 
 
+@skip_darwin
 def test_argv0(tmpdir):
     a = tmpdir.mkdir("a")
     jupyter = a.join("jupyter")

@@ -17,8 +17,8 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-  "platformdirs",
-  "traitlets",
+  "platformdirs>=2.5",
+  "traitlets>=5.3",
   "pywin32>=1.0 ; sys_platform == 'win32' and platform_python_implementation != 'PyPy'"
 ]
 dynamic = ["version"]
@@ -49,7 +49,7 @@ test = [
 docs = [
   "myst-parser",
   "sphinxcontrib_github_alt",
-  "traitlets>=4.0",
+  "traitlets",
 ]
 
 [project.scripts]

@@ -82,19 +82,6 @@ jobs:
           export PIP_PRE=1
           hatch run test:nowarn || hatch run test:nowarn --lf
 
-  check_docs:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v3
-      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
-      - name: "Build docs"
-        run: |
-          pip install -e .
-          cd docs
-          pip install -r requirements.txt
-          make html SPHINXOPTS='-W'
-
   test_docs:
     name: Test Docs
     runs-on: ubuntu-latest
