@@ -21,7 +21,7 @@ from .version import __version__
 
 
 class JupyterParser(argparse.ArgumentParser):
-    @property  # type:ignore[override]
+    @property
     def epilog(self):
         """Add subcommands to epilog on request
 
@@ -326,7 +326,7 @@ def main():
         # special-case alias of "jupyter help" to "jupyter --help"
         if subcommand == "help":
             return
-        sys.exit(e)
+        sys.exit(str(e))
 
     try:
         _execvp(command, [command] + sys.argv[2:])
