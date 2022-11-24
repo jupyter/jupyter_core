@@ -18,8 +18,12 @@ import pytest
 
 from jupyter_core import paths
 from jupyter_core.paths import (
+    UF_HIDDEN,
+    _win32_restrict_file_to_user_ctypes,
+    exists,
     is_file_hidden,
     is_hidden,
+    issue_insecure_write_warning,
     jupyter_config_dir,
     jupyter_config_path,
     jupyter_data_dir,
@@ -428,6 +432,14 @@ def test_is_hidden():
         assert not is_file_hidden(subdir56)
         assert not is_file_hidden(subdir56, os.stat(subdir56))
 
+        assert not is_file_hidden(os.path.join(root, "does_not_exist"))
+        subdir78 = os.path.join(root, "subdir7", "subdir8")
+        os.makedirs(subdir78)
+        assert not is_hidden(subdir78, root)
+        if hasattr(os, "chflags"):
+            os.chflags(subdir78, UF_HIDDEN)
+            assert is_hidden(subdir78, root)
+
 
 @pytest.mark.skipif(
     not (
@@ -484,6 +496,11 @@ def test_is_hidden_win32_pypy():
             assert len(w) == 1
             assert issubclass(w[-1].category, UserWarning)
             assert "hidden files are not detectable on this system" in str(w[-1].message)
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="only runs on windows")
+def test_win32_restrict_file_to_user_ctypes(tmp_path):
+    _win32_restrict_file_to_user_ctypes(str(tmp_path))
 
 
 @pytest.mark.skipif(sys.platform != "win32", reason="only runs on windows")
@@ -553,3 +570,13 @@ def test_secure_write_unix():
             assert f.read() == "test 2"
     finally:
         shutil.rmtree(directory)
+
+
+def test_exists(tmpdir):
+    assert exists(str(tmpdir))
+
+
+def test_insecure_write_warning():
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", UserWarning)
+        issue_insecure_write_warning()
