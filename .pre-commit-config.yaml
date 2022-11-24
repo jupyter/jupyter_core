@@ -70,7 +70,6 @@ repos:
         stages: [manual]
         additional_dependencies: [pytest, platformdirs, traitlets, ipykernel]
         exclude: |
-          exclude: |
             (?x)^(
               jupyter_core/tests/.*_config.py |
               scripts/jupyter
