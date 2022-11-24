@@ -22,7 +22,6 @@ from jupyter_core.paths import (
     _win32_restrict_file_to_user_ctypes,
     exists,
     is_file_hidden,
-    is_file_hidden_win,
     is_hidden,
     issue_insecure_write_warning,
     jupyter_config_dir,
@@ -500,8 +499,8 @@ def test_is_hidden_win32_pypy():
 
 
 @pytest.mark.skipif(sys.platform != "win32", reason="only runs on windows")
-def test_win32_restrict_file_to_user_ctypes(tmpfile):
-    _win32_restrict_file_to_user_ctypes(str(tmpfile))
+def test_win32_restrict_file_to_user_ctypes(tmp_path):
+    _win32_restrict_file_to_user_ctypes(str(tmp_path))
 
 
 @pytest.mark.skipif(sys.platform != "win32", reason="only runs on windows")
