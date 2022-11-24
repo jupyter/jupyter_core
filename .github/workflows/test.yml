@@ -43,7 +43,7 @@ jobs:
           hatch run cov:test
       - name: Coverage
         run: |
-          pip install codecov
+          pip install codecov coverage[toml]
           codecov
       - name: Check CLI
         run: |
