@@ -326,7 +326,7 @@ def main():
         # special-case alias of "jupyter help" to "jupyter --help"
         if subcommand == "help":
             return
-        sys.exit(1)
+        sys.exit(str(e))
 
     try:
         _execvp(command, [command] + sys.argv[2:])
