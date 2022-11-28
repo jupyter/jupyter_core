@@ -2,6 +2,32 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 5.1.0
+
+([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.0.0...9a976bb7d4f2d7092b2ee98b05a30eb1ff0be425))
+
+### Enhancements made
+
+- Add run_sync and ensure_async functions [#315](https://github.com/jupyter/jupyter_core/pull/315) ([@davidbrochart](https://github.com/davidbrochart))
+
+### Maintenance and upkeep improvements
+
+- Add more path tests [#316](https://github.com/jupyter/jupyter_core/pull/316) ([@blink1073](https://github.com/blink1073))
+- Clean up workflows and add badges [#314](https://github.com/jupyter/jupyter_core/pull/314) ([@blink1073](https://github.com/blink1073))
+- CI Cleanup [#312](https://github.com/jupyter/jupyter_core/pull/312) ([@blink1073](https://github.com/blink1073))
+
+### Documentation improvements
+
+- Clean up workflows and add badges [#314](https://github.com/jupyter/jupyter_core/pull/314) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2022-11-09&to=2022-11-28&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2022-11-09..2022-11-28&type=Issues) | [@davidbrochart](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Adavidbrochart+updated%3A2022-11-09..2022-11-28&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Apre-commit-ci+updated%3A2022-11-09..2022-11-28&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 5.0.0
 
 ([Full Changelog](https://github.com/jupyter/jupyter_core/compare/4.9.2...fdbb55b59575a3eb6aeb502998a835b013401412))
@@ -52,8 +78,6 @@ We are dropping support for Python 3.7 ahead of its official end of life, to red
 ([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2022-02-15&to=2022-11-09&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2022-02-15..2022-11-09&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Abollwyvl+updated%3A2022-02-15..2022-11-09&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Adependabot+updated%3A2022-02-15..2022-11-09&type=Issues) | [@dlqqq](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Adlqqq+updated%3A2022-02-15..2022-11-09&type=Issues) | [@gaborbernat](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Agaborbernat+updated%3A2022-02-15..2022-11-09&type=Issues) | [@gutow](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Agutow+updated%3A2022-02-15..2022-11-09&type=Issues) | [@jamesr66a](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ajamesr66a+updated%3A2022-02-15..2022-11-09&type=Issues) | [@jaraco](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ajaraco+updated%3A2022-02-15..2022-11-09&type=Issues) | [@jasongrout](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ajasongrout+updated%3A2022-02-15..2022-11-09&type=Issues) | [@kevin-bates](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Akevin-bates+updated%3A2022-02-15..2022-11-09&type=Issues) | [@maartenbreddels](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Amaartenbreddels+updated%3A2022-02-15..2022-11-09&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3AmartinRenou+updated%3A2022-02-15..2022-11-09&type=Issues) | [@meeseeksmachine](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ameeseeksmachine+updated%3A2022-02-15..2022-11-09&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Apre-commit-ci+updated%3A2022-02-15..2022-11-09&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 5.0.0rc0
 
