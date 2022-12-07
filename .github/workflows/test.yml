@@ -96,8 +96,7 @@ jobs:
           hatch run typing:test
           hatch run lint:style
           pipx run 'validate-pyproject[all]' pyproject.toml
-          pipx run doc8 --max-line-length=200  --ignore-path=docs/source/other/full-config.rst
-
+          pipx run doc8 --max-line-length=200
   make_sdist:
     name: Make SDist
     runs-on: ubuntu-latest
