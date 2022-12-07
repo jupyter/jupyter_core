@@ -59,7 +59,7 @@ _jupyter_flags = {
 base_flags.update(_jupyter_flags)
 
 
-class NoStart(Exception):
+class NoStart(Exception):  # noqa
     """Exception to raise when an application shouldn't start"""
 
 
