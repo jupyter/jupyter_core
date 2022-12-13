@@ -400,9 +400,10 @@ def test_prefer_environment_over_user():
 
     # Test default if environment variable is not set, and try to determine if we are in a virtual environment
     os.environ.pop("JUPYTER_PREFER_ENV_PATH", None)
-    in_venv = sys.prefix != sys.base_prefix or (
-        "CONDA_PREFIX" in os.environ and sys.prefix.startswith(os.environ["CONDA_PREFIX"])
-    )
+    in_venv = (
+        sys.prefix != sys.base_prefix
+        or ("CONDA_PREFIX" in os.environ and sys.prefix.startswith(os.environ["CONDA_PREFIX"]))
+    ) and paths._do_i_own(sys.prefix)
     assert prefer_environment_over_user() is in_venv
 
 
