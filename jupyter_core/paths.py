@@ -75,11 +75,15 @@ def prefer_environment_over_user():
         return envset("JUPYTER_PREFER_ENV_PATH")
 
     # If we are in a Python virtualenv, default to True (see https://docs.python.org/3/library/venv.html#venv-def)
-    if sys.prefix != sys.base_prefix:
+    if sys.prefix != sys.base_prefix and os.access(sys.prefix, os.W_OK):
         return True
 
     # If sys.prefix indicates Python comes from a conda/mamba environment, default to True
-    if "CONDA_PREFIX" in os.environ and sys.prefix.startswith(os.environ["CONDA_PREFIX"]):
+    if (
+        "CONDA_PREFIX" in os.environ
+        and sys.prefix.startswith(os.environ["CONDA_PREFIX"])
+        and os.access(sys.prefix, os.W_OK)
+    ):
         return True
 
     return False
