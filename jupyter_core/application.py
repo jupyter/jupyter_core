@@ -10,6 +10,7 @@ All Jupyter applications should inherit from this.
 import logging
 import os
 import sys
+import typing as t
 from copy import deepcopy
 from shutil import which
 
@@ -58,7 +59,7 @@ _jupyter_flags = {
 base_flags.update(_jupyter_flags)
 
 
-class NoStart(Exception):
+class NoStart(Exception):  # noqa
     """Exception to raise when an application shouldn't start"""
 
 
@@ -74,12 +75,12 @@ class JupyterApp(Application):
     def _log_level_default(self):
         return logging.INFO
 
-    jupyter_path = List(Unicode())
+    jupyter_path: t.Union[t.List[str], List] = List(Unicode())
 
     def _jupyter_path_default(self):
         return jupyter_path()
 
-    config_dir = Unicode()
+    config_dir: t.Union[str, Unicode] = Unicode()
 
     def _config_dir_default(self):
         return jupyter_config_dir()
@@ -88,18 +89,18 @@ class JupyterApp(Application):
     def config_file_paths(self):
         path = jupyter_config_path()
         if self.config_dir not in path:
-            # Insert config dir after cwd.
-            path.insert(1, self.config_dir)
+            # Insert config dir as first item.
+            path.insert(0, self.config_dir)
         return path
 
-    data_dir = Unicode()
+    data_dir: t.Union[str, Unicode] = Unicode()
 
     def _data_dir_default(self):
         d = jupyter_data_dir()
         ensure_dir_exists(d, mode=0o700)
         return d
 
-    runtime_dir = Unicode()
+    runtime_dir: t.Union[str, Unicode] = Unicode()
 
     def _runtime_dir_default(self):
         rd = jupyter_runtime_dir()
@@ -110,21 +111,27 @@ class JupyterApp(Application):
     def _runtime_dir_changed(self, change):
         ensure_dir_exists(change["new"], mode=0o700)
 
-    generate_config = Bool(False, config=True, help="""Generate default config file.""")
+    generate_config: t.Union[bool, Bool] = Bool(
+        False, config=True, help="""Generate default config file."""
+    )
 
-    config_file_name = Unicode(config=True, help="Specify a config file to load.")
+    config_file_name: t.Union[str, Unicode] = Unicode(
+        config=True, help="Specify a config file to load."
+    )
 
     def _config_file_name_default(self):
         if not self.name:
             return ""
         return self.name.replace("-", "_") + "_config"
 
-    config_file = Unicode(
+    config_file: t.Union[str, Unicode] = Unicode(
         config=True,
         help="""Full path of a config file.""",
     )
 
-    answer_yes = Bool(False, config=True, help="""Answer yes to any prompts.""")
+    answer_yes: t.Union[bool, Bool] = Bool(
+        False, config=True, help="""Answer yes to any prompts."""
+    )
 
     def write_default_config(self):
         """Write our default config to a .py config file"""

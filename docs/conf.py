@@ -12,6 +12,9 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+import os
+import shutil
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -26,6 +29,7 @@
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    "myst_parser",
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinxcontrib_github_alt",
@@ -59,7 +63,7 @@ from jupyter_core.version import __version__, version_info
 # built documents.
 #
 # The short X.Y version.
-version = "%d.%d" % version_info[:2]
+version = "%d.%d" % version_info[:2]  # type:ignore[str-format]
 # The full version, including alpha/beta/rc tags.
 release = __version__
 
@@ -68,7 +72,7 @@ release = __version__
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -141,7 +145,7 @@ todo_include_todos = False
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ["_static"]
+# html_static_path = ["_static"]
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
@@ -208,7 +212,7 @@ htmlhelp_basename = "jupyter_coredoc"
 
 # -- Options for LaTeX output ---------------------------------------------
 
-latex_elements: dict = {}
+# latex_elements: dict = {}
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
@@ -286,3 +290,8 @@ texinfo_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {"https://docs.python.org/3/": None}
+
+
+def setup(app):
+    here = os.path.dirname(os.path.abspath(__file__))
+    shutil.copy(os.path.join(here, "..", "CHANGELOG.md"), "changelog.md")
