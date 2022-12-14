@@ -406,14 +406,16 @@ def test_prefer_environment_over_user():
 
     # conda
     with patch.object(sys, "base_prefix", sys.prefix):
-        # in root env, don't prefer it
-        with patch.dict(os.environ, {"CONDA_PREFIX": sys.prefix, "CONDA_ROOT": sys.prefix}):
+        # in base env, don't prefer it
+        with patch.dict(os.environ, {"CONDA_PREFIX": sys.prefix, "CONDA_DEFAULT_ENV": "base"}):
             assert not prefer_environment_over_user()
-        # in non-root env, prefer it
-        with patch.dict(os.environ, {"CONDA_PREFIX": sys.prefix, "CONDA_ROOT": "/tmp"}):
+        # in non-base env, prefer it
+        with patch.dict(os.environ, {"CONDA_PREFIX": sys.prefix, "CONDA_DEFAULT_ENV": "/tmp"}):
             assert prefer_environment_over_user()
         # conda env defined, but we aren't using it
-        with patch.dict(os.environ, {"CONDA_PREFIX": "/somewherelese", "CONDA_ROOT": "/tmp"}):
+        with patch.dict(
+            os.environ, {"CONDA_PREFIX": "/somewherelese", "CONDA_DEFAULT_ENV": "/tmp"}
+        ):
             assert not prefer_environment_over_user()
 
 

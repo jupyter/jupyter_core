@@ -82,7 +82,7 @@ def prefer_environment_over_user() -> bool:
     if (
         "CONDA_PREFIX" in os.environ
         and sys.prefix.startswith(os.environ["CONDA_PREFIX"])
-        and os.environ.get("CONDA_ROOT") != os.environ["CONDA_PREFIX"]
+        and os.environ.get("CONDA_DEFAULT_ENV", "base") != "base"
     ):
         return True
 
