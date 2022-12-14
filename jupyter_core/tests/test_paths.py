@@ -400,10 +400,21 @@ def test_prefer_environment_over_user():
 
     # Test default if environment variable is not set, and try to determine if we are in a virtual environment
     os.environ.pop("JUPYTER_PREFER_ENV_PATH", None)
-    in_venv = sys.prefix != sys.base_prefix or (
-        "CONDA_PREFIX" in os.environ and sys.prefix.startswith(os.environ["CONDA_PREFIX"])
-    )
-    assert prefer_environment_over_user() is in_venv
+    # base prefix differs, venv
+    with patch.object(sys, "base_prefix", "notthesame"):
+        assert prefer_environment_over_user()
+
+    # conda
+    with patch.object(sys, "base_prefix", sys.prefix):
+        # in root env, don't prefer it
+        with patch.dict(os.environ, {"CONDA_PREFIX": sys.prefix, "CONDA_ROOT": sys.prefix}):
+            assert not prefer_environment_over_user()
+        # in non-root env, prefer it
+        with patch.dict(os.environ, {"CONDA_PREFIX": sys.prefix, "CONDA_ROOT": "/tmp"}):
+            assert prefer_environment_over_user()
+        # conda env defined, but we aren't using it
+        with patch.dict(os.environ, {"CONDA_PREFIX": "/somewherelese", "CONDA_ROOT": "/tmp"}):
+            assert not prefer_environment_over_user()
 
 
 def test_is_hidden():
