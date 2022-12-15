@@ -31,7 +31,7 @@ from .utils import ensure_dir_exists
 
 # aliases and flags
 
-base_aliases = {}
+base_aliases: dict = {}
 if isinstance(Application.aliases, dict):
     # traitlets 5
     base_aliases.update(Application.aliases)
@@ -41,7 +41,7 @@ _jupyter_aliases = {
 }
 base_aliases.update(_jupyter_aliases)
 
-base_flags = {}
+base_flags: dict = {}
 if isinstance(Application.flags, dict):
     # traitlets 5
     base_flags.update(Application.flags)
