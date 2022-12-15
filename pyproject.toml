@@ -172,7 +172,7 @@ ignore = [
   # Line too long
   "E501",
   # Relative imports are banned
-  "I252",
+  "TID252",
   # Boolean ... in function definition
   "FBT001", "FBT002",
   # Module level import not at top of file
