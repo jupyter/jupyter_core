@@ -418,7 +418,7 @@ def test_prefer_environment_over_user():
         with patch.dict(
             os.environ, {"CONDA_PREFIX": "/somewherelese", "CONDA_DEFAULT_ENV": "/tmp"}
         ):
-            assert not prefer_environment_over_user() == paths._do_i_own(sys.prefix)
+            assert not prefer_environment_over_user()
 
 
 def test_is_hidden():
