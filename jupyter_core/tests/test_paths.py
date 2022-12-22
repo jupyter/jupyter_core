@@ -412,12 +412,14 @@ def test_prefer_environment_over_user():
             assert not prefer_environment_over_user()
         # in non-base env, prefer it
         with patch.dict(os.environ, {"CONDA_PREFIX": sys.prefix, "CONDA_DEFAULT_ENV": "/tmp"}):
-            assert prefer_environment_over_user()
+            assert prefer_environment_over_user() == paths._do_i_own(sys.prefix)
+
         # conda env defined, but we aren't using it
         with patch.dict(
             os.environ, {"CONDA_PREFIX": "/somewherelese", "CONDA_DEFAULT_ENV": "/tmp"}
         ):
-            assert not prefer_environment_over_user()
+            assert not prefer_environment_over_user() == paths._do_i_own(sys.prefix)
+
 
 
 def test_is_hidden():
