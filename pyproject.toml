@@ -207,3 +207,6 @@ unfixable = [
 "tests/*" = ["B011", "F841", "C408", "E402", "T201", "B007", "N802"]
 # F821 Undefined name `get_config`
 "jupyter_core/tests/**/profile_default/*_config.py" = ["F821"]
+
+[tool.check-wheel-contents]
+toplevel = ["jupyter_core/", "jupyter.py"]

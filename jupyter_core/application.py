@@ -45,7 +45,7 @@ base_flags: dict = {}
 if isinstance(Application.flags, dict):
     # traitlets 5
     base_flags.update(Application.flags)
-_jupyter_flags = {
+_jupyter_flags: dict = {
     "debug": (
         {"Application": {"log_level": logging.DEBUG}},
         "set log level to logging.DEBUG (maximize logging output)",
