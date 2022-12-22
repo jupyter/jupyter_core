@@ -209,5 +209,4 @@ unfixable = [
 "jupyter_core/tests/**/profile_default/*_config.py" = ["F821"]
 
 [tool.check-wheel-contents]
-ignore = ["W009"]
-# Wheel contains multiple toplevel library entries: jupyter_core/  jupyter.py
+toplevel = ["jupyter_core/", "jupyter.py"]
