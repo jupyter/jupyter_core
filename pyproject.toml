@@ -105,7 +105,6 @@ fmt = [
 
 [tool.mypy]
 check_untyped_defs = true
-disallow_any_generics = true
 disallow_incomplete_defs = true
 disallow_untyped_decorators = true
 no_implicit_optional = true
