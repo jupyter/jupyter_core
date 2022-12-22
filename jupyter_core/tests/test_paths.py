@@ -421,7 +421,6 @@ def test_prefer_environment_over_user():
             assert not prefer_environment_over_user() == paths._do_i_own(sys.prefix)
 
 
-
 def test_is_hidden():
     with tempfile.TemporaryDirectory() as root:
         subdir1 = os.path.join(root, "subdir")
