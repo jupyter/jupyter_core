@@ -105,10 +105,11 @@ def prefer_environment_over_user() -> bool:
     if sys.prefix != sys.base_prefix and _do_i_own(sys.prefix):
         return True
 
-    # If sys.prefix indicates Python comes from a conda/mamba environment, default to True
+    # If sys.prefix indicates Python comes from a conda/mamba environment that is not the root environment, default to True
     if (
         "CONDA_PREFIX" in os.environ
         and sys.prefix.startswith(os.environ["CONDA_PREFIX"])
+        and os.environ.get("CONDA_DEFAULT_ENV", "base") != "base"
         and _do_i_own(sys.prefix)
     ):
         return True
