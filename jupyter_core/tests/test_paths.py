@@ -400,9 +400,10 @@ def test_prefer_environment_over_user():
 
     # Test default if environment variable is not set, and try to determine if we are in a virtual environment
     os.environ.pop("JUPYTER_PREFER_ENV_PATH", None)
+
     # base prefix differs, venv
     with patch.object(sys, "base_prefix", "notthesame"):
-        assert prefer_environment_over_user()
+        assert prefer_environment_over_user() == paths._do_i_own(sys.prefix)
 
     # conda
     with patch.object(sys, "base_prefix", sys.prefix):
@@ -411,7 +412,8 @@ def test_prefer_environment_over_user():
             assert not prefer_environment_over_user()
         # in non-base env, prefer it
         with patch.dict(os.environ, {"CONDA_PREFIX": sys.prefix, "CONDA_DEFAULT_ENV": "/tmp"}):
-            assert prefer_environment_over_user()
+            assert prefer_environment_over_user() == paths._do_i_own(sys.prefix)
+
         # conda env defined, but we aren't using it
         with patch.dict(
             os.environ, {"CONDA_PREFIX": "/somewherelese", "CONDA_DEFAULT_ENV": "/tmp"}
