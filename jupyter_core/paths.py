@@ -1006,6 +1006,8 @@ def secure_write(fname: str, binary: bool = False) -> Iterator[Any]:
 
 
 def issue_insecure_write_warning() -> None:
+    """Issue an insecure write warning."""
+
     def format_warning(msg, *args, **kwargs):
         return str(msg) + "\n"
 

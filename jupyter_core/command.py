@@ -22,6 +22,8 @@ from .version import __version__
 
 
 class JupyterParser(argparse.ArgumentParser):
+    """A Jupyter argument parser."""
+
     @property
     def epilog(self):
         """Add subcommands to epilog on request
@@ -37,6 +39,7 @@ class JupyterParser(argparse.ArgumentParser):
 
 
 def jupyter_parser() -> JupyterParser:
+    """Create a jupyter parser object."""
     parser = JupyterParser(
         description="Jupyter: Interactive Computing",
     )
@@ -171,6 +174,7 @@ def _path_with_self():
 
 
 def main() -> None:
+    """The command entry point."""
     parser = jupyter_parser()
     if len(sys.argv) > 1 and not sys.argv[1].startswith("-"):
         # Don't parse if a subcommand is given
