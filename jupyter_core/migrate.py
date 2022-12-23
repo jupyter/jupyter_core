@@ -245,6 +245,8 @@ def migrate():
 
 
 class JupyterMigrate(JupyterApp):
+    """A Jupyter Migration App."""
+
     name = "jupyter-migrate"
     description = """
     Migrate configuration and data from .ipython prior to 4.0 to Jupyter locations.
@@ -263,6 +265,7 @@ class JupyterMigrate(JupyterApp):
     """
 
     def start(self):
+        """Start the application."""
         if not migrate():
             self.log.info("Found nothing to migrate.")
 

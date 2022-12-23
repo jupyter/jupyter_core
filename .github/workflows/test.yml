@@ -79,7 +79,7 @@ jobs:
 
   test_docs:
     name: Test Docs
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
@@ -95,7 +95,7 @@ jobs:
          run: |
           hatch run typing:test
           hatch run lint:style
-          pipx run 'validate-pyproject[all]' pyproject.toml
+          pipx run interrogate -v .
           pipx run doc8 --max-line-length=200
 
   make_sdist:
