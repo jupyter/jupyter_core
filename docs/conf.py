@@ -35,6 +35,13 @@ extensions = [
     "sphinxcontrib_github_alt",
 ]
 
+try:
+    import enchant  # noqa
+
+    extensions += ["sphinxcontrib.spelling"]
+except ImportError:
+    pass
+
 github_project_url = "https://github.com/jupyter/jupyter_core"
 
 # Add any paths that contain templates here, relative to this directory.
