@@ -49,6 +49,7 @@ test = [
 docs = [
   "myst-parser",
   "sphinxcontrib_github_alt",
+  "sphinxcontribu_spelling",
   "traitlets",
 ]
 
