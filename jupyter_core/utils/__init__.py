@@ -132,7 +132,7 @@ _loop_map = {}
 
 
 def run_sync(coro: Callable[..., Awaitable[T]]) -> Callable[..., T]:
-    """Runs a coroutine and blocks until it has executed.
+    """Wraps coroutine in a function that blocks until it has executed.
 
     Parameters
     ----------
@@ -167,13 +167,12 @@ def run_sync(coro: Callable[..., Awaitable[T]]) -> Callable[..., T]:
     return wrapped
 
 
-# Matthias I believe this is technically incorrect,
-# as T can itself be Awaitable, It could be better
-# to actually turn a function/method into an async one
-# by using iscoroutinefunction ?
 async def ensure_async(obj: Union[Awaitable[T], T]) -> T:
     """Convert a non-awaitable object to a coroutine if needed,
     and await it if it was not already awaited.
+
+    This function is meant to be called on the result of calling a function,
+    when that function could either be asynchronous or not.
     """
     if inspect.isawaitable(obj):
         obj = cast(Awaitable[T], obj)
@@ -182,10 +181,8 @@ async def ensure_async(obj: Union[Awaitable[T], T]) -> T:
         except RuntimeError as e:
             if str(e) == "cannot reuse already awaited coroutine":
                 # obj is already the coroutine's result
-                obj = cast(T, obj)
-                return obj
+                return cast(T, obj)
             raise
         return result
     # obj doesn't need to be awaited
-    obj_ = cast(T, obj)
-    return obj_
+    return cast(T, obj)
