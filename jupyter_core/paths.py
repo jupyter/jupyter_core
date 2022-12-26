@@ -68,6 +68,33 @@ def get_home_dir() -> str:
 _dtemps: Dict[str, str] = {}
 
 
+def _do_i_own(path: str) -> bool:
+    """Return whether the current user owns the given path"""
+    p = Path(path).resolve()
+
+    # walk up to first existing parent
+    while not p.exists() and p != p.parent:
+        p = p.parent
+
+    # simplest check: owner by name
+    # not always implemented or available
+    try:
+        return p.owner() == os.getlogin()
+    except (NotImplementedError, OSError):
+        pass
+
+    if hasattr(os, 'geteuid'):
+        try:
+            st = p.stat()
+            return st.st_uid == os.geteuid()
+        except (NotImplementedError, OSError):
+            # geteuid not always implemented
+            pass
+
+    # no ownership checks worked, check write access
+    return os.access(p, os.W_OK)
+
+
 def prefer_environment_over_user() -> bool:
     """Determine if environment-level paths should take precedence over user-level paths."""
     # If JUPYTER_PREFER_ENV_PATH is defined, that signals user intent, so return its value
@@ -75,11 +102,16 @@ def prefer_environment_over_user() -> bool:
         return envset("JUPYTER_PREFER_ENV_PATH")  # type:ignore[return-value]
 
     # If we are in a Python virtualenv, default to True (see https://docs.python.org/3/library/venv.html#venv-def)
-    if sys.prefix != sys.base_prefix:
+    if sys.prefix != sys.base_prefix and _do_i_own(sys.prefix):
         return True
 
-    # If sys.prefix indicates Python comes from a conda/mamba environment, default to True
-    if "CONDA_PREFIX" in os.environ and sys.prefix.startswith(os.environ["CONDA_PREFIX"]):
+    # If sys.prefix indicates Python comes from a conda/mamba environment that is not the root environment, default to True
+    if (
+        "CONDA_PREFIX" in os.environ
+        and sys.prefix.startswith(os.environ["CONDA_PREFIX"])
+        and os.environ.get("CONDA_DEFAULT_ENV", "base") != "base"
+        and _do_i_own(sys.prefix)
+    ):
         return True
 
     return False
@@ -974,6 +1006,8 @@ def secure_write(fname: str, binary: bool = False) -> Iterator[Any]:
 
 
 def issue_insecure_write_warning() -> None:
+    """Issue an insecure write warning."""
+
     def format_warning(msg, *args, **kwargs):
         return str(msg) + "\n"
 

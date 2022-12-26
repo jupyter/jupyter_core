@@ -2,6 +2,31 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 5.1.1
+
+([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.1.0...1ed25e389116fbb98c513ee2148f38f9548e6198))
+
+### Enhancements made
+
+- Only prefer envs owned by the current user [#323](https://github.com/jupyter/jupyter_core/pull/323) ([@minrk](https://github.com/minrk))
+
+### Bugs fixed
+
+- Don't treat the conda root env as an env [#324](https://github.com/jupyter/jupyter_core/pull/324) ([@minrk](https://github.com/minrk))
+
+### Maintenance and upkeep improvements
+
+- Fix lint [#325](https://github.com/jupyter/jupyter_core/pull/325) ([@blink1073](https://github.com/blink1073))
+- Adopt ruff and address lint [#321](https://github.com/jupyter/jupyter_core/pull/321) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2022-11-28&to=2022-12-22&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2022-11-28..2022-12-22&type=Issues) | [@jasongrout](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ajasongrout+updated%3A2022-11-28..2022-12-22&type=Issues) | [@minrk](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Aminrk+updated%3A2022-11-28..2022-12-22&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Apre-commit-ci+updated%3A2022-11-28..2022-12-22&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 5.1.0
 
 ([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.0.0...9a976bb7d4f2d7092b2ee98b05a30eb1ff0be425))
@@ -25,8 +50,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2022-11-09&to=2022-11-28&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2022-11-09..2022-11-28&type=Issues) | [@davidbrochart](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Adavidbrochart+updated%3A2022-11-09..2022-11-28&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Apre-commit-ci+updated%3A2022-11-09..2022-11-28&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 5.0.0
 
