@@ -7,11 +7,14 @@ Migrations:
 - .ipython/
   - nbextensions -> JUPYTER_DATA_DIR/nbextensions
   - kernels ->  JUPYTER_DATA_DIR/kernels
+
 - .ipython/profile_default/
   - static/custom -> .jupyter/custom
   - nbconfig -> .jupyter/nbconfig
   - security/
+
     - notebook_secret, notebook_cookie_secret, nbsignatures.db -> JUPYTER_DATA_DIR
+
   - ipython_{notebook,nbconvert,qtconsole}_config.py -> .jupyter/jupyter_{name}_config.py
 
 
@@ -183,7 +186,7 @@ def migrate_static_custom(src, dst):
 
 
 def migrate_config(name, env):
-    """Migrate a config file
+    """Migrate a config file.
 
     Includes substitutions for updated configurable names.
     """

@@ -50,6 +50,7 @@ docs = [
   "myst-parser",
   "sphinxcontrib_github_alt",
   "sphinxcontrib_spelling",
+  "sphinx-autodoc-typehints",
   "traitlets",
 ]
 
@@ -66,8 +67,11 @@ path = "jupyter_core/version.py"
 
 [tool.hatch.envs.docs]
 features = ["docs"]
+[tool.hatch.envs.docs.env-vars]
+SPHINXOPTS = "-W -n"
 [tool.hatch.envs.docs.scripts]
-build = "make -C docs html SPHINXOPTS='-W'"
+build = "make -C docs html"
+api = "sphinx-apidoc -o docs/api -f -E jupyter_core jupyter_core/tests/*"
 
 [tool.hatch.envs.test]
 features = ["test"]

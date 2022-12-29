@@ -10,9 +10,8 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   paths
    changelog
-
+   API Docs <api/modules>
 
 Indices and tables
 ==================

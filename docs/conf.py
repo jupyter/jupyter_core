@@ -33,6 +33,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinxcontrib_github_alt",
+    "sphinx_autodoc_typehints",
 ]
 
 try:
