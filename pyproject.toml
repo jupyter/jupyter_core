@@ -68,7 +68,7 @@ path = "jupyter_core/version.py"
 [tool.hatch.envs.docs]
 features = ["docs"]
 [tool.hatch.envs.docs.scripts]
-build = "make -C docs html SPHINXOPTS='-W -n'"
+build = "SPHINXOPTS=\"-W -n\"; make -C docs html"
 api = "sphinx-apidoc -o docs/api -f -E jupyter_core jupyter_core/tests/*"
 
 [tool.hatch.envs.test]
