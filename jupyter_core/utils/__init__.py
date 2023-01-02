@@ -10,7 +10,8 @@ import sys
 import threading
 import warnings
 from pathlib import Path
-from typing import Any, Awaitable, Callable, Optional, TypeVar, Union
+from types import FrameType
+from typing import Awaitable, Callable, List, Optional, TypeVar, Union, cast
 
 
 def ensure_dir_exists(path, mode=0o777):
@@ -29,7 +30,7 @@ def ensure_dir_exists(path, mode=0o777):
         raise OSError("%r exists but is not a directory" % path)
 
 
-def _get_frame(level):
+def _get_frame(level: int) -> Optional[FrameType]:
     """Get the frame at the given stack level."""
     # sys._getframe is much faster than inspect.stack, but isn't guaranteed to
     # exist in all python implementations, so we fall back to inspect.stack()
@@ -49,7 +50,7 @@ def _get_frame(level):
 # added in the process. For example, with the deprecation warning in the
 # __init__ below, the appropriate stacklevel will change depending on how deep
 # the inheritance hierarchy is.
-def _external_stacklevel(internal):
+def _external_stacklevel(internal: List[str]) -> int:
     """Find the stacklevel of the first frame that doesn't contain any of the given internal strings
 
     The depth will be 1 at minimum in order to start checking at the caller of
@@ -71,18 +72,21 @@ def _external_stacklevel(internal):
     return level - 1
 
 
-def deprecation(message, internal="jupyter_core/"):
+def deprecation(message: str, internal: Union[str, List[str]] = "jupyter_core/") -> None:
     """Generate a deprecation warning targeting the first frame that is not 'internal'
 
     internal is a string or list of strings, which if they appear in filenames in the
     frames, the frames will be considered internal. Changing this can be useful if, for examnple,
     we know that our internal code is calling out to another library.
     """
+    _internal: List[str]
     if isinstance(internal, str):
-        internal = [internal]
+        _internal = [internal]
+    else:
+        _internal = internal
 
     # stack level of the first external frame from here
-    stacklevel = _external_stacklevel(internal)
+    stacklevel = _external_stacklevel(_internal)
 
     # The call to .warn adds one frame, so bump the stacklevel up by one
     warnings.warn(message, DeprecationWarning, stacklevel=stacklevel + 1)
@@ -129,7 +133,7 @@ _loop_map = {}
 
 
 def run_sync(coro: Callable[..., Awaitable[T]]) -> Callable[..., T]:
-    """Runs a coroutine and blocks until it has executed.
+    """Wraps coroutine in a function that blocks until it has executed.
 
     Parameters
     ----------
@@ -165,18 +169,22 @@ def run_sync(coro: Callable[..., Awaitable[T]]) -> Callable[..., T]:
     return wrapped
 
 
-async def ensure_async(obj: Union[Awaitable[Any], Any]) -> Any:
+async def ensure_async(obj: Union[Awaitable[T], T]) -> T:
     """Convert a non-awaitable object to a coroutine if needed,
     and await it if it was not already awaited.
+
+    This function is meant to be called on the result of calling a function,
+    when that function could either be asynchronous or not.
     """
     if inspect.isawaitable(obj):
+        obj = cast(Awaitable[T], obj)
         try:
             result = await obj
         except RuntimeError as e:
             if str(e) == "cannot reuse already awaited coroutine":
                 # obj is already the coroutine's result
-                return obj
+                return cast(T, obj)
             raise
         return result
     # obj doesn't need to be awaited
-    return obj
+    return cast(T, obj)
