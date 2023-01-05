@@ -225,3 +225,4 @@ exclude = ["docs", "*/tests"]
 
 [tool.check-wheel-contents]
 toplevel = ["jupyter_core/", "jupyter.py"]
+ignore = ["W002"]
