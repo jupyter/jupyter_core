@@ -137,14 +137,16 @@ def run_sync(coro: Callable[..., Awaitable[T]]) -> Callable[..., T]:
 
     Parameters
     ----------
-    coro : coroutine
-        The coroutine to be executed.
+    coro : coroutine-function
+        The coroutine-function to be executed.
 
     Returns
     -------
     result :
-        Whatever the coroutine returns.
+        Whatever the coroutine-function returns.
     """
+
+    assert inspect.iscoroutinefunction(coro)
 
     def wrapped(*args, **kwargs):
         name = threading.current_thread().name
