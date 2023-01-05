@@ -21,7 +21,7 @@ from typing import Any, Dict, Iterator, List, Optional
 
 import platformdirs
 
-from jupyter_core.utils import deprecation
+from .utils import deprecation
 
 pjoin = os.path.join
 
