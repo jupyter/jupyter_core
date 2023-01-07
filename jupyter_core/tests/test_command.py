@@ -34,6 +34,7 @@ def setup_function():
     ]:
         os.environ.pop(var, None)
 
+
 def teardown_function():
     resetenv.stop()
 
