@@ -50,16 +50,7 @@ no_xdg = patch.dict(
     {},
 )
 
-no_config_env = patch.dict(
-    "os.environ",
-    {
-        "JUPYTER_PLATFORM_DIRS": "",
-        "JUPYTER_CONFIG_DIR": "",
-        "JUPYTER_DATA_DIR": "",
-        "JUPYTER_RUNTIME_DIR": "",
-        "JUPYTER_PATH": "",
-    },
-)
+environment = patch.dict("os.environ")
 
 use_platformdirs = patch.dict("os.environ", {"JUPYTER_PLATFORM_DIRS": "1"})
 
@@ -68,18 +59,26 @@ config_env = patch.dict("os.environ", {"JUPYTER_CONFIG_DIR": jupyter_config_env}
 prefer_env = patch.dict("os.environ", {"JUPYTER_PREFER_ENV_PATH": "True"})
 prefer_user = patch.dict("os.environ", {"JUPYTER_PREFER_ENV_PATH": "False"})
 
-resetenv = patch.dict(os.environ)
 
-
-def setup_module():
-    resetenv.start()
+def setup_function():
+    environment.start()
+    for var in [
+        "JUPYTER_CONFIG_DIR",
+        "JUPYTER_CONFIG_PATH",
+        "JUPYTER_DATA_DIR",
+        "JUPYTER_NO_CONFIG",
+        "JUPYTER_PATH",
+        "JUPYTER_PLATFORM_DIRS",
+        "JUPYTER_RUNTIME_DIR",
+    ]:
+        os.environ.pop(var, None)
     # For these tests, default to preferring the user-level over environment-level paths
     # Tests can override this preference using the prefer_env decorator/context manager
     os.environ["JUPYTER_PREFER_ENV_PATH"] = "no"
 
 
-def teardown_module():
-    resetenv.stop()
+def teardown_function():
+    environment.stop()
 
 
 def realpath(path):
@@ -272,14 +271,14 @@ def test_runtime_dir_linux():
 
 def test_jupyter_path():
     system_path = ["system", "path"]
-    with no_config_env, patch.object(paths, "SYSTEM_JUPYTER_PATH", system_path):
+    with patch.object(paths, "SYSTEM_JUPYTER_PATH", system_path):
         path = jupyter_path()
         assert path[0] == jupyter_data_dir()
         assert path[-2:] == system_path
 
 
 def test_jupyter_path_user_site():
-    with no_config_env, patch.object(site, "ENABLE_USER_SITE", True):
+    with patch.object(site, "ENABLE_USER_SITE", True):
         path = jupyter_path()
 
         # deduplicated expected values
@@ -297,7 +296,7 @@ def test_jupyter_path_user_site():
 
 
 def test_jupyter_path_no_user_site():
-    with no_config_env, patch.object(site, "ENABLE_USER_SITE", False):
+    with patch.object(site, "ENABLE_USER_SITE", False):
         path = jupyter_path()
         assert path[0] == jupyter_data_dir()
         assert path[1] == paths.ENV_JUPYTER_PATH[0]
