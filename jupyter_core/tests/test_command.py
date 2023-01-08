@@ -21,11 +21,21 @@ from jupyter_core.paths import (
 resetenv = patch.dict(os.environ)
 
 
-def setup_module():
+def setup_function():
     resetenv.start()
+    for var in [
+        "JUPYTER_CONFIG_DIR",
+        "JUPYTER_CONFIG_PATH",
+        "JUPYTER_DATA_DIR",
+        "JUPYTER_NO_CONFIG",
+        "JUPYTER_PATH",
+        "JUPYTER_PLATFORM_DIRS",
+        "JUPYTER_RUNTIME_DIR",
+    ]:
+        os.environ.pop(var, None)
 
 
-def teardown_module():
+def teardown_function():
     resetenv.stop()
 
 
