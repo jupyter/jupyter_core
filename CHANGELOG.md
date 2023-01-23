@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 5.1.4
+
+([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.1.3...c268e9133b37f710360a102f3a5d47a84e8cadc8))
+
+### Bugs fixed
+
+- Suppress any exception in \_do_i_own shortcut [#335](https://github.com/jupyter/jupyter_core/pull/335) ([@minrk](https://github.com/minrk))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-01-09&to=2023-01-23&type=c))
+
+[@minrk](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Aminrk+updated%3A2023-01-09..2023-01-23&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 5.1.3
 
 ([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.1.2...eb65690cb69a793edeb21b520c2358332933bb5d))
@@ -21,8 +37,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-01-02&to=2023-01-09&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2023-01-02..2023-01-09&type=Issues) | [@Carreau](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3ACarreau+updated%3A2023-01-02..2023-01-09&type=Issues) | [@jasongrout](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ajasongrout+updated%3A2023-01-02..2023-01-09&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Apre-commit-ci+updated%3A2023-01-02..2023-01-09&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 5.1.2
 
