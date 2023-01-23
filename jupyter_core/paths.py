@@ -80,7 +80,7 @@ def _do_i_own(path: str) -> bool:
     # not always implemented or available
     try:
         return p.owner() == os.getlogin()
-    except (NotImplementedError, OSError):
+    except Exception:
         pass
 
     if hasattr(os, 'geteuid'):
