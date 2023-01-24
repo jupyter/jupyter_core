@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 5.1.5
+
+([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.1.4...269449fe4dcb8d427b54337d83bcb67bf50e87da))
+
+### Maintenance and upkeep improvements
+
+- MAINT: Don't format logs in log call. [#336](https://github.com/jupyter/jupyter_core/pull/336) ([@Carreau](https://github.com/Carreau))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-01-23&to=2023-01-24&type=c))
+
+[@Carreau](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3ACarreau+updated%3A2023-01-23..2023-01-24&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 5.1.4
 
 ([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.1.3...c268e9133b37f710360a102f3a5d47a84e8cadc8))
@@ -15,8 +31,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-01-09&to=2023-01-23&type=c))
 
 [@minrk](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Aminrk+updated%3A2023-01-09..2023-01-23&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 5.1.3
 
