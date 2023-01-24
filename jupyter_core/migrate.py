@@ -82,16 +82,16 @@ def migrate_dir(src, dst):
     """Migrate a directory from src to dst"""
     log = get_logger()
     if not os.listdir(src):
-        log.debug("No files in %s" % src)
+        log.debug("No files in %s", src)
         return False
     if os.path.exists(dst):
         if os.listdir(dst):
             # already exists, non-empty
-            log.debug("%s already exists" % dst)
+            log.debug("%s already exists", dst)
             return False
         else:
             os.rmdir(dst)
-    log.info(f"Copying {src} -> {dst}")
+    log.info("Copying %s -> %s", src, dst)
     ensure_dir_exists(os.path.dirname(dst))
     shutil.copytree(src, dst, symlinks=True)
     return True
@@ -105,9 +105,9 @@ def migrate_file(src, dst, substitutions=None):
     log = get_logger()
     if os.path.exists(dst):
         # already exists
-        log.debug("%s already exists" % dst)
+        log.debug("%s already exists", dst)
         return False
-    log.info(f"Copying {src} -> {dst}")
+    log.info("Copying %s -> %s", src, dst)
     ensure_dir_exists(os.path.dirname(dst))
     shutil.copy(src, dst)
     if substitutions:
@@ -131,7 +131,7 @@ def migrate_one(src, dst):
     elif os.path.isdir(src):
         return migrate_dir(src, dst)
     else:
-        log.debug("Nothing to migrate for %s" % src)
+        log.debug("Nothing to migrate for %s", src)
         return False
 
 
@@ -163,9 +163,9 @@ def migrate_static_custom(src, dst):
             custom_css_empty = css.startswith("/*") and css.endswith("*/")
 
     if custom_js_empty:
-        log.debug("Ignoring empty %s" % custom_js)
+        log.debug("Ignoring empty %s", custom_js)
     if custom_css_empty:
-        log.debug("Ignoring empty %s" % custom_css)
+        log.debug("Ignoring empty %s", custom_css)
 
     if custom_js_empty and custom_css_empty:
         # nothing to migrate
@@ -208,7 +208,7 @@ def migrate_config(name, env):
                     migrated.append(src)
             else:
                 # don't migrate empty config files
-                log.debug("Not migrating empty config file: %s" % src)
+                log.debug("Not migrating empty config file: %s", src)
     return migrated
 
 
