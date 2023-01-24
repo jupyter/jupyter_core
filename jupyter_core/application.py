@@ -216,7 +216,7 @@ class JupyterApp(Application):
             # self.raise_config_file_errors
             if (not suppress_errors) or self.raise_config_file_errors:
                 raise
-            self.log.warning("Error loading config file: %s" % config_file_name, exc_info=True)
+            self.log.warning("Error loading config file: %s", config_file_name, exc_info=True)
 
     # subcommand-related
     def _find_subcommand(self, name):
