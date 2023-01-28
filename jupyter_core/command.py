@@ -189,7 +189,7 @@ def _path_with_self():
 
 def _evaluate_argcomplete(parser: JupyterParser) -> List[str]:
     """If argcomplete is enabled, trigger autocomplete or return current words
-    
+
     If the first word looks like a subcommand, return the current command
     that is attempting to be completed so that the subcommand can evaluate it;
     otherwise auto-complete using the main parser.
