@@ -51,6 +51,11 @@ def main() -> None:
     """
     # pylint: disable=superfluous-parens
     # args = get_args()
+    if "_ARGCOMPLETE" in os.environ:
+        # No arguments to complete, the script can be slow to run to completion,
+        # so in case someone tries to complete jupyter troubleshoot just exit early
+        return
+
     environment_data = get_data()
 
     print("$PATH:")

@@ -1,3 +1,4 @@
+# PYTHON_ARGCOMPLETE_OK
 """The root `jupyter` command.
 
 This does nothing other than dispatch to subcommands or output path info.
@@ -37,6 +38,15 @@ class JupyterParser(argparse.ArgumentParser):
         """Ignore epilog set in Parser.__init__"""
         pass
 
+    def argcomplete(self):
+        """Trigger auto-completion, if enabled"""
+        try:
+            import argcomplete  # type: ignore[import]
+
+            argcomplete.autocomplete(self)
+        except ImportError:
+            pass
+
 
 def jupyter_parser() -> JupyterParser:
     """Create a jupyter parser object."""
@@ -48,7 +58,11 @@ def jupyter_parser() -> JupyterParser:
     group.add_argument(
         "--version", action="store_true", help="show the versions of core jupyter packages and exit"
     )
-    group.add_argument("subcommand", type=str, nargs="?", help="the subcommand to launch")
+    subcommand_action = group.add_argument(
+        "subcommand", type=str, nargs="?", help="the subcommand to launch"
+    )
+    # For argcomplete, supply all known subcommands
+    subcommand_action.completer = lambda *args, **kwargs: list_subcommands()  # type: ignore[attr-defined]
 
     group.add_argument("--config-dir", action="store_true", help="show Jupyter config dir")
     group.add_argument("--data-dir", action="store_true", help="show Jupyter data dir")
@@ -173,13 +187,49 @@ def _path_with_self():
     return path_list
 
 
+def _evaluate_argcomplete(parser: JupyterParser) -> List[str]:
+    """If argcomplete is enabled, trigger autocomplete or return current words
+
+    If the first word looks like a subcommand, return the current command
+    that is attempting to be completed so that the subcommand can evaluate it;
+    otherwise auto-complete using the main parser.
+    """
+    try:
+        # traitlets >= 5.8 provides some argcomplete support,
+        # use helper methods to jump to argcomplete
+        from traitlets.config.argcomplete_config import (
+            get_argcomplete_cwords,
+            increment_argcomplete_index,
+        )
+
+        cwords = get_argcomplete_cwords()
+        if cwords and len(cwords) > 1 and not cwords[1].startswith("-"):
+            # If first completion word looks like a subcommand,
+            # increment word from which to start handling arguments
+            increment_argcomplete_index()
+            return cwords
+        else:
+            # Otherwise no subcommand, directly autocomplete and exit
+            parser.argcomplete()
+    except ImportError:
+        # traitlets >= 5.8 not available, just try to complete this without
+        # worrying about subcommands
+        parser.argcomplete()
+    raise AssertionError("Control flow should not reach end of autocomplete()")
+
+
 def main() -> None:
     """The command entry point."""
     parser = jupyter_parser()
-    if len(sys.argv) > 1 and not sys.argv[1].startswith("-"):
+    argv = sys.argv
+    subcommand = None
+    if "_ARGCOMPLETE" in os.environ:
+        argv = _evaluate_argcomplete(parser)
+        subcommand = argv[1]
+    elif len(argv) > 1 and not argv[1].startswith("-"):
         # Don't parse if a subcommand is given
         # Avoids argparse gobbling up args passed to subcommand, such as `-h`.
-        subcommand = sys.argv[1]
+        subcommand = argv[1]
     else:
         args, opts = parser.parse_known_args()
         subcommand = args.subcommand
@@ -343,7 +393,7 @@ def main() -> None:
         sys.exit(str(e))
 
     try:
-        _execvp(command, [command] + sys.argv[2:])
+        _execvp(command, [command] + argv[2:])
     except OSError as e:
         sys.exit(f"Error executing Jupyter command {subcommand!r}: {e}")
 

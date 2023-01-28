@@ -1,3 +1,4 @@
+# PYTHON_ARGCOMPLETE_OK
 """Migrating IPython < 4.0 to Jupyter
 
 This *copies* configuration and resources to their new locations in Jupyter

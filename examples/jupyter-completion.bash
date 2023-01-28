@@ -1,4 +1,10 @@
 # load with: . jupyter-completion.bash
+#
+# NOTE: with traitlets>=5.8, jupyter and its subcommands now directly support
+# shell command-line tab-completion using argcomplete, which has more complete
+# support than this script. Simply install argcomplete and activate global
+# completion by following the relevant instructions in:
+# https://kislyuk.github.io/argcomplete/#activating-global-completion
 
 if [[ -n ${ZSH_VERSION-} ]]; then
     autoload -Uz bashcompinit && bashcompinit
