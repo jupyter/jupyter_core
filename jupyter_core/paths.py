@@ -81,7 +81,7 @@ def _do_i_own(path: str) -> bool:
     try:
         return p.owner() == os.getlogin()
     except Exception:
-        pass
+        pass  # noqa
 
     if hasattr(os, 'geteuid'):
         try:
@@ -89,7 +89,7 @@ def _do_i_own(path: str) -> bool:
             return st.st_uid == os.geteuid()
         except (NotImplementedError, OSError):
             # geteuid not always implemented
-            pass
+            pass  # noqa
 
     # no ownership checks worked, check write access
     return os.access(p, os.W_OK)
@@ -207,10 +207,10 @@ if use_platform_dirs():
 else:
     deprecation(
         "Jupyter is migrating its paths to use standard platformdirs\n"
-        + "given by the platformdirs library.  To remove this warning and\n"
-        + "see the appropriate new directories, set the environment variable\n"
-        + "`JUPYTER_PLATFORM_DIRS=1` and then run `jupyter --paths`.\n"
-        + "The use of platformdirs will be the default in `jupyter_core` v6"
+        "given by the platformdirs library.  To remove this warning and\n"
+        "see the appropriate new directories, set the environment variable\n"
+        "`JUPYTER_PLATFORM_DIRS=1` and then run `jupyter --paths`.\n"
+        "The use of platformdirs will be the default in `jupyter_core` v6"
     )
     if os.name == "nt":
         programdata = os.environ.get("PROGRAMDATA", None)
@@ -261,10 +261,7 @@ def jupyter_path(*subdirs: str) -> List[str]:
         # Check if site.getuserbase() exists to be compatible with virtualenv,
         # which often does not have this method.
         userbase: Optional[str]
-        if hasattr(site, "getuserbase"):
-            userbase = site.getuserbase()
-        else:
-            userbase = site.USER_BASE
+        userbase = site.getuserbase() if hasattr(site, "getuserbase") else site.USER_BASE
 
         if userbase:
             userdir = os.path.join(userbase, "share", "jupyter")
@@ -334,10 +331,7 @@ def jupyter_config_path() -> List[str]:
         userbase: Optional[str]
         # Check if site.getuserbase() exists to be compatible with virtualenv,
         # which often does not have this method.
-        if hasattr(site, "getuserbase"):
-            userbase = site.getuserbase()
-        else:
-            userbase = site.USER_BASE
+        userbase = site.getuserbase() if hasattr(site, "getuserbase") else site.USER_BASE
 
         if userbase:
             userdir = os.path.join(userbase, "etc", "jupyter")
@@ -439,7 +433,7 @@ def is_file_hidden_posix(abs_path: str, stat_res: Optional[Any] = None) -> bool:
             raise
 
     # check that dirs can be listed
-    if stat.S_ISDIR(stat_res.st_mode):  # type:ignore[misc]
+    if stat.S_ISDIR(stat_res.st_mode):  # type:ignore[misc]  # noqa
         # use x-access, not actual listing, in case of slow/large listings
         if not os.access(abs_path, os.X_OK | os.R_OK):
             return True
@@ -457,7 +451,7 @@ else:
     is_file_hidden = is_file_hidden_posix
 
 
-def is_hidden(abs_path: str, abs_root: str = "") -> bool:
+def is_hidden(abs_path: str, abs_root: str = "") -> bool:  # noqa
     """Is a file hidden or contained in a hidden directory?
 
     This will start with the rightmost path element and work backwards to the
@@ -554,7 +548,7 @@ def win32_restrict_file_to_user(fname: str) -> None:
     win32security.SetFileSecurity(fname, win32security.DACL_SECURITY_INFORMATION, sd)
 
 
-def _win32_restrict_file_to_user_ctypes(fname: str) -> None:
+def _win32_restrict_file_to_user_ctypes(fname: str) -> None:  # noqa
     """Secure a windows file to read-only access for the user.
 
     Follows guidance from win32 library creator:
@@ -992,16 +986,17 @@ def secure_write(fname: str, binary: bool = False) -> Iterator[Any]:
         if os.name != "nt":
             # Enforce that the file got the requested permissions before writing
             file_mode = get_file_mode(fname)
-            if 0o0600 != file_mode:
+            if file_mode != 0o0600:  # noqa
                 if allow_insecure_writes:
                     issue_insecure_write_warning()
                 else:
-                    raise RuntimeError(
+                    msg = (
                         "Permissions assignment failed for secure file: '{file}'."
                         " Got '{permissions}' instead of '0o0600'.".format(
                             file=fname, permissions=oct(file_mode)
                         )
                     )
+                    raise RuntimeError(msg)
         yield f
 
 
