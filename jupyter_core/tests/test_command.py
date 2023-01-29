@@ -44,7 +44,7 @@ def get_jupyter_output(cmd):
     if not isinstance(cmd, list):
         cmd = [cmd]
     return (
-        check_output([sys.executable, "-m", "jupyter_core"] + cmd, stderr=PIPE)
+        check_output([sys.executable, "-m", "jupyter_core", *cmd], stderr=PIPE)
         .decode("utf8")
         .strip()
     )
@@ -108,7 +108,7 @@ def test_paths_json():
 
 
 def test_paths_debug():
-    vars = [
+    names = [
         "JUPYTER_PREFER_ENV_PATH",
         "JUPYTER_NO_CONFIG",
         "JUPYTER_CONFIG_PATH",
@@ -118,12 +118,12 @@ def test_paths_debug():
         "JUPYTER_RUNTIME_DIR",
     ]
     output = get_jupyter_output(["--paths", "--debug"])
-    for v in vars:
+    for v in names:
         assert f"{v} is not set" in output
 
-    with patch.dict("os.environ", [(v, "y") for v in vars]):
+    with patch.dict("os.environ", [(v, "y") for v in names]):
         output = get_jupyter_output(["--paths", "--debug"])
-    for v in vars:
+    for v in names:
         assert f"{v} is set" in output
 
 
@@ -161,17 +161,16 @@ def test_subcommand_list(tmpdir):
     def get_path(dummy):
         return str(c)
 
-    with patch.object(sysconfig, "get_path", get_path):
-        with patch.dict("os.environ", {"PATH": path}):
-            subcommands = list_subcommands()
-            assert subcommands == [
-                "babel-fish",
-                "baz",
-                "bop",
-                "foo",
-                "xyz",
-                "yo-eyropa-ganymyde-callysto",
-            ]
+    with patch.object(sysconfig, "get_path", get_path), patch.dict("os.environ", {"PATH": path}):
+        subcommands = list_subcommands()
+        assert subcommands == [
+            "babel-fish",
+            "baz",
+            "bop",
+            "foo",
+            "xyz",
+            "yo-eyropa-ganymyde-callysto",
+        ]
 
 
 skip_darwin = pytest.mark.skipif(sys.platform == "darwin", reason="Fails on macos")

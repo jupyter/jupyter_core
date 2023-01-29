@@ -45,7 +45,7 @@ def get_data() -> Dict[str, Any]:
     return env
 
 
-def main() -> None:
+def main() -> None:  # noqa
     """
     print out useful info
     """

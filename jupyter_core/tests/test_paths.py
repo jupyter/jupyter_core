@@ -548,7 +548,7 @@ def test_secure_write_win32():
         assert "administrators" in permissions
         assert permissions["administrators"] == {"f"}
         assert "everyone" not in permissions
-        assert len(permissions) == 2
+        assert len(permissions) == 2  # noqa
 
     directory = tempfile.mkdtemp()
     fname = os.path.join(directory, "check_perms")
@@ -570,16 +570,16 @@ def test_secure_write_unix():
         with secure_write(fname) as f:
             f.write("test 1")
         mode = os.stat(fname).st_mode
-        assert 0o0600 == (stat.S_IMODE(mode) & 0o7677)  # tolerate owner-execute bit
+        assert 0o0600 == (stat.S_IMODE(mode) & 0o7677)  # noqa # tolerate owner-execute bit
         with open(fname, encoding="utf-8") as f:
             assert f.read() == "test 1"
 
         # Try changing file permissions ahead of time
-        os.chmod(fname, 0o755)
+        os.chmod(fname, 0o755)  # noqa
         with secure_write(fname) as f:
             f.write("test 2")
         mode = os.stat(fname).st_mode
-        assert 0o0600 == (stat.S_IMODE(mode) & 0o7677)  # tolerate owner-execute bit
+        assert 0o0600 == (stat.S_IMODE(mode) & 0o7677)  # noqa # tolerate owner-execute bit
         with open(fname, encoding="utf-8") as f:
             assert f.read() == "test 2"
     finally:

@@ -80,10 +80,7 @@ def deprecation(message: str, internal: Union[str, List[str]] = "jupyter_core/")
     we know that our internal code is calling out to another library.
     """
     _internal: List[str]
-    if isinstance(internal, str):
-        _internal = [internal]
-    else:
-        _internal = internal
+    _internal = [internal] if isinstance(internal, str) else internal
 
     # stack level of the first external frame from here
     stacklevel = _external_stacklevel(_internal)
@@ -110,7 +107,7 @@ class _TaskRunner:
 
     def _runner(self):
         loop = self.__io_loop
-        assert loop is not None
+        assert loop is not None  # noqa
         try:
             loop.run_forever()
         finally:
@@ -146,7 +143,8 @@ def run_sync(coro: Callable[..., Awaitable[T]]) -> Callable[..., T]:
         Whatever the coroutine-function returns.
     """
 
-    assert inspect.iscoroutinefunction(coro)
+    if not inspect.iscoroutinefunction(coro):
+        raise AssertionError
 
     def wrapped(*args, **kwargs):
         name = threading.current_thread().name

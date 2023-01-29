@@ -141,10 +141,12 @@ def _jupyter_abspath(subcommand):
     jupyter_subcommand = f"jupyter-{subcommand}"
     abs_path = which(jupyter_subcommand, path=search_path)
     if abs_path is None:
-        raise Exception(f"\nJupyter command `{jupyter_subcommand}` not found.")
+        msg = f"\nJupyter command `{jupyter_subcommand}` not found."
+        raise Exception(msg)
 
     if not os.access(abs_path, os.X_OK):
-        raise Exception(f"\nJupyter command `{jupyter_subcommand}` is not executable.")
+        msg = f"\nJupyter command `{jupyter_subcommand}` is not executable."
+        raise Exception(msg)
 
     return abs_path
 
@@ -215,10 +217,11 @@ def _evaluate_argcomplete(parser: JupyterParser) -> List[str]:
         # traitlets >= 5.8 not available, just try to complete this without
         # worrying about subcommands
         parser.argcomplete()
-    raise AssertionError("Control flow should not reach end of autocomplete()")
+    msg = "Control flow should not reach end of autocomplete()"
+    raise AssertionError(msg)
 
 
-def main() -> None:
+def main() -> None:  # noqa
     """The command entry point."""
     parser = jupyter_parser()
     argv = sys.argv

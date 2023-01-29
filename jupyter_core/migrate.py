@@ -27,7 +27,7 @@ Migrations:
 import os
 import re
 import shutil
-from datetime import datetime
+from datetime import datetime, timezone
 
 from traitlets.config.loader import JSONFileConfigLoader, PyFileConfigLoader
 from traitlets.log import get_logger
@@ -176,12 +176,10 @@ def migrate_static_custom(src, dst):
     if not custom_js_empty or not custom_css_empty:
         ensure_dir_exists(dst)
 
-    if not custom_js_empty:
-        if migrate_file(custom_js, pjoin(dst, "custom.js")):
-            migrated = True
-    if not custom_css_empty:
-        if migrate_file(custom_css, pjoin(dst, "custom.css")):
-            migrated = True
+    if not custom_js_empty and migrate_file(custom_js, pjoin(dst, "custom.js")):
+        migrated = True
+    if not custom_css_empty and migrate_file(custom_css, pjoin(dst, "custom.css")):
+        migrated = True
 
     return migrated
 
@@ -225,9 +223,8 @@ def migrate():
     for src_t, dst_t in migrations.items():
         src = src_t.format(**env)
         dst = dst_t.format(**env)
-        if os.path.exists(src):
-            if migrate_one(src, dst):
-                migrated = True
+        if os.path.exists(src) and migrate_one(src, dst):
+            migrated = True
 
     for name in config_migrations:
         if migrate_config(name, env):
@@ -236,14 +233,13 @@ def migrate():
     custom_src = custom_src_t.format(**env)
     custom_dst = custom_dst_t.format(**env)
 
-    if os.path.exists(custom_src):
-        if migrate_static_custom(custom_src, custom_dst):
-            migrated = True
+    if os.path.exists(custom_src) and migrate_static_custom(custom_src, custom_dst):
+        migrated = True
 
     # write a marker to avoid re-running migration checks
     ensure_dir_exists(env["jupyter_config"])
     with open(os.path.join(env["jupyter_config"], "migrated"), "w", encoding="utf-8") as f:
-        f.write(datetime.utcnow().isoformat())
+        f.write(datetime.now(tz=timezone.utc).isoformat())
 
     return migrated
 

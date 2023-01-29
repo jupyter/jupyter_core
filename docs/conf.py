@@ -15,6 +15,8 @@
 import os
 import shutil
 
+from jupyter_core.version import __version__, version_info
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -61,10 +63,8 @@ master_doc = "index"
 
 # General information about the project.
 project = "jupyter_core"
-copyright = "2015, Jupyter Development Team"
+copyright = "2015, Jupyter Development Team"  # noqa
 author = "Jupyter Development Team"
-
-from jupyter_core.version import __version__, version_info
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
