@@ -2,6 +2,26 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 5.2.0
+
+([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.1.5...98b9a1a94e79d1137246b4c1f8c16343b72b050c))
+
+### Enhancements made
+
+- Set up shell command-line tab-completion for jupyter and subcommands [#337](https://github.com/jupyter/jupyter_core/pull/337) ([@azjps](https://github.com/azjps))
+
+### Maintenance and upkeep improvements
+
+- Add more linting [#338](https://github.com/jupyter/jupyter_core/pull/338) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-01-24&to=2023-01-30&type=c))
+
+[@azjps](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Aazjps+updated%3A2023-01-24..2023-01-30&type=Issues) | [@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2023-01-24..2023-01-30&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 5.1.5
 
 ([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.1.4...269449fe4dcb8d427b54337d83bcb67bf50e87da))
@@ -15,8 +35,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-01-23&to=2023-01-24&type=c))
 
 [@Carreau](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3ACarreau+updated%3A2023-01-23..2023-01-24&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 5.1.4
 
