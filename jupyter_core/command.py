@@ -173,7 +173,10 @@ def _path_with_self():
         # The Python environment does not specify a "scripts" location
         pass
     else:
-        path_list.append(bindir)
+        if os.environ.get("JUPYTER_PREFER_ENV_PATH", False):
+            path_list.insert(0, bindir)
+        else:
+            path_list.append(bindir)
 
     scripts = [sys.argv[0]]
     if os.path.islink(scripts[0]):
@@ -200,9 +203,7 @@ def _evaluate_argcomplete(parser: JupyterParser) -> List[str]:
         # traitlets >= 5.8 provides some argcomplete support,
         # use helper methods to jump to argcomplete
         from traitlets.config.argcomplete_config import (
-            get_argcomplete_cwords,
-            increment_argcomplete_index,
-        )
+            get_argcomplete_cwords, increment_argcomplete_index)
 
         cwords = get_argcomplete_cwords()
         if cwords and len(cwords) > 1 and not cwords[1].startswith("-"):
