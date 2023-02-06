@@ -203,7 +203,9 @@ def _evaluate_argcomplete(parser: JupyterParser) -> List[str]:
         # traitlets >= 5.8 provides some argcomplete support,
         # use helper methods to jump to argcomplete
         from traitlets.config.argcomplete_config import (
-            get_argcomplete_cwords, increment_argcomplete_index)
+            get_argcomplete_cwords,
+            increment_argcomplete_index,
+        )
 
         cwords = get_argcomplete_cwords()
         if cwords and len(cwords) > 1 and not cwords[1].startswith("-"):
