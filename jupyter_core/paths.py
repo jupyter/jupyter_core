@@ -520,12 +520,12 @@ def win32_restrict_file_to_user(fname: str) -> None:
         The path to the file to secure
     """
     try:
-        import win32api  # type:ignore[import]
+        import win32api
     except ImportError:
         return _win32_restrict_file_to_user_ctypes(fname)
 
-    import ntsecuritycon as con  # type:ignore[import]
-    import win32security  # type:ignore[import]
+    import ntsecuritycon as con
+    import win32security
 
     # everyone, _domain, _type = win32security.LookupAccountName("", "Everyone")
     admins = win32security.CreateWellKnownSid(win32security.WinBuiltinAdministratorsSid)
