@@ -293,7 +293,7 @@ if use_platform_dirs():
 else:
     if os.name == "nt":
         programdata = os.environ.get("PROGRAMDATA", None)
-        if programdata:
+        if programdata:  # noqa
             SYSTEM_CONFIG_PATH = [os.path.join(programdata, "jupyter")]
         else:  # PROGRAMDATA is not defined by default on XP.
             SYSTEM_CONFIG_PATH = []
