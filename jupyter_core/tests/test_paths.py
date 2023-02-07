@@ -548,7 +548,7 @@ def test_secure_write_win32():
         assert "administrators" in permissions
         assert permissions["administrators"] == {"f"}
         assert "everyone" not in permissions
-        assert len(permissions) == 2  # noqa
+        assert len(permissions) == 2
 
     directory = tempfile.mkdtemp()
     fname = os.path.join(directory, "check_perms")
