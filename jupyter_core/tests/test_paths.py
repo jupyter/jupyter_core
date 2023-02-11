@@ -15,6 +15,7 @@ import warnings
 from unittest.mock import patch
 
 import pytest
+from platformdirs import __version_info__
 
 from jupyter_core import paths
 from jupyter_core.paths import (
@@ -111,7 +112,8 @@ def test_config_dir():
 @use_platformdirs
 def test_config_dir_darwin():
     config = jupyter_config_dir()
-    assert config == realpath("~/Library/Preferences/Jupyter")
+
+    assert config == realpath("~/Library/Application Support/Jupyter")
 
 
 @windows
@@ -230,6 +232,9 @@ def test_runtime_dir_darwin_legacy():
 @use_platformdirs
 def test_runtime_dir_darwin():
     runtime = jupyter_runtime_dir()
+    if __version_info__[0] < 3:
+        assert runtime == realpath("~/Library/Preferences/Jupyter/runtime")
+        return
     assert runtime == realpath("~/Library/Application Support/Jupyter/runtime")
 
 
