@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "jupyter_core"
 description = "Jupyter core package. A base package on which Jupyter projects rely."
-license = { file = "COPYING.md" }
+license = { file = "LICENSE" }
 classifiers = [
   "Framework :: Jupyter",
   "Intended Audience :: Developers",
