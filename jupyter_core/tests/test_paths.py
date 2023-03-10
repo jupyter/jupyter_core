@@ -532,7 +532,7 @@ def test_secure_write_win32():
         proc.close()
         for index, line in enumerate(lines):
             if index == 0:
-                line = line.split(filename)[-1].strip().lower()
+                line = line.split(filename)[-1].strip().lower()  # noqa
             match = re.match(r"\s*([^:]+):\(([^\)]*)\)", line)
             if match:
                 usergroup, permissions = match.groups()
