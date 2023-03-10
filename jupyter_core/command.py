@@ -97,7 +97,7 @@ def list_subcommands() -> List[str]:
             if name.startswith("jupyter-"):
                 if sys.platform.startswith("win"):
                     # remove file-extension on Windows
-                    name = os.path.splitext(name)[0]
+                    name = os.path.splitext(name)[0]  # noqa
                 subcommand_tuples.add(tuple(name.split("-")[1:]))
     # build a set of subcommand strings, excluding subcommands whose parents are defined
     subcommands = set()

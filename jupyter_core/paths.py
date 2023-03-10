@@ -80,8 +80,8 @@ def _do_i_own(path: str) -> bool:
     # not always implemented or available
     try:
         return p.owner() == os.getlogin()
-    except Exception:
-        pass  # noqa
+    except Exception:  # noqa
+        pass
 
     if hasattr(os, 'geteuid'):
         try:
@@ -89,7 +89,7 @@ def _do_i_own(path: str) -> bool:
             return st.st_uid == os.geteuid()
         except (NotImplementedError, OSError):
             # geteuid not always implemented
-            pass  # noqa
+            pass
 
     # no ownership checks worked, check write access
     return os.access(p, os.W_OK)
@@ -291,7 +291,7 @@ if use_platform_dirs():
         APPNAME, appauthor=False, multipath=True
     ).split(os.pathsep)
 else:
-    if os.name == "nt":
+    if os.name == "nt":  # noqa
         programdata = os.environ.get("PROGRAMDATA", None)
         if programdata:  # noqa
             SYSTEM_CONFIG_PATH = [os.path.join(programdata, "jupyter")]
@@ -451,7 +451,7 @@ else:
     is_file_hidden = is_file_hidden_posix
 
 
-def is_hidden(abs_path: str, abs_root: str = "") -> bool:  # noqa
+def is_hidden(abs_path: str, abs_root: str = "") -> bool:
     """Is a file hidden or contained in a hidden directory?
 
     This will start with the rightmost path element and work backwards to the
