@@ -81,7 +81,7 @@ def _do_i_own(path: str) -> bool:
     try:
         return p.owner() == os.getlogin()
     except Exception:  # noqa
-        pass  
+        pass
 
     if hasattr(os, 'geteuid'):
         try:
