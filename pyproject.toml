@@ -19,7 +19,7 @@ requires-python = ">=3.8"
 dependencies = [
   "platformdirs>=2.5",
   "traitlets>=5.3",
-  "pywin32>=1.0 ; sys_platform == 'win32' and platform_python_implementation != 'PyPy'"
+  "pywin32>=300 ; sys_platform == 'win32' and platform_python_implementation != 'PyPy'"
 ]
 dynamic = ["version"]
 
