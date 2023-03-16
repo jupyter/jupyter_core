@@ -2,6 +2,27 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 5.3.0
+
+([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.2.0...6cfe9fc042a0f016a0d4545bc6790b8277d80c24))
+
+### Bugs fixed
+
+- Fix pywin32 version constraint [#347](https://github.com/jupyter/jupyter_core/pull/347) ([@blink1073](https://github.com/blink1073))
+
+### Maintenance and upkeep improvements
+
+- Add license [#344](https://github.com/jupyter/jupyter_core/pull/344) ([@dcsaba89](https://github.com/dcsaba89))
+- Support platformdirs 3 [#342](https://github.com/jupyter/jupyter_core/pull/342) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-01-30&to=2023-03-16&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2023-01-30..2023-03-16&type=Issues) | [@dcsaba89](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Adcsaba89+updated%3A2023-01-30..2023-03-16&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Apre-commit-ci+updated%3A2023-01-30..2023-03-16&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 5.2.0
 
 ([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.1.5...98b9a1a94e79d1137246b4c1f8c16343b72b050c))
@@ -19,8 +40,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-01-24&to=2023-01-30&type=c))
 
 [@azjps](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Aazjps+updated%3A2023-01-24..2023-01-30&type=Issues) | [@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2023-01-24..2023-01-30&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 5.1.5
 
