@@ -138,6 +138,10 @@ filterwarnings= [
   "module:Jupyter is migrating its paths to use standard platformdirs:DeprecationWarning",
 ]
 
+[tool.coverage.run]
+relative_files = true
+source = ["jupyter_core"]
+
 [tool.coverage.report]
 exclude_lines = [
   "pragma: no cover",
