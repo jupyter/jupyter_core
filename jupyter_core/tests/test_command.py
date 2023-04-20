@@ -64,6 +64,8 @@ def write_executable(path, source):
         try:
             import importlib.resources
 
+            if not hasattr(importlib.resources, 'files'):
+                raise ImportError
             wp = importlib.resources.files('setuptools').joinpath('cli-32.exe')
             w = wp.read_bytes()
         except (ImportError, FileNotFoundError, SystemError):
