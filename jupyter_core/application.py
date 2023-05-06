@@ -259,7 +259,7 @@ class JupyterApp(Application):
     def start(self):
         """Start the whole thing"""
         if self.subcommand:
-            os.execv(self.subcommand, [self.subcommand] + self.argv[1:])
+            os.execv(self.subcommand, [self.subcommand] + self.argv[1:])  # noqa
             raise NoStart()
 
         if self.subapp:
