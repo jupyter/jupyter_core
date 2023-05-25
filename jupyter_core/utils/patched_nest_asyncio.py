@@ -29,6 +29,8 @@ def _patched_patch_task():
                 curr_tasks[task._loop] = curr_task
 
     Task = asyncio.Task
+    if hasattr(Task, '_nest_patched'):
+        return
     if sys.version_info >= (3, 7, 0):
 
         def enter_task(loop, task):
@@ -52,3 +54,4 @@ def _patched_patch_task():
         except AttributeError:
             step_orig = Task._step  # type: ignore
             Task._step = step  # type: ignore
+    Task._nest_patched = True  # type: ignore
