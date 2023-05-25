@@ -39,16 +39,16 @@ def _patched_patch_task():
 
         asyncio.tasks._enter_task = enter_task
         asyncio.tasks._leave_task = leave_task
-        curr_tasks = asyncio.tasks._current_tasks
+        curr_tasks = asyncio.tasks._current_tasks  # noqa
     else:
-        curr_tasks = Task._current_tasks
+        curr_tasks = Task._current_tasks  # noqa
     try:
-        step_orig = Task._Task__step
-        Task._Task__step = step
+        step_orig = Task._Task__step  # noqa
+        Task._Task__step = step  # noqa
     except AttributeError:
         try:
-            step_orig = Task.__step
-            Task.__step = step
+            step_orig = Task.__step  # noqa
+            Task.__step = step  # noqa
         except AttributeError:
-            step_orig = Task._step
-            Task._step = step
+            step_orig = Task._step  # noqa
+            Task._step = step  # noqa
