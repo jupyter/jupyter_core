@@ -2,7 +2,6 @@
 # Distributed under the terms of the Modified BSD License.
 # Note: copied from https://github.com/ipyflow/ipyflow/blob/8e4bc5cb8d4231b9b69f4f9dce867b8101164ac5/core/ipyflow/kernel/patched_nest_asyncio.py
 import asyncio
-import sys
 
 
 def apply(loop=None):
@@ -31,19 +30,15 @@ def _patched_patch_task():
     Task = asyncio.Task
     if hasattr(Task, '_nest_patched'):
         return
-    if sys.version_info >= (3, 7, 0):
+    def enter_task(loop, task):
+        curr_tasks[loop] = task
 
-        def enter_task(loop, task):
-            curr_tasks[loop] = task
+    def leave_task(loop, task):
+        curr_tasks.pop(loop, None)
 
-        def leave_task(loop, task):
-            curr_tasks.pop(loop, None)
-
-        asyncio.tasks._enter_task = enter_task
-        asyncio.tasks._leave_task = leave_task
-        curr_tasks = asyncio.tasks._current_tasks  # type: ignore
-    else:
-        curr_tasks = Task._current_tasks  # type: ignore
+    asyncio.tasks._enter_task = enter_task
+    asyncio.tasks._leave_task = leave_task
+    curr_tasks = asyncio.tasks._current_tasks  # type: ignore
     try:
         step_orig = Task._Task__step  # type: ignore
         Task._Task__step = step  # type: ignore
