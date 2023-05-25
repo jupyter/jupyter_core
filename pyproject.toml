@@ -17,6 +17,7 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
+  "nest_asyncio",
   "platformdirs>=2.5",
   "traitlets>=5.3",
   "pywin32>=300 ; sys_platform == 'win32' and platform_python_implementation != 'PyPy'"
