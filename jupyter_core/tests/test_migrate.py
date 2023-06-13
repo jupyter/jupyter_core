@@ -21,6 +21,8 @@ from jupyter_core.migrate import (
 )
 from jupyter_core.utils import ensure_dir_exists
 
+from jupyter_core.application import JupyterApp
+
 pjoin = os.path.join
 here = os.path.dirname(__file__)
 dotipython = pjoin(here, "dotipython")
@@ -216,3 +218,30 @@ def test_migrate(env):
     migrate()
     assert os.path.exists(env["JUPYTER_CONFIG_DIR"])
     assert os.path.exists(env["JUPYTER_DATA_DIR"])
+
+def test_app_migrate(env):
+    shutil.copytree(dotipython, env["IPYTHONDIR"])
+    app = JupyterApp()
+    app.initialize([])
+    assert os.path.exists(env["JUPYTER_CONFIG_DIR"])
+    assert os.path.exists(env["JUPYTER_DATA_DIR"])
+
+
+def test_app_migrate_skip_if_marker(env):
+    shutil.copytree(dotipython, env["IPYTHONDIR"])
+    touch(pjoin(env["JUPYTER_CONFIG_DIR"], "migrated"), "done")
+    app = JupyterApp()
+    app.initialize([])
+    assert os.listdir(env["JUPYTER_CONFIG_DIR"]) == ["migrated"]
+    assert not os.path.exists(env["JUPYTER_DATA_DIR"])
+
+
+def test_app_migrate_skip_unwritable_marker(env):
+    shutil.copytree(dotipython, env["IPYTHONDIR"])
+    migrated_marker = pjoin(env["JUPYTER_CONFIG_DIR"], "migrated")
+    touch(migrated_marker, "done")
+    os.chmod(migrated_marker, 0) # make it unworkable
+    app = JupyterApp()
+    app.initialize([])
+    assert os.listdir(env["JUPYTER_CONFIG_DIR"]) == ["migrated"]
+    assert not os.path.exists(env["JUPYTER_DATA_DIR"])
