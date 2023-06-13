@@ -168,17 +168,17 @@ class JupyterApp(Application):
 
     def migrate_config(self):
         """Migrate config/data from IPython 3"""
-        try:# let's see if we can open the marker file
+        try:  # let's see if we can open the marker file
             # for reading and updating (writing)
             f_marker = open(os.path.join(self.config_dir, "migrated"), 'r+')
         except PermissionError:  # not readable and/or writable
             return  # so let' give up migration in such an environment
-        except FileNotFoundError: # cannot find the marker file
-            pass    # that means we have not migrated yet, so continue
-        else: # if we got here without raising anything,
+        except FileNotFoundError:  # cannot find the marker file
+            pass  # that means we have not migrated yet, so continue
+        else:  # if we got here without raising anything,
             # that means the file exists
             f_marker.close()
-            return      # so we must have already migrated -> bail out
+            return  # so we must have already migrated -> bail out
 
         from .migrate import get_ipython_dir, migrate
 
