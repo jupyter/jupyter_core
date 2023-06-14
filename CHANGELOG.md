@@ -2,6 +2,27 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 5.3.1
+
+([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.3.0...c64421919f6627f82c8899018bba0836760331f4))
+
+### Bugs fixed
+
+- Better handling of config migration [#356](https://github.com/jupyter/jupyter_core/pull/356) ([@smartass101](https://github.com/smartass101))
+
+### Maintenance and upkeep improvements
+
+- Fix write_executable test [#351](https://github.com/jupyter/jupyter_core/pull/351) ([@blink1073](https://github.com/blink1073))
+- Use local coverage [#349](https://github.com/jupyter/jupyter_core/pull/349) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-03-16&to=2023-06-14&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2023-03-16..2023-06-14&type=Issues) | [@davidbrochart](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Adavidbrochart+updated%3A2023-03-16..2023-06-14&type=Issues) | [@jamescooke](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ajamescooke+updated%3A2023-03-16..2023-06-14&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Apre-commit-ci+updated%3A2023-03-16..2023-06-14&type=Issues) | [@smartass101](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Asmartass101+updated%3A2023-03-16..2023-06-14&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 5.3.0
 
 ([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.2.0...6cfe9fc042a0f016a0d4545bc6790b8277d80c24))
@@ -20,8 +41,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-01-30&to=2023-03-16&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2023-01-30..2023-03-16&type=Issues) | [@dcsaba89](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Adcsaba89+updated%3A2023-01-30..2023-03-16&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Apre-commit-ci+updated%3A2023-01-30..2023-03-16&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 5.2.0
 
