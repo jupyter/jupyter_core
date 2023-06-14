@@ -170,7 +170,7 @@ class JupyterApp(Application):
         """Migrate config/data from IPython 3"""
         try:  # let's see if we can open the marker file
             # for reading and updating (writing)
-            f_marker = open(os.path.join(self.config_dir, "migrated"), 'r+')
+            f_marker = open(os.path.join(self.config_dir, "migrated"), 'r+')  # noqa
         except PermissionError:  # not readable and/or writable
             return  # so let's give up migration in such an environment
         except FileNotFoundError:  # cannot find the marker file
