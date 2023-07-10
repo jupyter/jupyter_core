@@ -603,7 +603,7 @@ def _win32_restrict_file_to_user_ctypes(fname: str) -> None:  # noqa
     )
 
     class ACL(ctypes.Structure):
-        _fields_ = [
+        _fields_ = [  # noqa
             ("AclRevision", wintypes.BYTE),
             ("Sbz1", wintypes.BYTE),
             ("AclSize", wintypes.WORD),
