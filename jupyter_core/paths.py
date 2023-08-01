@@ -290,8 +290,8 @@ if use_platform_dirs():
     SYSTEM_CONFIG_PATH = platformdirs.site_config_dir(
         APPNAME, appauthor=False, multipath=True
     ).split(os.pathsep)
-else:
-    if os.name == "nt":  # noqa
+else:  # noqa: PLR5501
+    if os.name == "nt":
         programdata = os.environ.get("PROGRAMDATA", None)
         if programdata:  # noqa
             SYSTEM_CONFIG_PATH = [os.path.join(programdata, "jupyter")]
