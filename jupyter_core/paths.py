@@ -992,10 +992,8 @@ def secure_write(fname: str, binary: bool = False) -> Iterator[Any]:
                     issue_insecure_write_warning()
                 else:
                     msg = (
-                        "Permissions assignment failed for secure file: '{file}'."
-                        " Got '{permissions}' instead of '0o0600'.".format(
-                            file=fname, permissions=oct(file_mode)
-                        )
+                        f"Permissions assignment failed for secure file: '{fname}'."
+                        f" Got '{oct(file_mode)}' instead of '0o0600'."
                     )
                     raise RuntimeError(msg)
         yield f
