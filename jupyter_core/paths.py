@@ -392,8 +392,9 @@ def is_file_hidden_win(abs_path: str, stat_res: Optional[Any] = None) -> bool:
 
     try:
         if (
-            stat_res.st_file_attributes & stat.FILE_ATTRIBUTE_HIDDEN
-        ):  # type:ignore[attr-defined, union-attr]
+            stat_res.st_file_attributes
+            & stat.FILE_ATTRIBUTE_HIDDEN  # type:ignore[attr-defined, union-attr]
+        ):
             return True
     except AttributeError:
         # allow AttributeError on PyPy for Windows
