@@ -391,7 +391,9 @@ def is_file_hidden_win(abs_path: str, stat_res: Optional[Any] = None) -> bool:
             raise
 
     try:
-        if stat_res.st_file_attributes & stat.FILE_ATTRIBUTE_HIDDEN:  # type:ignore
+        if (
+            stat_res.st_file_attributes & stat.FILE_ATTRIBUTE_HIDDEN
+        ):  # type:ignore[attr-defined, union-attr]
             return True
     except AttributeError:
         # allow AttributeError on PyPy for Windows
@@ -615,7 +617,7 @@ def _win32_restrict_file_to_user_ctypes(fname: str) -> None:  # noqa
     PACL = ctypes.POINTER(ACL)
     PSECURITY_DESCRIPTOR = ctypes.POINTER(wintypes.BYTE)
 
-    def _nonzero_success(result, func, args):
+    def _nonzero_success(result: int, func: Any, args: Any) -> Any:
         if not result:
             raise ctypes.WinError(ctypes.get_last_error())  # type:ignore[attr-defined]
         return args
@@ -717,7 +719,7 @@ def _win32_restrict_file_to_user_ctypes(fname: str) -> None:  # noqa
         wintypes.DWORD,  # DWORD dwAclRevision
     )
 
-    def CreateWellKnownSid(WellKnownSidType):
+    def CreateWellKnownSid(WellKnownSidType: Any) -> Any:
         # return a SID for predefined aliases
         pSid = (ctypes.c_char * 1)()
         cbSid = wintypes.DWORD()
@@ -730,7 +732,7 @@ def _win32_restrict_file_to_user_ctypes(fname: str) -> None:  # noqa
             advapi32.CreateWellKnownSid(WellKnownSidType, None, pSid, ctypes.byref(cbSid))
         return pSid[:]
 
-    def GetUserNameEx(NameFormat):
+    def GetUserNameEx(NameFormat: Any) -> Any:
         # return the user or other security principal associated with
         # the calling thread
         nSize = ctypes.pointer(ctypes.c_ulong(0))
@@ -745,7 +747,7 @@ def _win32_restrict_file_to_user_ctypes(fname: str) -> None:  # noqa
         secur32.GetUserNameExW(NameFormat, lpNameBuffer, nSize)
         return lpNameBuffer.value
 
-    def LookupAccountName(lpSystemName, lpAccountName):
+    def LookupAccountName(lpSystemName: Any, lpAccountName: Any) -> Any:
         # return a security identifier (SID) for an account on a system
         # and the name of the domain on which the account was found
         cbSid = wintypes.DWORD(0)
@@ -780,12 +782,12 @@ def _win32_restrict_file_to_user_ctypes(fname: str) -> None:  # noqa
             raise ctypes.WinError()  # type:ignore[attr-defined]
         return pSid, lpReferencedDomainName.value, peUse.value
 
-    def AddAccessAllowedAce(pAcl, dwAceRevision, AccessMask, pSid):
+    def AddAccessAllowedAce(pAcl: Any, dwAceRevision: Any, AccessMask: Any, pSid: Any) -> Any:
         # add an access-allowed access control entry (ACE)
         # to an access control list (ACL)
         advapi32.AddAccessAllowedAce(pAcl, dwAceRevision, AccessMask, pSid)
 
-    def GetFileSecurity(lpFileName, RequestedInformation):
+    def GetFileSecurity(lpFileName: Any, RequestedInformation: Any) -> Any:
         # return information about the security of a file or directory
         nLength = wintypes.DWORD(0)
         try:
@@ -811,15 +813,19 @@ def _win32_restrict_file_to_user_ctypes(fname: str) -> None:  # noqa
         )
         return pSecurityDescriptor
 
-    def SetFileSecurity(lpFileName, RequestedInformation, pSecurityDescriptor):
+    def SetFileSecurity(
+        lpFileName: Any, RequestedInformation: Any, pSecurityDescriptor: Any
+    ) -> Any:
         # set the security of a file or directory object
         advapi32.SetFileSecurityW(lpFileName, RequestedInformation, pSecurityDescriptor)
 
-    def SetSecurityDescriptorDacl(pSecurityDescriptor, bDaclPresent, pDacl, bDaclDefaulted):
+    def SetSecurityDescriptorDacl(
+        pSecurityDescriptor: Any, bDaclPresent: Any, pDacl: Any, bDaclDefaulted: Any
+    ) -> Any:
         # set information in a discretionary access control list (DACL)
         advapi32.SetSecurityDescriptorDacl(pSecurityDescriptor, bDaclPresent, pDacl, bDaclDefaulted)
 
-    def MakeAbsoluteSD(pSelfRelativeSecurityDescriptor):
+    def MakeAbsoluteSD(pSelfRelativeSecurityDescriptor: Any) -> Any:
         # return a security descriptor in absolute format
         # by using a security descriptor in self-relative format as a template
         pAbsoluteSecurityDescriptor = None
@@ -873,7 +879,7 @@ def _win32_restrict_file_to_user_ctypes(fname: str) -> None:  # noqa
         )
         return pAbsoluteSecurityDescriptor
 
-    def MakeSelfRelativeSD(pAbsoluteSecurityDescriptor):
+    def MakeSelfRelativeSD(pAbsoluteSecurityDescriptor: Any) -> Any:
         # return a security descriptor in self-relative format
         # by using a security descriptor in absolute format as a template
         pSelfRelativeSecurityDescriptor = None
@@ -895,7 +901,7 @@ def _win32_restrict_file_to_user_ctypes(fname: str) -> None:  # noqa
         )
         return pSelfRelativeSecurityDescriptor
 
-    def NewAcl():
+    def NewAcl() -> Any:
         # return a new, initialized ACL (access control list) structure
         nAclLength = 32767  # TODO: calculate this: ctypes.sizeof(ACL) + ?
         acl_data = ctypes.create_string_buffer(nAclLength)
@@ -1002,7 +1008,7 @@ def secure_write(fname: str, binary: bool = False) -> Iterator[Any]:
 def issue_insecure_write_warning() -> None:
     """Issue an insecure write warning."""
 
-    def format_warning(msg, *args, **kwargs):
+    def format_warning(msg: str, *args: Any, **kwargs: Any) -> str:
         return str(msg) + "\n"
 
     warnings.formatwarning = format_warning  # type:ignore[assignment]
