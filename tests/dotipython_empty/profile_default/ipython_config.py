@@ -369,7 +369,7 @@ c = get_config()
 # Options for configuring the SQLite connection
 #
 # These options are passed as keyword args to sqlite3.connect when establishing
-# database conenctions.
+# database connections.
 # c.HistoryManager.connection_options = {}
 
 # Should the history database include output? (default: no)
