@@ -200,7 +200,7 @@ def _evaluate_argcomplete(parser: JupyterParser) -> list[str]:
     try:
         # traitlets >= 5.8 provides some argcomplete support,
         # use helper methods to jump to argcomplete
-        from traitlets.config.argcomplete_config import (  # type:ignore[import]
+        from traitlets.config.argcomplete_config import (
             get_argcomplete_cwords,
             increment_argcomplete_index,
         )
@@ -210,7 +210,7 @@ def _evaluate_argcomplete(parser: JupyterParser) -> list[str]:
             # If first completion word looks like a subcommand,
             # increment word from which to start handling arguments
             increment_argcomplete_index()
-            return cwords  # type:ignore[no-any-return]
+            return cwords
         else:
             # Otherwise no subcommand, directly autocomplete and exit
             parser.argcomplete()
