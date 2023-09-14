@@ -163,7 +163,7 @@ c = get_config()
 #
 # c.IPythonKernel._execute_sleep = 0.0005
 
-# Whether to use appnope for compatiblity with OS X App Nap.
+# Whether to use appnope for compatibility with OS X App Nap.
 #
 # Only affects OS X >= 10.9.
 # c.IPythonKernel._darwin_app_nap = True

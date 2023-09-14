@@ -143,7 +143,7 @@ def test_migrate_one(td):
         assert migrate_one(srcdir, dstdir)
         assert called == {"migrate_dir": True}
         called.clear()
-        assert not migrate_one(pjoin(td, "dne"), dst)
+        assert not migrate_one(pjoin(td, "does_not_exist"), dst)
         assert called == {}
 
 

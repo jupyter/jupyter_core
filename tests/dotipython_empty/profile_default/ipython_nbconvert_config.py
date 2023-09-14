@@ -772,7 +772,7 @@ c = get_config()
 #
 # you can overwrite :meth:`preprocess_cell` to apply a transformation
 # independently on each cell or :meth:`preprocess` if you prefer your own logic.
-# See corresponding docstring for informations.
+# See corresponding docstring for information.
 #
 # Disabled by default and can be enabled via the config by
 #     'c.YourPreprocessorName.enabled = True'

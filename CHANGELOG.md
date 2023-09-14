@@ -391,7 +391,7 @@ closed.
 [on GitHub](https://github.com/jupyter/jupyter_core/releases/tag/4.6.2)
 
 - Add ability to allow insecure writes with
-  JUPYTER_ALLOW_INSECURE_WRITES environement variable
+  JUPYTER_ALLOW_INSECURE_WRITES environment variable
   ([#182](https://github.com/jupyter/jupyter_core/pull/182)).
 - Docs typo and build fixes
 - Added python 3.7 and 3.8 builds to testing

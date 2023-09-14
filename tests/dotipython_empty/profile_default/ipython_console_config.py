@@ -222,7 +222,7 @@ c = get_config()
 
 # Callable object called via 'callable' image handler with one argument, `data`,
 # which is `msg["content"]["data"]` where `msg` is the message from iopub
-# channel.  For exmaple, you can find base64 encoded PNG data as
+# channel.  For example, you can find base64 encoded PNG data as
 # `data['image/png']`.
 # c.ZMQTerminalInteractiveShell.callable_image_handler = None
 
