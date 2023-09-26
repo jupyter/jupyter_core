@@ -127,7 +127,6 @@ class _TaskRunner:
 
 
 _runner_map: dict[str, _TaskRunner] = {}
-_loop_map: dict[str, asyncio.AbstractEventLoop] = {}
 
 
 def run_sync(coro: Callable[..., Awaitable[T]]) -> Callable[..., T]:
@@ -161,9 +160,11 @@ def run_sync(coro: Callable[..., Awaitable[T]]) -> Callable[..., T]:
             pass
 
         # Run the loop for this thread.
-        if name not in _loop_map:
-            _loop_map[name] = asyncio.new_event_loop()
-        loop = _loop_map[name]
+        try:
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
         return loop.run_until_complete(inner)
 
     wrapped.__doc__ = coro.__doc__
