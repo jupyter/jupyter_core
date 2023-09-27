@@ -83,7 +83,7 @@ class JupyterApp(Application):
     def _jupyter_path_default(self) -> list[str]:
         return jupyter_path()
 
-    config_dir: str | Unicode = Unicode()
+    config_dir = Unicode()
 
     def _config_dir_default(self) -> str:
         return jupyter_config_dir()
@@ -96,41 +96,39 @@ class JupyterApp(Application):
             path.insert(0, self.config_dir)
         return path
 
-    data_dir: str | Unicode = Unicode()
+    data_dir = Unicode()
 
     def _data_dir_default(self) -> str:
         d = jupyter_data_dir()
         ensure_dir_exists(d, mode=0o700)
         return d
 
-    runtime_dir: str | Unicode = Unicode()
+    runtime_dir = Unicode()
 
     def _runtime_dir_default(self) -> str:
         rd = jupyter_runtime_dir()
         ensure_dir_exists(rd, mode=0o700)
         return rd
 
-    @observe("runtime_dir")  # type:ignore[misc]
+    @observe("runtime_dir")
     def _runtime_dir_changed(self, change: t.Any) -> None:
         ensure_dir_exists(change["new"], mode=0o700)
 
-    generate_config: bool | Bool = Bool(
-        False, config=True, help="""Generate default config file."""
-    )
+    generate_config = Bool(False, config=True, help="""Generate default config file.""")
 
-    config_file_name: str | Unicode = Unicode(config=True, help="Specify a config file to load.")
+    config_file_name = Unicode(config=True, help="Specify a config file to load.")
 
     def _config_file_name_default(self) -> str:
         if not self.name:
             return ""
         return self.name.replace("-", "_") + "_config"
 
-    config_file: str | Unicode = Unicode(
+    config_file = Unicode(
         config=True,
         help="""Full path of a config file.""",
     )
 
-    answer_yes: bool | Bool = Bool(False, config=True, help="""Answer yes to any prompts.""")
+    answer_yes = Bool(False, config=True, help="""Answer yes to any prompts.""")
 
     def write_default_config(self) -> None:
         """Write our default config to a .py config file"""
