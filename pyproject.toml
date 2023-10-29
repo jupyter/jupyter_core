@@ -52,6 +52,7 @@ docs = [
   "sphinxcontrib_spelling",
   "sphinx-autodoc-typehints",
   "traitlets",
+  "pydata_sphinx_theme",
 ]
 
 [project.scripts]
