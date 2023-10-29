@@ -54,7 +54,7 @@ def env(request):
     def fin():
         """Cleanup test env"""
         env_patch.stop()
-        shutil.rmtree(td, ignore_errors=os.name == 'nt')
+        shutil.rmtree(td, ignore_errors=os.name == "nt")
 
     request.addfinalizer(fin)
 
