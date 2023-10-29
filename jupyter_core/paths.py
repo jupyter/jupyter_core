@@ -88,7 +88,7 @@ def _do_i_own(path: str) -> bool:
     except Exception:  # noqa
         pass
 
-    if hasattr(os, 'geteuid'):
+    if hasattr(os, "geteuid"):
         try:
             st = p.stat()
             return st.st_uid == os.geteuid()

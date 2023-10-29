@@ -2,6 +2,23 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 5.4.0
+
+([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.3.2...d6a748262a44334f27008e8c90d2557f46481f5b))
+
+### Maintenance and upkeep improvements
+
+- Add python 3.12 support [#367](https://github.com/jupyter/jupyter_core/pull/367) ([@blink1073](https://github.com/blink1073))
+- Update typings for traitlets 5.11 [#366](https://github.com/jupyter/jupyter_core/pull/366) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-09-27&to=2023-10-10&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2023-09-27..2023-10-10&type=Issues) | [@davidbrochart](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Adavidbrochart+updated%3A2023-09-27..2023-10-10&type=Issues) | [@jamescooke](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ajamescooke+updated%3A2023-09-27..2023-10-10&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 5.3.2
 
 ([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.3.1...0cf041784533c56da138a0947b6db29999790247))
@@ -20,8 +37,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-06-14&to=2023-09-27&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2023-06-14..2023-09-27&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Adependabot+updated%3A2023-06-14..2023-09-27&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Apre-commit-ci+updated%3A2023-06-14..2023-09-27&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 5.3.1
 
