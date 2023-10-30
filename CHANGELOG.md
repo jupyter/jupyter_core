@@ -2,6 +2,26 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 5.5.0
+
+([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.4.0...df0e9e709ebe208df799ec08030b7d7eb15c9cf9))
+
+### Maintenance and upkeep improvements
+
+- Fix typing for traitlets 5.13 [#372](https://github.com/jupyter/jupyter_core/pull/372) ([@blink1073](https://github.com/blink1073))
+- Adopt pydata sphinx theme [#371](https://github.com/jupyter/jupyter_core/pull/371) ([@blink1073](https://github.com/blink1073))
+- Use ruff format [#370](https://github.com/jupyter/jupyter_core/pull/370) ([@blink1073](https://github.com/blink1073))
+- Update typings for mypy 1.6 [#368](https://github.com/jupyter/jupyter_core/pull/368) ([@blink1073](https://github.com/blink1073))
+- Lowercase APPNAME on macOS Homebrew [#364](https://github.com/jupyter/jupyter_core/pull/364) ([@singingwolfboy](https://github.com/singingwolfboy))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-10-10&to=2023-10-30&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2023-10-10..2023-10-30&type=Issues) | [@singingwolfboy](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Asingingwolfboy+updated%3A2023-10-10..2023-10-30&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 5.4.0
 
 ([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.3.2...d6a748262a44334f27008e8c90d2557f46481f5b))
@@ -16,8 +36,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-09-27&to=2023-10-10&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2023-09-27..2023-10-10&type=Issues) | [@davidbrochart](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Adavidbrochart+updated%3A2023-09-27..2023-10-10&type=Issues) | [@jamescooke](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ajamescooke+updated%3A2023-09-27..2023-10-10&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 5.3.2
 
