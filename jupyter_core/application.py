@@ -78,7 +78,7 @@ class JupyterApp(Application):
     def _log_level_default(self) -> int:
         return logging.INFO
 
-    jupyter_path: list[str] | List = List(Unicode())
+    jupyter_path = List(Unicode())
 
     def _jupyter_path_default(self) -> list[str]:
         return jupyter_path()
