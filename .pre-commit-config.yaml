@@ -44,6 +44,15 @@ repos:
       - id: blacken-docs
         additional_dependencies: [black==23.7.0]
 
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: "v1.6.1"
+    hooks:
+      - id: mypy
+        files: jupyter_core
+        stages: [manual]
+        args: ["--install-types", "--non-interactive"]
+        additional_dependencies: ["traitlets>=5.13", "platformdirs>=3.11"]
+
   - repo: https://github.com/codespell-project/codespell
     rev: "v2.2.6"
     hooks:
