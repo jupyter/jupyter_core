@@ -2,6 +2,7 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+from __future__ import annotations
 
 import os
 import re
@@ -468,13 +469,11 @@ def test_is_hidden():
     reason="only run on windows/cpython or pypy >= 7.3.6: https://foss.heptapod.net/pypy/pypy/-/issues/3469",
 )
 def test_is_hidden_win32_cpython():
-    import ctypes  # noqa
-
     with tempfile.TemporaryDirectory() as root:
         subdir1 = os.path.join(root, "subdir")
         os.makedirs(subdir1)
         assert not is_hidden(subdir1, root)
-        subprocess.check_call(["attrib", "+h", subdir1])  # noqa
+        subprocess.check_call(["attrib", "+h", subdir1])
         assert is_hidden(subdir1, root)
         assert is_file_hidden(subdir1)
 
@@ -488,13 +487,11 @@ def test_is_hidden_win32_cpython():
     reason="only run on windows/pypy < 7.3.6: https://foss.heptapod.net/pypy/pypy/-/issues/3469",
 )
 def test_is_hidden_win32_pypy():
-    import ctypes  # noqa
-
     with tempfile.TemporaryDirectory() as root:
         subdir1 = os.path.join(root, "subdir")
         os.makedirs(subdir1)
         assert not is_hidden(subdir1, root)
-        subprocess.check_call(["attrib", "+h", subdir1])  # noqa
+        subprocess.check_call(["attrib", "+h", subdir1])
 
         with warnings.catch_warnings(record=True) as w:
             # Cause all warnings to always be triggered.
@@ -527,12 +524,12 @@ def test_secure_write_win32():
     def fetch_win32_permissions(filename):
         """Extracts file permissions on windows using icacls"""
         role_permissions = {}
-        proc = os.popen("icacls %s" % filename)  # noqa
+        proc = os.popen("icacls %s" % filename)
         lines = proc.read().splitlines()
         proc.close()
         for index, line in enumerate(lines):
             if index == 0:
-                line = line.split(filename)[-1].strip().lower()  # noqa
+                line = line.split(filename)[-1].strip().lower()  # noqa: PLW2901
             match = re.match(r"\s*([^:]+):\(([^\)]*)\)", line)
             if match:
                 usergroup, permissions = match.groups()
@@ -575,16 +572,16 @@ def test_secure_write_unix():
         with secure_write(fname) as f:
             f.write("test 1")
         mode = os.stat(fname).st_mode
-        assert 0o0600 == (stat.S_IMODE(mode) & 0o7677)  # noqa # tolerate owner-execute bit
+        assert (stat.S_IMODE(mode) & 0o7677) == 0o0600  # tolerate owner-execute bit
         with open(fname, encoding="utf-8") as f:
             assert f.read() == "test 1"
 
         # Try changing file permissions ahead of time
-        os.chmod(fname, 0o755)  # noqa
+        os.chmod(fname, 0o755)
         with secure_write(fname) as f:
             f.write("test 2")
         mode = os.stat(fname).st_mode
-        assert 0o0600 == (stat.S_IMODE(mode) & 0o7677)  # noqa # tolerate owner-execute bit
+        assert (stat.S_IMODE(mode) & 0o7677) == 0o0600  # tolerate owner-execute bit
         with open(fname, encoding="utf-8") as f:
             assert f.read() == "test 2"
     finally:

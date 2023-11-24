@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from jupyter_core.troubleshoot import main
 
 

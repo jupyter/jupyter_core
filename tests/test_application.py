@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 import shutil
 from tempfile import mkdtemp
@@ -107,7 +109,7 @@ def test_load_bad_config():
     with open(pjoin(config_dir, "dummy_app_config.py"), "w", encoding="utf-8") as f:
         f.write('c.DummyApp.m = "a\n')  # Syntax error
 
-    with pytest.raises(SyntaxError):
+    with pytest.raises(SyntaxError):  # noqa: PT012
         app = DummyApp(config_dir=config_dir)
         app.raise_config_file_errors = True
         app.initialize([])

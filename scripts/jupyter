@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Launch the root jupyter command"""
+from __future__ import annotations
 
 from jupyter_core.command import main
 
