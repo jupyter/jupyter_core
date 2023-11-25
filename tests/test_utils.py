@@ -46,9 +46,9 @@ def test_run_sync():
 
     asyncio.set_event_loop(None)
     assert foo_sync() == 1
+    asyncio.get_event_loop().close()
 
     asyncio.run(foo())
-    asyncio.get_event_loop().close()
 
 
 def test_ensure_async():
