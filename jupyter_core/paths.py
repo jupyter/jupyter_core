@@ -174,7 +174,7 @@ def jupyter_data_dir() -> str:
 
     if sys.platform == "darwin":
         return str(Path(home, "Library", "Jupyter"))
-    if os.name == "nt":  # type:ignore[unreachable]
+    if sys.platform == "win32":
         appdata = os.environ.get("APPDATA", None)
         if appdata:
             return str(Path(appdata, "jupyter").resolve())
