@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-#
 # jupyter_core documentation build configuration file, created by
 # sphinx-quickstart on Wed Jun 24 11:51:36 2015.
 #
@@ -11,9 +9,10 @@
 #
 # All configuration values have a default; values that are commented out
 # serve to show the default.
+from __future__ import annotations
 
-import os
 import shutil
+from pathlib import Path
 
 from jupyter_core.version import __version__, version_info
 
@@ -39,7 +38,7 @@ extensions = [
 ]
 
 try:
-    import enchant  # type:ignore  # noqa
+    import enchant  # noqa: F401
 
     extensions += ["sphinxcontrib.spelling"]
 except ImportError:
@@ -63,7 +62,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "jupyter_core"
-copyright = "2015, Jupyter Development Team"  # noqa
+copyright = "2015, Jupyter Development Team"
 author = "Jupyter Development Team"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -300,6 +299,6 @@ texinfo_documents = [
 intersphinx_mapping = {"https://docs.python.org/3/": None}
 
 
-def setup(app):
-    here = os.path.dirname(os.path.abspath(__file__))
-    shutil.copy(os.path.join(here, "..", "CHANGELOG.md"), "changelog.md")
+def setup(_):
+    here = Path(__file__).parent.resolve()
+    shutil.copy(Path(here, "..", "CHANGELOG.md"), "changelog.md")

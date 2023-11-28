@@ -2,6 +2,7 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+from __future__ import annotations
 
 import asyncio
 import os
@@ -41,9 +42,11 @@ def test_run_sync():
     foo_sync = run_sync(foo)
     assert foo_sync() == 1
     assert foo_sync() == 1
+    asyncio.get_event_loop().close()
 
     asyncio.set_event_loop(None)
     assert foo_sync() == 1
+    asyncio.get_event_loop().close()
 
     asyncio.run(foo())
 

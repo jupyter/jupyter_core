@@ -1,4 +1,5 @@
 # Configuration file for ipython-nbconvert.
+from __future__ import annotations
 
 c = get_config()
 

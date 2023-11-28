@@ -1,4 +1,5 @@
 # Configuration file for ipython.
+from __future__ import annotations
 
 c = get_config()
 
