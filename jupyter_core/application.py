@@ -167,10 +167,10 @@ class JupyterApp(Application):
         try:  # let's see if we can open the marker file
             # for reading and updating (writing)
             f_marker = Path.open(Path(self.config_dir, "migrated"), "r+")
-        except PermissionError:  # not readable and/or writable
-            return  # so let's give up migration in such an environment
         except FileNotFoundError:  # cannot find the marker file
             pass  # that means we have not migrated yet, so continue
+        except OSError:  # not readable and/or writable
+            return  # so let's give up migration in such an environment
         else:  # if we got here without raising anything,
             # that means the file exists
             f_marker.close()
