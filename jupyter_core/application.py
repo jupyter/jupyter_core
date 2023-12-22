@@ -29,7 +29,7 @@ from .paths import (
     jupyter_path,
     jupyter_runtime_dir,
 )
-from .utils import ensure_async, ensure_dir_exists, get_event_loop
+from .utils import ensure_dir_exists, get_event_loop
 
 # mypy: disable-error-code="no-untyped-call"
 
@@ -237,16 +237,8 @@ class JupyterApp(Application):
 
     subcommand = Unicode()
 
-    @t.overload
-    async def initialize(self, argv: t.Any = None) -> None:
-        ...
-
-    @t.overload
-    def initialize(self, argv: t.Any = None) -> None:
-        ...
-
     @catch_config_error
-    def initialize(self, argv: t.Any = None) -> t.Optional[t.Awaitable[None]]:
+    def initialize(self, argv: t.Any = None) -> None:
         """Initialize the application."""
         # don't hook up crash handler before parsing command-line
         if argv is None:
@@ -267,16 +259,13 @@ class JupyterApp(Application):
         self.update_config(cl_config)
         if allow_insecure_writes:
             issue_insecure_write_warning()
+        return
 
-    @t.overload
-    async def start(self) -> None:
-        ...
+    async def initialize_async(self) -> None:
+        """Perform async initialization of the application, will be called
+        after synchronous initialize."""
 
-    @t.overload
     def start(self) -> None:
-        ...
-
-    def start(self) -> t.Optional[t.Awaitable[None]]:
         """Start the whole thing"""
         if self.subcommand:
             os.execv(self.subcommand, [self.subcommand] + self.argv[1:])  # noqa: S606
@@ -290,15 +279,20 @@ class JupyterApp(Application):
             self.write_default_config()
             raise NoStart()
 
+        return
+
+    async def start_async(self) -> None:
+        """Perform async start of the app, will be called after sync start."""
+
     @classmethod
     async def _async_launch_instance(cls, argv: t.Any = None, **kwargs: t.Any) -> None:
         """Launch the instance from inside an event loop."""
         try:
             app = cls.instance(**kwargs)
-            # Allow there to be a synchronous or asynchronous init method.
-            await ensure_async(app.initialize(argv))
-            # Allow there to be a synchronous or asynchronous start method.
-            await ensure_async(app.start())
+            app.initialize(argv)
+            await app.initialize_async()
+            app.start()
+            await app.start_async()
         except NoStart:
             return
 

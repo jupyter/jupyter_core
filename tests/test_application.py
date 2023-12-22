@@ -128,14 +128,14 @@ def test_runtime_dir_changed():
 
 
 class AsyncApp(JupyterApp):
-    async def initialize(self, argv):
+    async def initialize_async(self):
         self.value = 10
 
-    async def start(self):
+    async def start_async(self):
         assert self.value == 10
 
 
 def test_async_app():
-    AsyncApp.launch_instance()
+    AsyncApp.launch_instance([])
     app = AsyncApp.instance()
     assert app.value == 10
