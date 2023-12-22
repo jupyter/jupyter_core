@@ -137,3 +137,5 @@ class AsyncApp(JupyterApp):
 
 def test_async_app():
     AsyncApp.launch_instance()
+    app = AsyncApp.instance()
+    assert app.value == 10
