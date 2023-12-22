@@ -29,7 +29,7 @@ from .paths import (
     jupyter_path,
     jupyter_runtime_dir,
 )
-from .utils import ensure_dir_exists
+from .utils import ensure_async, ensure_dir_exists, get_event_loop
 
 # mypy: disable-error-code="no-untyped-call"
 
@@ -237,8 +237,16 @@ class JupyterApp(Application):
 
     subcommand = Unicode()
 
-    @catch_config_error
+    @t.overload
+    async def initialize(self, argv: t.Any = None) -> None:
+        ...
+
+    @t.overload
     def initialize(self, argv: t.Any = None) -> None:
+        ...
+
+    @catch_config_error
+    def initialize(self, argv: t.Any = None) -> t.Optional[t.Awaitable[None]]:
         """Initialize the application."""
         # don't hook up crash handler before parsing command-line
         if argv is None:
@@ -260,7 +268,15 @@ class JupyterApp(Application):
         if allow_insecure_writes:
             issue_insecure_write_warning()
 
+    @t.overload
+    async def start(self) -> None:
+        ...
+
+    @t.overload
     def start(self) -> None:
+        ...
+
+    def start(self) -> t.Optional[t.Awaitable[None]]:
         """Start the whole thing"""
         if self.subcommand:
             os.execv(self.subcommand, [self.subcommand] + self.argv[1:])  # noqa: S606
@@ -275,12 +291,26 @@ class JupyterApp(Application):
             raise NoStart()
 
     @classmethod
-    def launch_instance(cls, argv: t.Any = None, **kwargs: t.Any) -> None:
-        """Launch an instance of a Jupyter Application"""
+    async def _async_launch_instance(cls, argv: t.Any = None, **kwargs: t.Any) -> None:
+        """Launch the instance from inside an event loop."""
         try:
-            super().launch_instance(argv=argv, **kwargs)
+            app = cls.instance(**kwargs)
+            # Allow there to be a synchronous or asynchronous init method.
+            await ensure_async(app.initialize(argv))
+            # Allow there to be a synchronous or asynchronous start method.
+            await ensure_async(app.start())
         except NoStart:
             return
+
+    @classmethod
+    def launch_instance(cls, argv: t.Any = None, **kwargs: t.Any) -> None:
+        """Launch a global instance of this Application
+
+        If a global instance already exists, this reinitializes and starts it
+        """
+        loop = get_event_loop()
+        coro = cls._async_launch_instance(argv, **kwargs)
+        loop.run_until_complete(coro)
 
 
 if __name__ == "__main__":
