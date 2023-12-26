@@ -139,3 +139,13 @@ def test_async_app():
     AsyncApp.launch_instance([])
     app = AsyncApp.instance()
     assert app.value == 10
+
+
+class AsyncTornadoApp(AsyncApp):
+    _prefer_selector_loop = True
+
+
+def test_async_tornado_app():
+    AsyncApp.launch_instance([])
+    app = AsyncApp.instance()
+    assert app.value == 10

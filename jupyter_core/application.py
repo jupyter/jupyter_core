@@ -76,6 +76,9 @@ class JupyterApp(Application):
     aliases = base_aliases
     flags = base_flags
 
+    # Set to True for tornado-based apps.
+    _prefer_selector_loop = False
+
     def _log_level_default(self) -> int:
         return logging.INFO
 
@@ -302,7 +305,7 @@ class JupyterApp(Application):
 
         If a global instance already exists, this reinitializes and starts it
         """
-        loop = get_event_loop()
+        loop = get_event_loop(cls._prefer_selector_loop)
         coro = cls._async_launch_instance(argv, **kwargs)
         loop.run_until_complete(coro)
 
