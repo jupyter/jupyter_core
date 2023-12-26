@@ -191,7 +191,7 @@ def get_event_loop(prefer_selector_loop: bool = False) -> asyncio.AbstractEventL
     # Get the loop for this thread, or create a new one.
     loop = _thread_data.loop
     if loop and not loop.is_closed():
-        return loop
+        return loop  # type:ignore[no-any-return]
     try:
         loop = asyncio.get_running_loop()
     except RuntimeError:
@@ -201,4 +201,4 @@ def get_event_loop(prefer_selector_loop: bool = False) -> asyncio.AbstractEventL
             loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
     _thread_data.loop = loop
-    return loop
+    return loop  # type:ignore[no-any-return]
