@@ -192,7 +192,7 @@ async def ensure_async(obj: Awaitable[T] | T) -> T:
 def get_event_loop() -> asyncio.AbstractEventLoop:
     # Get the loop for this thread, or create a new one.
     loop = _loop.get()
-    if loop:
+    if loop and not loop.is_closed():
         return loop
     try:
         loop = asyncio.get_running_loop()
