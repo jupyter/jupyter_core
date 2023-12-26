@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 5.6.0
+
+([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.5.1...e33fb748b435de7d587d9c2bfdcbb5f3ee73b4bd))
+
+### Enhancements made
+
+- Enable async JupyterApp [#381](https://github.com/jupyter/jupyter_core/pull/381) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-12-18&to=2023-12-26&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2023-12-18..2023-12-26&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 5.5.1
 
 ([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.5.0...4e387a4e95b1064cca4a97dd7324b29d14b6e3b7))
@@ -21,8 +37,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-10-30&to=2023-12-18&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2023-10-30..2023-12-18&type=Issues) | [@mtelka](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Amtelka+updated%3A2023-10-30..2023-12-18&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Apre-commit-ci+updated%3A2023-10-30..2023-12-18&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 5.5.0
 
