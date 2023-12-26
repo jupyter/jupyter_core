@@ -126,7 +126,7 @@ class _TaskRunner:
         return fut.result(None)
 
 
-_runner_map: dict[str, _TaskRunner] = {}
+_runner: ContextVar[_TaskRunner | None] = ContextVar("_runner", default=None)
 _loop: ContextVar[asyncio.AbstractEventLoop | None] = ContextVar("_loop", default=None)
 
 
@@ -148,15 +148,16 @@ def run_sync(coro: Callable[..., Awaitable[T]]) -> Callable[..., T]:
         raise AssertionError
 
     def wrapped(*args: Any, **kwargs: Any) -> Any:
-        name = threading.current_thread().name
         inner = coro(*args, **kwargs)
         try:
             # If a loop is currently running in this thread,
             # use a task runner.
             asyncio.get_running_loop()
-            if name not in _runner_map:
-                _runner_map[name] = _TaskRunner()
-            return _runner_map[name].run(inner)
+            runner = _runner.get()
+            if not runner:
+                runner = _TaskRunner()
+                _runner.set(runner)
+            return runner.run(inner)
         except RuntimeError:
             pass
 
@@ -188,7 +189,7 @@ async def ensure_async(obj: Awaitable[T] | T) -> T:
     return cast(T, obj)
 
 
-def get_event_loop(prefer_selector_loop=False) -> asyncio.AbstractEventLoop:
+def get_event_loop(prefer_selector_loop: bool = False) -> asyncio.AbstractEventLoop:
     # Get the loop for this thread, or create a new one.
     loop = _loop.get()
     if loop and not loop.is_closed():
