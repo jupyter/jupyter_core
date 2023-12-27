@@ -125,9 +125,9 @@ class _TaskRunner:
         return fut.result(None)
 
 
+_runner_map: dict[str, _TaskRunner] = {}
 _thread_data = threading.local()
 _thread_data.loop = None
-_thread_data.runner = None
 
 
 def run_sync(coro: Callable[..., Awaitable[T]]) -> Callable[..., T]:
@@ -148,14 +148,15 @@ def run_sync(coro: Callable[..., Awaitable[T]]) -> Callable[..., T]:
         raise AssertionError
 
     def wrapped(*args: Any, **kwargs: Any) -> Any:
+        name = threading.current_thread().name
         inner = coro(*args, **kwargs)
         try:
             # If a loop is currently running in this thread,
             # use a task runner.
             asyncio.get_running_loop()
-            if not _thread_data.runner:
-                _thread_data.runner = _TaskRunner()
-            return _thread_data.runner.run(inner)
+            if name not in _runner_map:
+                _runner_map[name] = _TaskRunner()
+            return _runner_map[name].run(inner)
         except RuntimeError:
             pass
 
