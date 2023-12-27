@@ -192,7 +192,7 @@ def get_event_loop(prefer_selector_loop: bool = False) -> asyncio.AbstractEventL
     # Get the loop for this thread, or create a new one.
     loop = _loop.get()
     if loop is not None and not loop.is_closed():
-        return loop  # type:ignore[no-any-return]
+        return loop
     try:
         loop = asyncio.get_running_loop()
     except RuntimeError:
@@ -202,4 +202,4 @@ def get_event_loop(prefer_selector_loop: bool = False) -> asyncio.AbstractEventL
             loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
     _loop.set(loop)
-    return loop  # type:ignore[no-any-return]
+    return loop
