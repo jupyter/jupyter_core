@@ -158,18 +158,8 @@ def run_sync(coro: Callable[..., Awaitable[T]]) -> Callable[..., T]:
         except RuntimeError:
             pass
 
-        # Run the loop for this thread.
-        # In Python 3.12, a deprecation warning is raised, which
-        # may later turn into a RuntimeError.  We handle both
-        # cases.
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", DeprecationWarning)
-            try:
-                loop = asyncio.get_event_loop()
-            except RuntimeError:
-                loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(loop)
-            return loop.run_until_complete(inner)
+        loop = get_event_loop()
+        return loop.run_until_complete(inner)
 
     wrapped.__doc__ = coro.__doc__
     return wrapped
@@ -194,3 +184,21 @@ async def ensure_async(obj: Awaitable[T] | T) -> T:
         return result
     # obj doesn't need to be awaited
     return cast(T, obj)
+
+
+def get_event_loop() -> asyncio.AbstractEventLoop:
+    # Get the loop for this thread.
+    # In Python 3.12, a deprecation warning is raised, which
+    # may later turn into a RuntimeError.  We handle both
+    # cases.
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", DeprecationWarning)
+        try:
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            if sys.platform == "win32":
+                loop = asyncio.WindowsSelectorEventLoopPolicy().new_event_loop()
+            else:
+                loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+    return loop
