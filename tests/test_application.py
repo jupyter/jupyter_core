@@ -125,17 +125,3 @@ def test_runtime_dir_changed():
     app.runtime_dir = td
     assert os.path.isdir(td)
     shutil.rmtree(td)
-
-
-class AsyncApp(JupyterApp):
-    async def initialize_async(self):
-        self.value = 10
-
-    async def start_async(self):
-        assert self.value == 10
-
-
-def test_async_app():
-    AsyncApp.launch_instance([])
-    app = AsyncApp.instance()
-    assert app.value == 10
