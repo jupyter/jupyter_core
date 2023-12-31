@@ -79,7 +79,7 @@ jobs:
         uses: jupyterlab/maintainer-tools/.github/actions/downstream-test@v1
         with:
           package_name: pytest_jupyter
-          package_spec: pip install -e ".[client,server]"
+          package_spec: pip install -e ".[test,client,server]"
 
   downstreams_check: # This job does nothing and is only used for the branch protection
     if: always()
