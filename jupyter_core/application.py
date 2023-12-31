@@ -29,7 +29,7 @@ from .paths import (
     jupyter_path,
     jupyter_runtime_dir,
 )
-from .utils import ensure_dir_exists, get_event_loop
+from .utils import ensure_dir_exists
 
 # mypy: disable-error-code="no-untyped-call"
 
@@ -259,11 +259,6 @@ class JupyterApp(Application):
         self.update_config(cl_config)
         if allow_insecure_writes:
             issue_insecure_write_warning()
-        return
-
-    async def initialize_async(self) -> None:
-        """Perform async initialization of the application, will be called
-        after synchronous initialize."""
 
     def start(self) -> None:
         """Start the whole thing"""
@@ -279,32 +274,13 @@ class JupyterApp(Application):
             self.write_default_config()
             raise NoStart()
 
-        return
-
-    async def start_async(self) -> None:
-        """Perform async start of the app, will be called after sync start."""
-
-    @classmethod
-    async def _async_launch_instance(cls, argv: t.Any = None, **kwargs: t.Any) -> None:
-        """Launch the instance from inside an event loop."""
-        try:
-            app = cls.instance(**kwargs)
-            app.initialize(argv)
-            await app.initialize_async()
-            app.start()
-            await app.start_async()
-        except NoStart:
-            return
-
     @classmethod
     def launch_instance(cls, argv: t.Any = None, **kwargs: t.Any) -> None:
-        """Launch a global instance of this Application
-
-        If a global instance already exists, this reinitializes and starts it
-        """
-        loop = get_event_loop()
-        coro = cls._async_launch_instance(argv, **kwargs)
-        loop.run_until_complete(coro)
+        """Launch an instance of a Jupyter Application"""
+        try:
+            super().launch_instance(argv=argv, **kwargs)
+        except NoStart:
+            return
 
 
 if __name__ == "__main__":
