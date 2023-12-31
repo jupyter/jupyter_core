@@ -10,7 +10,13 @@ import tempfile
 
 import pytest
 
-from jupyter_core.utils import deprecation, ensure_async, ensure_dir_exists, run_sync
+from jupyter_core.utils import (
+    deprecation,
+    ensure_async,
+    ensure_dir_exists,
+    get_event_loop,
+    run_sync,
+)
 
 
 def test_ensure_dir_exists():
@@ -42,11 +48,11 @@ def test_run_sync():
     foo_sync = run_sync(foo)
     assert foo_sync() == 1
     assert foo_sync() == 1
-    asyncio.get_event_loop().close()
+    get_event_loop().close()
 
     asyncio.set_event_loop(None)
     assert foo_sync() == 1
-    asyncio.get_event_loop().close()
+    get_event_loop().close()
 
     asyncio.run(foo())
 
@@ -57,3 +63,13 @@ def test_ensure_async():
         assert await ensure_async(func()) == "func"
 
     asyncio.run(main())
+
+
+def test_get_event_loop():
+    loop = get_event_loop()
+
+    async def inner():
+        return asyncio.get_running_loop()
+
+    inner_sync = run_sync(inner)
+    assert inner_sync() == loop
