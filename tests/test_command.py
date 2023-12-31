@@ -10,6 +10,7 @@ from unittest.mock import patch
 
 import pytest
 
+from jupyter_core import __version__
 from jupyter_core.command import list_subcommands
 from jupyter_core.paths import (
     jupyter_config_dir,
@@ -248,3 +249,7 @@ print(sys.argv[0])
 
     # Make sure the first argv is the full path to the executing script
     assert f"{jupyter}-witness".encode() in out
+
+
+def test_version():
+    assert isinstance(__version__, str)
