@@ -293,10 +293,10 @@ class JupyterAsyncApp(Application):
     _prefer_selector_loop = False
 
     async def initialize_async(self, argv: t.Any = None) -> None:
-        pass
+        """Initialize the application asynchronoously."""
 
     async def start_async(self) -> None:
-        pass
+        """Run the application in an event loop."""
 
     @classmethod
     async def _launch_instance(cls, argv: t.Any = None, **kwargs: t.Any) -> None:
@@ -307,6 +307,7 @@ class JupyterAsyncApp(Application):
 
     @classmethod
     def launch_instance(cls, argv: t.Any = None, **kwargs: t.Any) -> None:
+        """Launch an instance of an async Jupyter Application"""
         loop = get_event_loop(cls._prefer_selector_loop)
         coro = cls._launch_instance(argv, **kwargs)
         loop.run_until_complete(coro)
