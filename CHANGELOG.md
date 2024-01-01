@@ -2,6 +2,27 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 5.6.1
+
+([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.6.0...f81186b2f31fe79949fe5bcd5ea0da6b0794a8fb))
+
+### Bugs fixed
+
+- Fix export of package version [#386](https://github.com/jupyter/jupyter_core/pull/386) ([@blink1073](https://github.com/blink1073))
+- Revert "Enable async JupyterApp" [#385](https://github.com/jupyter/jupyter_core/pull/385) ([@blink1073](https://github.com/blink1073))
+
+### Maintenance and upkeep improvements
+
+- Bump github/codeql-action from 2 to 3 [#380](https://github.com/jupyter/jupyter_core/pull/380) ([@dependabot](https://github.com/dependabot))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-12-26&to=2024-01-01&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2023-12-26..2024-01-01&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Adependabot+updated%3A2023-12-26..2024-01-01&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 5.6.0
 
 ([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.5.1...e33fb748b435de7d587d9c2bfdcbb5f3ee73b4bd))
@@ -15,8 +36,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-12-18&to=2023-12-26&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2023-12-18..2023-12-26&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 5.5.1
 
