@@ -14,7 +14,7 @@ from jupyter_core.utils import (
     deprecation,
     ensure_async,
     ensure_dir_exists,
-    get_event_loop,
+    ensure_event_loop,
     run_sync,
 )
 
@@ -48,11 +48,11 @@ def test_run_sync():
     foo_sync = run_sync(foo)
     assert foo_sync() == 1
     assert foo_sync() == 1
-    get_event_loop().close()
+    ensure_event_loop().close()
 
     asyncio.set_event_loop(None)
     assert foo_sync() == 1
-    get_event_loop().close()
+    ensure_event_loop().close()
 
     asyncio.run(foo())
 
@@ -65,8 +65,8 @@ def test_ensure_async():
     asyncio.run(main())
 
 
-def test_get_event_loop():
-    loop = get_event_loop()
+def test_ensure_event_loop():
+    loop = ensure_event_loop()
 
     async def inner():
         return asyncio.get_running_loop()

@@ -10,7 +10,7 @@ import pytest
 from traitlets import Integer
 
 from jupyter_core.application import JupyterApp, JupyterAsyncApp, NoStart
-from jupyter_core.utils import get_event_loop
+from jupyter_core.utils import ensure_event_loop
 
 pjoin = os.path.join
 
@@ -147,7 +147,7 @@ class SyncTornadoApp(JupyterApp):
         self.running_loop = asyncio.get_running_loop()
 
     def start(self):
-        self.starting_loop = get_event_loop()
+        self.starting_loop = ensure_event_loop()
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self._inner())
         loop.close()

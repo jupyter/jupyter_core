@@ -161,14 +161,14 @@ def run_sync(coro: Callable[..., Awaitable[T]]) -> Callable[..., T]:
             pass
 
         # Run the loop for this thread.
-        loop = get_event_loop()
+        loop = ensure_event_loop()
         return loop.run_until_complete(inner)
 
     wrapped.__doc__ = coro.__doc__
     return wrapped
 
 
-def get_event_loop(prefer_selector_loop: bool = False) -> asyncio.AbstractEventLoop:
+def ensure_event_loop(prefer_selector_loop: bool = False) -> asyncio.AbstractEventLoop:
     # Get the loop for this thread, or create a new one.
     loop = _loop.get()
     if loop is not None and not loop.is_closed():

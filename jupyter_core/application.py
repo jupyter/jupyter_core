@@ -29,7 +29,7 @@ from .paths import (
     jupyter_path,
     jupyter_runtime_dir,
 )
-from .utils import ensure_dir_exists, get_event_loop
+from .utils import ensure_dir_exists, ensure_event_loop
 
 # mypy: disable-error-code="no-untyped-call"
 
@@ -278,7 +278,7 @@ class JupyterApp(Application):
     def launch_instance(cls, argv: t.Any = None, **kwargs: t.Any) -> None:
         """Launch an instance of a Jupyter Application"""
         # Ensure an event loop is set before any other code runs.
-        loop = get_event_loop()
+        loop = ensure_event_loop()
         try:
             super().launch_instance(argv=argv, **kwargs)
         except NoStart:
@@ -308,7 +308,7 @@ class JupyterAsyncApp(Application):
     @classmethod
     def launch_instance(cls, argv: t.Any = None, **kwargs: t.Any) -> None:
         """Launch an instance of an async Jupyter Application"""
-        loop = get_event_loop(cls._prefer_selector_loop)
+        loop = ensure_event_loop(cls._prefer_selector_loop)
         coro = cls._launch_instance(argv, **kwargs)
         loop.run_until_complete(coro)
         loop.close()
