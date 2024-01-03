@@ -2,6 +2,26 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 5.7.0
+
+([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.6.1...19912f49cfb9e2645e08fd1bd599b95206387d2d))
+
+### Enhancements made
+
+- Modernize event loop behavior [#387](https://github.com/jupyter/jupyter_core/pull/387) ([@blink1073](https://github.com/blink1073))
+
+### Maintenance and upkeep improvements
+
+- chore: update pre-commit hooks [#388](https://github.com/jupyter/jupyter_core/pull/388) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2024-01-01&to=2024-01-03&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2024-01-01..2024-01-03&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Apre-commit-ci+updated%3A2024-01-01..2024-01-03&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 5.6.1
 
 ([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.6.0...f81186b2f31fe79949fe5bcd5ea0da6b0794a8fb))
@@ -20,8 +40,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2023-12-26&to=2024-01-01&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2023-12-26..2024-01-01&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Adependabot+updated%3A2023-12-26..2024-01-01&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 5.6.0
 
