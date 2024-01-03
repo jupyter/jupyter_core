@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import os
 import shutil
 from tempfile import mkdtemp
@@ -8,7 +9,8 @@ from unittest.mock import patch
 import pytest
 from traitlets import Integer
 
-from jupyter_core.application import JupyterApp, NoStart
+from jupyter_core.application import JupyterApp, JupyterAsyncApp, NoStart
+from jupyter_core.utils import ensure_event_loop
 
 pjoin = os.path.join
 
@@ -125,3 +127,60 @@ def test_runtime_dir_changed():
     app.runtime_dir = td
     assert os.path.isdir(td)
     shutil.rmtree(td)
+
+
+class AsyncioRunApp(JupyterApp):
+    async def _inner(self):
+        pass
+
+    def start(self):
+        asyncio.run(self._inner())
+
+
+def test_asyncio_run():
+    AsyncioRunApp.launch_instance([])
+    AsyncioRunApp.clear_instance()
+
+
+class SyncTornadoApp(JupyterApp):
+    async def _inner(self):
+        self.running_loop = asyncio.get_running_loop()
+
+    def start(self):
+        self.starting_loop = ensure_event_loop()
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self._inner())
+        loop.close()
+
+
+def test_sync_tornado_run():
+    SyncTornadoApp.launch_instance([])
+    app = SyncTornadoApp.instance()
+    assert app.running_loop == app.starting_loop
+    SyncTornadoApp.clear_instance()
+
+
+class AsyncApp(JupyterAsyncApp):
+    async def initialize_async(self, argv):
+        self.value = 10
+
+    async def start_async(self):
+        assert self.value == 10
+
+
+def test_async_app():
+    AsyncApp.launch_instance([])
+    app = AsyncApp.instance()
+    assert app.value == 10
+    AsyncApp.clear_instance()
+
+
+class AsyncTornadoApp(AsyncApp):
+    _prefer_selector_loop = True
+
+
+def test_async_tornado_app():
+    AsyncTornadoApp.launch_instance([])
+    app = AsyncApp.instance()
+    assert app._prefer_selector_loop is True
+    AsyncTornadoApp.clear_instance()

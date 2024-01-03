@@ -66,6 +66,21 @@ jobs:
         with:
           package_name: jupyter_client
 
+  pytest_jupyter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Base Setup
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+
+      - name: Run Test
+        uses: jupyterlab/maintainer-tools/.github/actions/downstream-test@v1
+        with:
+          package_name: pytest_jupyter
+          package_spec: pip install -e ".[test,client,server]"
+
   downstreams_check: # This job does nothing and is only used for the branch protection
     if: always()
     needs:
@@ -74,6 +89,7 @@ jobs:
       - nbconvert
       - jupyter_server
       - jupyter_client
+      - pytest_jupyter
     runs-on: ubuntu-latest
     steps:
       - name: Decide whether the needed jobs succeeded or failed
