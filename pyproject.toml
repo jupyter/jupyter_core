@@ -42,7 +42,7 @@ Tracker = "https://github.com/jupyter/jupyter_core/issues"
 test = [
   "ipykernel",
   "pre-commit",
-  "pytest",
+  "pytest<8",
   "pytest-cov",
   "pytest-timeout"
 ]
@@ -110,7 +110,7 @@ enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 warn_unreachable = true
 
 [tool.pytest.ini_options]
-minversion = "6.0"
+minversion = "7.0"
 xfail_strict = true
 log_cli_level = "info"
 addopts = [
