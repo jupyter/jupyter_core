@@ -2,6 +2,24 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 5.7.2
+
+([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.7.1...1264a81fc834f18db2b41e136ec4ac9d1a4ad993))
+
+### Maintenance and upkeep improvements
+
+- Update Release Scripts [#396](https://github.com/jupyter/jupyter_core/pull/396) ([@blink1073](https://github.com/blink1073))
+- Enforce pytest 7 [#393](https://github.com/jupyter/jupyter_core/pull/393) ([@blink1073](https://github.com/blink1073))
+- chore: update pre-commit hooks [#392](https://github.com/jupyter/jupyter_core/pull/392) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2024-01-08&to=2024-03-12&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2024-01-08..2024-03-12&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Apre-commit-ci+updated%3A2024-01-08..2024-03-12&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 5.7.1
 
 ([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.7.0...8e69e7f1b856099c057e9711d5a439b33ef859d3))
@@ -15,8 +33,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2024-01-03&to=2024-01-08&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2024-01-03..2024-01-08&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 5.7.0
 
