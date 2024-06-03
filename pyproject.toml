@@ -47,12 +47,12 @@ test = [
   "pytest-timeout"
 ]
 docs = [
+  "intersphinx_registry",
   "myst-parser",
-  "sphinxcontrib_github_alt",
-  "sphinxcontrib_spelling",
-  "sphinx-autodoc-typehints",
-  "traitlets",
   "pydata_sphinx_theme",
+  "sphinx-autodoc-typehints",
+  "sphinxcontrib_spelling",
+  "traitlets",
 ]
 
 [project.scripts]
