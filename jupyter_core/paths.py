@@ -292,18 +292,17 @@ if use_platform_dirs():
     SYSTEM_CONFIG_PATH = platformdirs.site_config_dir(
         APPNAME, appauthor=False, multipath=True
     ).split(os.pathsep)
+elif os.name == "nt":
+    programdata = os.environ.get("PROGRAMDATA", None)
+    if programdata:
+        SYSTEM_CONFIG_PATH = [str(Path(programdata, "jupyter"))]
+    else:  # PROGRAMDATA is not defined by default on XP.
+        SYSTEM_CONFIG_PATH = []
 else:
-    if os.name == "nt":
-        programdata = os.environ.get("PROGRAMDATA", None)
-        if programdata:  # noqa: SIM108
-            SYSTEM_CONFIG_PATH = [str(Path(programdata, "jupyter"))]
-        else:  # PROGRAMDATA is not defined by default on XP.
-            SYSTEM_CONFIG_PATH = []
-    else:
-        SYSTEM_CONFIG_PATH = [
-            "/usr/local/etc/jupyter",
-            "/etc/jupyter",
-        ]
+    SYSTEM_CONFIG_PATH = [
+        "/usr/local/etc/jupyter",
+        "/etc/jupyter",
+    ]
 ENV_CONFIG_PATH: list[str] = [str(Path(sys.prefix, "etc", "jupyter"))]
 
 
