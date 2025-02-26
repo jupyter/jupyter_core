@@ -100,7 +100,7 @@ def test_paths():
     for d in (jupyter_config_dir(), jupyter_data_dir(), jupyter_runtime_dir()):
         assert d in output
     for key in ("config", "data", "runtime"):
-        assert ("%s:" % key) in output
+        assert (f"{key}:") in output
 
     for path in (jupyter_config_path(), jupyter_path()):
         for d in path:

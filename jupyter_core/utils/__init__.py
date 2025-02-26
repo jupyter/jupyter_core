@@ -28,7 +28,8 @@ def ensure_dir_exists(path: str | Path, mode: int = 0o777) -> None:
         if e.errno != errno.EEXIST:
             raise
     if not Path(path).is_dir():
-        raise OSError("%r exists but is not a directory" % path)
+        msg = f"{path!r} exists but is not a directory"
+        raise OSError(msg)
 
 
 def _get_frame(level: int) -> FrameType | None:

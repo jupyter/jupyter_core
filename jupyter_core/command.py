@@ -120,7 +120,8 @@ def _execvp(cmd: str, argv: list[str]) -> None:
         # so rely on shutil.which
         cmd_path = which(cmd)
         if cmd_path is None:
-            raise OSError("%r not found" % cmd, errno.ENOENT)
+            msg = f"{cmd!r} not found"
+            raise OSError(msg, errno.ENOENT)
         p = Popen([cmd_path] + argv[1:])  # noqa: S603
         # Don't raise KeyboardInterrupt in the parent process.
         # Set this after spawning, to avoid subprocess inheriting handler.
@@ -378,7 +379,7 @@ def main() -> None:
 
                 for name in sorted(data):
                     path = data[name]
-                    print("%s:" % name)
+                    print(f"{name}:")
                     for p in path:
                         print("    " + p)
             return
