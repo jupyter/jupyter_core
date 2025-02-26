@@ -1,6 +1,7 @@
 """
 store the current version info of the jupyter_core.
 """
+
 from __future__ import annotations
 
 import re

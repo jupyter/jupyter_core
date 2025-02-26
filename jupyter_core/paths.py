@@ -986,7 +986,7 @@ def secure_write(fname: str, binary: bool = False) -> Iterator[Any]:
         else:
             # Python on windows does not respect the group and public bits for chmod, so we need
             # to take additional steps to secure the contents.
-            # Touch file pre-emptively to avoid editing permissions in open files in Windows
+            # Touch file preemptively to avoid editing permissions in open files in Windows
             fd = os.open(fname, open_flag, 0o0600)
             os.close(fd)
             open_flag = os.O_WRONLY | os.O_TRUNC

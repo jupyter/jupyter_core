@@ -1,4 +1,5 @@
 """Test the Jupyter command-line"""
+
 from __future__ import annotations
 
 import json

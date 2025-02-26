@@ -71,7 +71,8 @@ author = "Jupyter Development Team"
 # built documents.
 #
 # The short X.Y version.
-version = "%d.%d" % version_info[:2]  # type:ignore[str-format]
+major, minor = version_info[:2]
+version = f"{major}.{minor}"
 # The full version, including alpha/beta/rc tags.
 release = __version__
 

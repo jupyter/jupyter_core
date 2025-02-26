@@ -339,7 +339,7 @@ We now make the assumption that if we are running in a virtual environment, we s
 
 #### Migrate to Standard Platform Directories
 
-In version 5, we introduce a `JUPYTER_PLATFORM_DIRS` environment variable to opt in to using more appropriate platform-specific directories.  We raise a deprecation warning if the variable is not set.  In version 6,  `JUPYTER_PLATFORM_DIRS` will be opt-out.  In version 7, we will remove the environment variable checks and old directory logic.
+In version 5, we introduce a `JUPYTER_PLATFORM_DIRS` environment variable to opt in to using more appropriate platform-specific directories. We raise a deprecation warning if the variable is not set. In version 6, `JUPYTER_PLATFORM_DIRS` will be opt-out. In version 7, we will remove the environment variable checks and old directory logic.
 
 #### Drop Support for Python 3.7
 
