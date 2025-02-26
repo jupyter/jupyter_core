@@ -203,5 +203,4 @@ async def ensure_async(obj: Awaitable[T] | T) -> T:
                 return cast(T, obj)
             raise
         return result
-    # obj doesn't need to be awaited
-    return cast(T, obj)
+    return obj

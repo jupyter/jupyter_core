@@ -50,8 +50,8 @@ repos:
       - id: mypy
         files: jupyter_core
         stages: [manual]
-        args: ["--install-types", "--non-interactive"]
-        additional_dependencies: ["traitlets>=5.13", "platformdirs>=3.11"]
+        additional_dependencies:
+          ["traitlets>=5.13", "platformdirs>=3.11", "argcomplete"]
 
   - repo: https://github.com/codespell-project/codespell
     rev: "v2.4.1"

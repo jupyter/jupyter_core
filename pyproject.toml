@@ -108,6 +108,10 @@ python_version = "3.8"
 strict = true
 enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 warn_unreachable = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+warn_redundant_casts = true
+disallow_untyped_calls = true
 
 [tool.pytest.ini_options]
 minversion = "7.0"
@@ -186,11 +190,6 @@ ignore = [
   "SIM105", # Use `contextlib.suppress(...)`
   "SIM108", # Use ternary operator
   "UP007",  # Use `X | Y` for type annotations"
-]
-unfixable = [
-  "T201", # Don't touch print statements
-  "RUF100", # Don't touch noqa lines
-  "F401"  # Unused imports
 ]
 isort.required-imports = ["from __future__ import annotations"]
 

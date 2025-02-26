@@ -43,7 +43,7 @@ class JupyterParser(argparse.ArgumentParser):
     def argcomplete(self) -> None:
         """Trigger auto-completion, if enabled"""
         try:
-            import argcomplete  # type: ignore[import-not-found]
+            import argcomplete
 
             argcomplete.autocomplete(self)
         except ImportError:
