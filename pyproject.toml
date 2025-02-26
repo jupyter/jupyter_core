@@ -177,12 +177,12 @@ extend-select = [
 ]
 ignore = [
   "PLR",    # Design related pylint codes
-  "Q000",   # Single quotes found but double quotes preferred
   "E501",   # Line too long (158 > 100 characters)
   "UP007",  # Use `X | Y` for type annotations"
   "SIM105", # Use `contextlib.suppress(...)`
   "S101",   # Use of assert
-  "RUF012"  # Mutable class attributes should be annotated
+  "RUF012", # Mutable class attributes should be annotated
+  "SIM103"  # Return the condition directly
 ]
 unfixable = [
   "T201", # Don't touch print statements
