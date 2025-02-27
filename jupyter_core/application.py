@@ -133,6 +133,7 @@ class JupyterApp(Application):
 
     def write_default_config(self) -> None:
         """Write our default config to a .py config file"""
+        config_file: str
         if self.config_file:
             config_file = self.config_file
         else:
@@ -142,7 +143,7 @@ class JupyterApp(Application):
             answer = ""
 
             def ask() -> str:
-                prompt = "Overwrite %s with default config? [y/N]" % config_file
+                prompt = f"Overwrite {config_file!r} with default config? [y/N]"
                 try:
                     return input(prompt).lower() or "n"
                 except KeyboardInterrupt:
@@ -157,7 +158,7 @@ class JupyterApp(Application):
                 return
 
         config_text = self.generate_config_file()
-        print("Writing default config to: %s" % config_file)
+        print("Writing default config to: {config_file!r}")
         ensure_dir_exists(Path(config_file).parent.resolve(), 0o700)
         with Path.open(Path(config_file), mode="w", encoding="utf-8") as f:
             f.write(config_text)

@@ -174,7 +174,7 @@ def jupyter_data_dir() -> str:
 
     if sys.platform == "darwin":
         return str(Path(home, "Library", "Jupyter"))
-    if sys.platform == "win32":
+    if sys.platform == "win32":  # type: ignore[unreachable]
         appdata = os.environ.get("APPDATA", None)
         if appdata:
             return str(Path(appdata, "jupyter").resolve())
@@ -292,18 +292,17 @@ if use_platform_dirs():
     SYSTEM_CONFIG_PATH = platformdirs.site_config_dir(
         APPNAME, appauthor=False, multipath=True
     ).split(os.pathsep)
+elif os.name == "nt":
+    programdata = os.environ.get("PROGRAMDATA", None)
+    if programdata:
+        SYSTEM_CONFIG_PATH = [str(Path(programdata, "jupyter"))]
+    else:  # PROGRAMDATA is not defined by default on XP.
+        SYSTEM_CONFIG_PATH = []
 else:
-    if os.name == "nt":
-        programdata = os.environ.get("PROGRAMDATA", None)
-        if programdata:  # noqa: SIM108
-            SYSTEM_CONFIG_PATH = [str(Path(programdata, "jupyter"))]
-        else:  # PROGRAMDATA is not defined by default on XP.
-            SYSTEM_CONFIG_PATH = []
-    else:
-        SYSTEM_CONFIG_PATH = [
-            "/usr/local/etc/jupyter",
-            "/etc/jupyter",
-        ]
+    SYSTEM_CONFIG_PATH = [
+        "/usr/local/etc/jupyter",
+        "/etc/jupyter",
+    ]
 ENV_CONFIG_PATH: list[str] = [str(Path(sys.prefix, "etc", "jupyter"))]
 
 
@@ -986,7 +985,7 @@ def secure_write(fname: str, binary: bool = False) -> Iterator[Any]:
         else:
             # Python on windows does not respect the group and public bits for chmod, so we need
             # to take additional steps to secure the contents.
-            # Touch file pre-emptively to avoid editing permissions in open files in Windows
+            # Touch file preemptively to avoid editing permissions in open files in Windows
             fd = os.open(fname, open_flag, 0o0600)
             os.close(fd)
             open_flag = os.O_WRONLY | os.O_TRUNC

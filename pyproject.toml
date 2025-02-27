@@ -108,6 +108,10 @@ python_version = "3.8"
 strict = true
 enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 warn_unreachable = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+warn_redundant_casts = true
+disallow_untyped_calls = true
 
 [tool.pytest.ini_options]
 minversion = "7.0"
@@ -176,18 +180,16 @@ extend-select = [
   "S",           # flake8-bandit
 ]
 ignore = [
-  "PLR",    # Design related pylint codes
-  "Q000",   # Single quotes found but double quotes preferred
   "E501",   # Line too long (158 > 100 characters)
-  "UP007",  # Use `X | Y` for type annotations"
-  "SIM105", # Use `contextlib.suppress(...)`
+  "PLR0912",# Too many branches
+  "PLR0915",# Too many statements
+  "PLR2004",# Magic value used in comparison, consider replacing `...` with a constant variable
+  "RUF012", # Mutable class attributes should be annotated
   "S101",   # Use of assert
-  "RUF012"  # Mutable class attributes should be annotated
-]
-unfixable = [
-  "T201", # Don't touch print statements
-  "RUF100", # Don't touch noqa lines
-  "F401"  # Unused imports
+  "SIM103", # Return the condition directly
+  "SIM105", # Use `contextlib.suppress(...)`
+  "SIM108", # Use ternary operator
+  "UP007",  # Use `X | Y` for type annotations"
 ]
 isort.required-imports = ["from __future__ import annotations"]
 

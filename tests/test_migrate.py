@@ -1,6 +1,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 """Test config file migration"""
+
 from __future__ import annotations
 
 import os
@@ -29,7 +30,7 @@ dotipython = pjoin(here, "dotipython")
 dotipython_empty = pjoin(here, "dotipython_empty")
 
 
-@pytest.fixture()
+@pytest.fixture
 def td(request):
     """Fixture for a temporary directory"""
     td = mkdtemp("μnïcø∂e")
@@ -37,7 +38,7 @@ def td(request):
     shutil.rmtree(td)
 
 
-@pytest.fixture()
+@pytest.fixture
 def env(request):
     """Fixture for a full testing environment"""
     td = mkdtemp()
