@@ -144,8 +144,7 @@ def run_sync(coro: Callable[..., Awaitable[T]]) -> Callable[..., T]:
         Whatever the coroutine-function returns.
     """
 
-    if not inspect.iscoroutinefunction(coro):
-        raise AssertionError
+    assert inspect.iscoroutinefunction(coro)
 
     def wrapped(*args: Any, **kwargs: Any) -> Any:
         name = threading.current_thread().name
