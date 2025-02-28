@@ -11,7 +11,6 @@ classifiers = [
   "Intended Audience :: Developers",
   "Intended Audience :: System Administrators",
   "Intended Audience :: Science/Research",
-  "License :: OSI Approved :: BSD License",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3"
 ]
@@ -34,7 +33,6 @@ content-type = "text/plain"
 [project.urls]
 Homepage = "https://jupyter.org"
 Documentation = "https://jupyter-core.readthedocs.io/"
-Funding = "https://numfocus.org/"
 Source = "https://github.com/jupyter/jupyter_core"
 Tracker = "https://github.com/jupyter/jupyter_core/issues"
 
