@@ -41,9 +41,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
-      - name: Lint
-        run: |
-          hatch run typing:test
       - name: Test
         run: |
           hatch run cov:test
@@ -116,6 +113,7 @@ jobs:
         run: |
           hatch run typing:test
           hatch run lint:build
+          hatch run typing:test
           pipx run interrogate -v .
           pipx run doc8 --max-line-length=200
 
