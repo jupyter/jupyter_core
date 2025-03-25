@@ -6,5 +6,5 @@ Module contents
 
 .. automodule:: jupyter_core.utils
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
