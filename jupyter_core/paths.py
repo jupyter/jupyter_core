@@ -17,7 +17,7 @@ import tempfile
 import warnings
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Iterator, Optional
+from typing import Any, Iterator, Literal, Optional, overload
 
 import platformdirs
 
@@ -36,6 +36,14 @@ else:
 # UF_HIDDEN is a stat flag not defined in the stat module.
 # It is used by BSD to indicate hidden files.
 UF_HIDDEN = getattr(stat, "UF_HIDDEN", 32768)
+
+
+@overload
+def envset(name: str, default: bool = False) -> bool: ...
+
+
+@overload
+def envset(name: str, default: Literal[None]) -> Optional[bool]: ...
 
 
 def envset(name: str, default: Optional[bool] = False) -> Optional[bool]:
@@ -58,7 +66,7 @@ def use_platform_dirs() -> bool:
     We plan for this to default to False in jupyter_core version 5 and to True
     in jupyter_core version 6.
     """
-    return envset("JUPYTER_PLATFORM_DIRS", False)  # type:ignore[return-value]
+    return envset("JUPYTER_PLATFORM_DIRS", False)
 
 
 def get_home_dir() -> str:
@@ -103,7 +111,7 @@ def prefer_environment_over_user() -> bool:
     """Determine if environment-level paths should take precedence over user-level paths."""
     # If JUPYTER_PREFER_ENV_PATH is defined, that signals user intent, so return its value
     if "JUPYTER_PREFER_ENV_PATH" in os.environ:
-        return envset("JUPYTER_PREFER_ENV_PATH")  # type:ignore[return-value]
+        return envset("JUPYTER_PREFER_ENV_PATH")
 
     # If we are in a Python virtualenv, default to True (see https://docs.python.org/3/library/venv.html#venv-def)
     if sys.prefix != sys.base_prefix and _do_i_own(sys.prefix):
