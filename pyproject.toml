@@ -220,6 +220,7 @@ ignore-semiprivate=true
 ignore-property-decorators=true
 ignore-nested-functions=true
 ignore-nested-classes=true
+ignore-overloaded-functions=true
 fail-under=100
 exclude = ["docs", "tests"]
 
