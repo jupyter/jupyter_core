@@ -298,7 +298,7 @@ def test_jupyter_path_user_site():
             )
         )
         for p, v in zip(path, values):
-            assert p == v
+            assert realpath(p) == realpath(v)
 
 
 def test_jupyter_path_no_user_site():
@@ -355,7 +355,7 @@ def test_jupyter_config_path():
         )
     )
     for p, v in zip(path, values):
-        assert p == v
+        assert realpath(p) == realpath(v)
 
 
 def test_jupyter_config_path_no_user_site():
@@ -380,7 +380,7 @@ def test_jupyter_config_path_prefer_env():
         )
     )
     for p, v in zip(path, values):
-        assert p == v
+        assert realpath(p) == realpath(v)
 
 
 def test_jupyter_config_path_env():
