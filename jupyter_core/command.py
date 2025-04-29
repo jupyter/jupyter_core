@@ -92,7 +92,7 @@ def list_subcommands() -> list[str]:
     # construct a set of `('foo', 'bar') from `jupyter-foo-bar`
     for d in _path_with_self():
         try:
-            bin_paths = Path(d).iterdir()
+            bin_paths = list(Path(d).iterdir())
         except OSError:
             continue
         for path in bin_paths:
