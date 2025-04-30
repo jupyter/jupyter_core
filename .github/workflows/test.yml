@@ -40,6 +40,10 @@ jobs:
             python-version: "3.10"
     steps:
       - uses: actions/checkout@v4
+      - name: fix pipx on Python 3.8
+        if: ${{ matrix.python-version == '3.8' }}
+        run: |
+          echo PIPX_HOME=$HOME/.pipx_home >> $GITHUB_ENV
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Test
         run: |
