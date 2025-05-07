@@ -151,18 +151,17 @@ def run_sync(coro: Callable[..., Awaitable[T]]) -> Callable[..., T]:
         name = threading.current_thread().name
         inner = coro(*args, **kwargs)
         try:
-            # If a loop is currently running in this thread,
-            # use a task runner.
             asyncio.get_running_loop()
-            if name not in _runner_map:
-                _runner_map[name] = _TaskRunner()
-            return _runner_map[name].run(inner)
         except RuntimeError:
-            pass
+            # No loop running, run the loop for this thread.
+            loop = ensure_event_loop()
+            return loop.run_until_complete(inner)
 
-        # Run the loop for this thread.
-        loop = ensure_event_loop()
-        return loop.run_until_complete(inner)
+        # Loop is currently running in this thread,
+        # use a task runner.
+        if name not in _runner_map:
+            _runner_map[name] = _TaskRunner()
+        return _runner_map[name].run(inner)
 
     wrapped.__doc__ = coro.__doc__
     return wrapped

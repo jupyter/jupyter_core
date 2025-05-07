@@ -56,6 +56,24 @@ def test_run_sync():
 
     asyncio.run(foo())
 
+    error_msg = "__foo__"
+
+    async def error():
+        raise RuntimeError(error_msg)
+
+    error_sync = run_sync(error)
+
+    def test_error_sync():
+        with pytest.raises(RuntimeError, match=error_msg):
+            error_sync()
+
+    test_error_sync()
+
+    async def with_running_loop():
+        test_error_sync()
+
+    asyncio.run(with_running_loop())
+
 
 def test_ensure_async():
     async def main():
