@@ -338,26 +338,29 @@ def jupyter_path(*subdirs: str) -> list[str]:
     return paths
 
 
+ENV_CONFIG_PATH: list[str] = [str(Path(sys.prefix, "etc", "jupyter"))]
+
 if use_platform_dirs():
     if os.name == "nt" and not _use_programdata:
         # default PROGRAMDATA is not safe by default on Windows
-        SYSTEM_CONFIG_PATH = []
+        # use ENV to avoid an empty list, since some may assume this is non-empty
+        SYSTEM_CONFIG_PATH = ENV_CONFIG_PATH[:]
     else:
         SYSTEM_CONFIG_PATH = platformdirs.site_config_dir(
             APPNAME, appauthor=False, multipath=True
         ).split(os.pathsep)
 elif os.name == "nt":
     # PROGRAMDATA is not defined by default on XP, and not safe by default
+    # but make sure it's not empty
     if _win_programdata:
         SYSTEM_CONFIG_PATH = [str(Path(_win_programdata, "jupyter"))]
     else:
-        SYSTEM_CONFIG_PATH = []
+        SYSTEM_CONFIG_PATH = ENV_CONFIG_PATH[:]
 else:
     SYSTEM_CONFIG_PATH = [
         "/usr/local/etc/jupyter",
         "/etc/jupyter",
     ]
-ENV_CONFIG_PATH: list[str] = [str(Path(sys.prefix, "etc", "jupyter"))]
 
 
 def jupyter_config_path() -> list[str]:
