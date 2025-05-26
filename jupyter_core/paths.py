@@ -562,7 +562,7 @@ def is_hidden(abs_path: str | Path, abs_root: str | Path = "") -> bool:
     if abs_root:
         abs_root = Path(os.path.normpath(abs_root))
     else:
-        abs_root = Path(abs_path.root)
+        abs_root = list(abs_path.parents)[-1]
 
     if abs_path == abs_root:
         # root itself is never hidden
