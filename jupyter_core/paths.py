@@ -411,7 +411,13 @@ def jupyter_config_path() -> list[str]:
             if userdir not in user:
                 user.append(userdir)
 
-    env = [p for p in ENV_CONFIG_PATH if p not in SYSTEM_CONFIG_PATH]
+    # Windows usually doesn't have a 'system' prefix,
+    # so 'system' and 'env' are the same
+    # make sure that env can still be preferred in this case
+    if ENV_CONFIG_PATH == SYSTEM_CONFIG_PATH:
+        env = ENV_CONFIG_PATH
+    else:
+        env = [p for p in ENV_CONFIG_PATH if p not in SYSTEM_CONFIG_PATH]
 
     if prefer_environment_over_user():
         paths.extend(env)
