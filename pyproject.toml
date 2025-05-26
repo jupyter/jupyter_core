@@ -14,7 +14,7 @@ classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3"
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.8"
 dependencies = [
   "platformdirs>=2.5",
   "traitlets>=5.3",
@@ -102,7 +102,7 @@ build = [
 
 [tool.mypy]
 files = "jupyter_core"
-python_version = "3.9"
+python_version = "3.8"
 strict = true
 enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 warn_unreachable = true
