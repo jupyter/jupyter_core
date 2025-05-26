@@ -13,8 +13,11 @@ import subprocess
 import sys
 import tempfile
 import warnings
+from importlib import reload
+from pathlib import Path
 from unittest.mock import patch
 
+import platformdirs
 import pytest
 from platformdirs import __version_info__
 
@@ -72,6 +75,7 @@ def setup_function():
         "JUPYTER_PATH",
         "JUPYTER_PLATFORM_DIRS",
         "JUPYTER_RUNTIME_DIR",
+        "JUPYTER_USE_PROGRAMDATA",
     ]:
         os.environ.pop(var, None)
     # For these tests, default to preferring the user-level over environment-level paths
@@ -598,3 +602,40 @@ def test_insecure_write_warning():
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", UserWarning)
         issue_insecure_write_warning()
+
+
+@windows
+@pytest.mark.parametrize("use_programdata", ["1", "0", None])
+@pytest.mark.parametrize("use_platformdirs", ["1", "0"])
+def test_windows_programdata(request, tmp_path, use_programdata, use_platformdirs):
+    request.addfinalizer(lambda: reload(paths))
+    programdata = tmp_path / "programdata"
+    env = {
+        "PROGRAMDATA": str(programdata),
+        "JUPYTER_PLATFORM_DIRS": use_platformdirs,
+    }
+    if use_programdata is not None:
+        env["JUPYTER_USE_PROGRAMDATA"] = use_programdata
+    with patch.dict(os.environ, env):
+        reload(paths)
+        # SIM300 (yoda conditions) gets false positives
+        # when the 'variable' we are testing looks like a constant
+        if use_programdata in {"0", None}:
+            assert paths.SYSTEM_CONFIG_PATH == []
+            assert paths.SYSTEM_JUPYTER_PATH == [str(Path(sys.prefix, "share", "jupyter"))]  # noqa:SIM300
+        # use_programdata is True
+        elif use_platformdirs == "1":
+            assert paths.SYSTEM_CONFIG_PATH == (  # noqa:SIM300
+                platformdirs.site_config_dir(paths.APPNAME, appauthor=False, multipath=True).split(
+                    os.pathsep
+                )
+            )
+
+            assert paths.SYSTEM_JUPYTER_PATH == (  # noqa:SIM300
+                platformdirs.site_data_dir(paths.APPNAME, appauthor=False, multipath=True).split(
+                    os.pathsep
+                )
+            )
+        else:
+            assert paths.SYSTEM_CONFIG_PATH == [str(programdata / "jupyter")]  # noqa:SIM300
+            assert paths.SYSTEM_JUPYTER_PATH == [str(programdata / "jupyter")]  # noqa:SIM300

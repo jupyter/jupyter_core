@@ -210,10 +210,22 @@ def jupyter_runtime_dir() -> str:
     return pjoin(jupyter_data_dir(), "runtime")
 
 
+# %PROGRAMDATA% is not safe by default, require opt-in to trust it
+_use_programdata: bool = envset("JUPYTER_USE_PROGRAMDATA")
+# _win_programdata is a path str if we're using it, None otherwise
+_win_programdata: str | None = None
+if os.name == "nt" and _use_programdata:
+    _win_programdata = os.environ.get("PROGRAMDATA", None)
+
+
 if use_platform_dirs():
-    SYSTEM_JUPYTER_PATH = platformdirs.site_data_dir(
-        APPNAME, appauthor=False, multipath=True
-    ).split(os.pathsep)
+    if os.name == "nt" and not _use_programdata:
+        # default PROGRAMDATA used by site_* is not safe by default on Windows
+        SYSTEM_JUPYTER_PATH = [str(Path(sys.prefix, "share", "jupyter"))]
+    else:
+        SYSTEM_JUPYTER_PATH = platformdirs.site_data_dir(
+            APPNAME, appauthor=False, multipath=True
+        ).split(os.pathsep)
 else:
     deprecation(
         "Jupyter is migrating its paths to use standard platformdirs\n"
@@ -223,10 +235,10 @@ else:
         "The use of platformdirs will be the default in `jupyter_core` v6"
     )
     if os.name == "nt":
-        programdata = os.environ.get("PROGRAMDATA", None)
-        if programdata:
-            SYSTEM_JUPYTER_PATH = [pjoin(programdata, "jupyter")]
-        else:  # PROGRAMDATA is not defined by default on XP.
+        # PROGRAMDATA is not defined by default on XP, and not safe by default
+        if _win_programdata:
+            SYSTEM_JUPYTER_PATH = [pjoin(_win_programdata, "jupyter")]
+        else:
             SYSTEM_JUPYTER_PATH = [str(Path(sys.prefix, "share", "jupyter"))]
     else:
         SYSTEM_JUPYTER_PATH = [
@@ -238,18 +250,39 @@ ENV_JUPYTER_PATH: list[str] = [str(Path(sys.prefix, "share", "jupyter"))]
 
 
 def jupyter_path(*subdirs: str) -> list[str]:
-    """Return a list of directories to search for data files
+    """Return a list of directories to search for data files.
 
-    JUPYTER_PATH environment variable has highest priority.
+    There are four sources of paths to search:
+
+    - $JUPYTER_PATH environment variable (always highest priority)
+    - user directories (e.g. ~/.local/share/jupyter)
+    - environment directories (e.g. {sys.prefix}/share/jupyter)
+    - system-wide paths (e.g. /usr/local/share/jupyter)
+
+    JUPYTER_PATH environment variable has highest priority, if defined,
+    and is purely additive.
 
     If the JUPYTER_PREFER_ENV_PATH environment variable is set, the environment-level
     directories will have priority over user-level directories.
+    You can also set JUPYTER_PREFER_ENV_PATH=0 to explicitly prefer user directories.
+    If Jupyter detects that you are in a virtualenv or conda environment,
+    environment paths are also preferred to user paths,
+    otherwise user paths are preferred to environment paths.
 
     If the Python site.ENABLE_USER_SITE variable is True, we also add the
     appropriate Python user site subdirectory to the user-level directories.
 
+    Finally, system-wide directories, such as `/usr/local/share/jupyter` are searched.
 
     If ``*subdirs`` are given, that subdirectory will be added to each element.
+
+
+    .. versionchanged:: 5.8
+
+        On Windows, %PROGRAMDATA% will be used as a system-wide path only if
+        the JUPYTER_USE_PROGRAMDATA env is set.
+        By default, there is no default system-wide path on Windows and the env path
+        is used instead.
 
     Examples:
 
@@ -278,7 +311,13 @@ def jupyter_path(*subdirs: str) -> list[str]:
             if userdir not in user:
                 user.append(userdir)
 
-    env = [p for p in ENV_JUPYTER_PATH if p not in SYSTEM_JUPYTER_PATH]
+    # Windows usually doesn't have a 'system' prefix,
+    # so 'system' and 'env' are the same
+    # make sure that env can still be preferred in this case
+    if ENV_JUPYTER_PATH == SYSTEM_JUPYTER_PATH:
+        env = ENV_JUPYTER_PATH
+    else:
+        env = [p for p in ENV_JUPYTER_PATH if p not in SYSTEM_JUPYTER_PATH]
 
     if prefer_environment_over_user():
         paths.extend(env)
@@ -287,8 +326,10 @@ def jupyter_path(*subdirs: str) -> list[str]:
         paths.extend(user)
         paths.extend(env)
 
-    # finally, system
-    paths.extend(SYSTEM_JUPYTER_PATH)
+    # finally, add system paths (can overlap with env, so avoid duplicates)
+    for _path in SYSTEM_JUPYTER_PATH:
+        if _path not in paths:
+            paths.append(_path)
 
     # add subdir, if requested
     if subdirs:
@@ -297,14 +338,18 @@ def jupyter_path(*subdirs: str) -> list[str]:
 
 
 if use_platform_dirs():
-    SYSTEM_CONFIG_PATH = platformdirs.site_config_dir(
-        APPNAME, appauthor=False, multipath=True
-    ).split(os.pathsep)
+    if os.name == "nt" and not _use_programdata:
+        # default PROGRAMDATA is not safe by default on Windows
+        SYSTEM_CONFIG_PATH = []
+    else:
+        SYSTEM_CONFIG_PATH = platformdirs.site_config_dir(
+            APPNAME, appauthor=False, multipath=True
+        ).split(os.pathsep)
 elif os.name == "nt":
-    programdata = os.environ.get("PROGRAMDATA", None)
-    if programdata:
-        SYSTEM_CONFIG_PATH = [str(Path(programdata, "jupyter"))]
-    else:  # PROGRAMDATA is not defined by default on XP.
+    # PROGRAMDATA is not defined by default on XP, and not safe by default
+    if _win_programdata:
+        SYSTEM_CONFIG_PATH = [str(Path(_win_programdata, "jupyter"))]
+    else:
         SYSTEM_CONFIG_PATH = []
 else:
     SYSTEM_CONFIG_PATH = [
@@ -323,6 +368,21 @@ def jupyter_config_path() -> list[str]:
 
     If the Python site.ENABLE_USER_SITE variable is True, we also add the
     appropriate Python user site subdirectory to the user-level directories.
+
+    Finally, system-wide directories such as `/usr/local/etc/jupyter` are searched.
+
+
+    .. versionchanged:: 5.8
+
+        On Windows, %PROGRAMDATA% will be used as a system-wide path only if
+        the JUPYTER_USE_PROGRAMDATA env is set.
+        By default, there is no system-wide config path on Windows.
+
+    Examples:
+
+    >>> jupyter_config_path()
+    ['~/.jupyter', '~/.local/etc/jupyter', '/usr/local/etc/jupyter', '/etc/jupyter']
+
     """
     if os.environ.get("JUPYTER_NO_CONFIG"):
         # jupyter_config_dir makes a blank config when JUPYTER_NO_CONFIG is set.
