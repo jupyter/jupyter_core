@@ -2,6 +2,14 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+<!-- START SILENT CHANGELOG ENTRY -->
+
+## 5.8.0
+
+<!-- END SILENT CHANGELOG ENTRY -->
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 5.7.2
 
 ([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.7.1...1264a81fc834f18db2b41e136ec4ac9d1a4ad993))
@@ -17,8 +25,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2024-01-08&to=2024-03-12&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2024-01-08..2024-03-12&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Apre-commit-ci+updated%3A2024-01-08..2024-03-12&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 5.7.1
 
