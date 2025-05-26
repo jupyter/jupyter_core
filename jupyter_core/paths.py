@@ -491,7 +491,7 @@ def is_file_hidden_win(abs_path: str | Path, stat_res: Any | None = None) -> boo
     return False
 
 
-def is_file_hidden_posix(abs_path: str, stat_res: Any | None = None) -> bool:
+def is_file_hidden_posix(abs_path: str | Path, stat_res: Any | None = None) -> bool:
     """Is a file hidden?
 
     This only checks the file itself; it should be called in combination with
