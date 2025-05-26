@@ -40,7 +40,20 @@ jobs:
             python-version: "3.10"
     steps:
       - uses: actions/checkout@v4
-      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: install hatch
+        run: |
+          pip install --upgrade pip pipx
+          if [[ "${{ matrix.python-version }}" == "3.8" ]]; then
+            PIPX_HOME=$HOME/.pipx_home
+            mkdir $PIPX_HOME
+          fi
+          pipx install hatch
+
       - name: Test
         run: |
           hatch run cov:test

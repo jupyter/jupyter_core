@@ -86,17 +86,19 @@ def get_ipython_dir() -> str:
 def migrate_dir(src: str, dst: str) -> bool:
     """Migrate a directory from src to dst"""
     log = get_logger()
-    if not os.listdir(src):
+    src_path = Path(src)
+    dst_path = Path(dst)
+    if not any(src_path.iterdir()):
         log.debug("No files in %s", src)
         return False
-    if Path(dst).exists():
-        if os.listdir(dst):
+    if dst_path.exists():
+        if any(dst_path.iterdir()):
             # already exists, non-empty
             log.debug("%s already exists", dst)
             return False
-        Path(dst).rmdir()
+        dst_path.rmdir()
     log.info("Copying %s -> %s", src, dst)
-    ensure_dir_exists(Path(dst).parent)
+    ensure_dir_exists(dst_path.parent)
     shutil.copytree(src, dst, symlinks=True)
     return True
 
@@ -107,19 +109,20 @@ def migrate_file(src: str | Path, dst: str | Path, substitutions: Any = None) ->
     substitutions is an optional dict of {regex: replacement} for performing replacements on the file.
     """
     log = get_logger()
-    if Path(dst).exists():
+    dst_path = Path(dst)
+    if dst_path.exists():
         # already exists
         log.debug("%s already exists", dst)
         return False
     log.info("Copying %s -> %s", src, dst)
-    ensure_dir_exists(Path(dst).parent)
+    ensure_dir_exists(dst_path.parent)
     shutil.copy(src, dst)
     if substitutions:
-        with Path.open(Path(dst), encoding="utf-8") as f:
+        with dst_path.open() as f:
             text = f.read()
         for pat, replacement in substitutions.items():
             text = pat.sub(replacement, text)
-        with Path.open(Path(dst), "w", encoding="utf-8") as f:
+        with dst_path.open("w") as f:
             f.write(text)
     return True
 

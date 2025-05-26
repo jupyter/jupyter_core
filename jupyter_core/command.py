@@ -92,14 +92,15 @@ def list_subcommands() -> list[str]:
     # construct a set of `('foo', 'bar') from `jupyter-foo-bar`
     for d in _path_with_self():
         try:
-            names = os.listdir(d)
+            bin_paths = list(Path(d).iterdir())
         except OSError:
             continue
-        for name in names:
+        for path in bin_paths:
+            name = path.name
             if name.startswith("jupyter-"):
                 if sys.platform.startswith("win"):
                     # remove file-extension on Windows
-                    name = os.path.splitext(name)[0]  # noqa: PTH122, PLW2901
+                    name = path.stem
                 subcommand_tuples.add(tuple(name.split("-")[1:]))
     # build a set of subcommand strings, excluding subcommands whose parents are defined
     subcommands = set()
