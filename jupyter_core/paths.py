@@ -15,9 +15,10 @@ import stat
 import sys
 import tempfile
 import warnings
+from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Iterator, Literal, Optional, overload
+from typing import Any, Literal, Optional, overload
 
 import platformdirs
 
