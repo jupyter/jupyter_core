@@ -445,7 +445,7 @@ def exists(path: str) -> bool:
     return True
 
 
-def is_file_hidden_win(abs_path: str, stat_res: Any | None = None) -> bool:
+def is_file_hidden_win(abs_path: str | Path, stat_res: Any | None = None) -> bool:
     """Is a file hidden?
 
     This only checks the file itself; it should be called in combination with
@@ -461,7 +461,8 @@ def is_file_hidden_win(abs_path: str, stat_res: Any | None = None) -> bool:
         The result of calling stat() on abs_path. If not passed, this function
         will call stat() internally.
     """
-    if Path(abs_path).name.startswith("."):
+    abs_path = Path(abs_path)
+    if abs_path.name.startswith("."):
         return True
 
     if stat_res is None:
@@ -506,12 +507,13 @@ def is_file_hidden_posix(abs_path: str, stat_res: Any | None = None) -> bool:
         The result of calling stat() on abs_path. If not passed, this function
         will call stat() internally.
     """
-    if Path(abs_path).name.startswith("."):
+    abs_path = Path(abs_path)
+    if abs_path.name.startswith("."):
         return True
 
     if stat_res is None or stat.S_ISLNK(stat_res.st_mode):
         try:
-            stat_res = Path(abs_path).stat()
+            stat_res = abs_path.stat()
         except OSError as e:
             if e.errno == errno.ENOENT:
                 return False
@@ -536,7 +538,7 @@ else:
     is_file_hidden = is_file_hidden_posix
 
 
-def is_hidden(abs_path: str, abs_root: str = "") -> bool:
+def is_hidden(abs_path: str | Path, abs_root: str | Path = "") -> bool:
     """Is a file hidden or contained in a hidden directory?
 
     This will start with the rightmost path element and work backwards to the
@@ -550,42 +552,56 @@ def is_hidden(abs_path: str, abs_root: str = "") -> bool:
 
     Parameters
     ----------
-    abs_path : unicode
+    abs_path : str or Path
         The absolute path to check for hidden directories.
-    abs_root : unicode
+    abs_root : str or Path
         The absolute path of the root directory in which hidden directories
         should be checked for.
     """
-    abs_path = os.path.normpath(abs_path)
-    abs_root = os.path.normpath(abs_root)
+    abs_path = Path(os.path.normpath(abs_path))
+    if abs_root:
+        abs_root = Path(os.path.normpath(abs_root))
+    else:
+        abs_root = abs_path.root
 
     if abs_path == abs_root:
+        # root itself is never hidden
         return False
+
+    # check that arguments are valid
+    if not abs_path.is_absolute():
+        _msg = f"{abs_path=} is not absolute. abs_path must be absolute."
+        raise ValueError(_msg)
+    if not abs_root.is_absolute():
+        _msg = f"{abs_root=} is not absolute. abs_root must be absolute."
+        raise ValueError(_msg)
+    if not abs_path.is_relative_to(abs_root):
+        _msg = (
+            f"{abs_path=} is not a subdirectory of {abs_root=}. abs_path must be within abs_root."
+        )
+        raise ValueError(_msg)
 
     if is_file_hidden(abs_path):
         return True
 
-    if not abs_root:
-        abs_root = abs_path.split(os.sep, 1)[0] + os.sep
-    inside_root = abs_path[len(abs_root) :]
-    if any(part.startswith(".") for part in Path(inside_root).parts):
+    relative_path = abs_path.relative_to(abs_root)
+    if any(part.startswith(".") for part in relative_path.parts):
         return True
 
     # check UF_HIDDEN on any location up to root.
     # is_file_hidden() already checked the file, so start from its parent dir
-    path = str(Path(abs_path).parent)
-    while path and path.startswith(abs_root) and path != abs_root:
-        if not Path(path).exists():
-            path = str(Path(path).parent)
+    for parent in abs_path.parents:
+        if not parent.exists():
             continue
+        if parent == abs_root:
+            break
         try:
             # may fail on Windows junctions
-            st = os.lstat(path)
+            st = parent.lstat()
         except OSError:
             return True
         if getattr(st, "st_flags", 0) & UF_HIDDEN:
             return True
-        path = str(Path(path).parent)
 
     return False
 
