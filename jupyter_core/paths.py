@@ -427,7 +427,8 @@ def jupyter_config_path() -> list[str]:
         paths.extend(env)
 
     # Finally, system path
-    paths.extend(SYSTEM_CONFIG_PATH)
+    if ENV_CONFIG_PATH != SYSTEM_CONFIG_PATH:
+        paths.extend(SYSTEM_CONFIG_PATH)
     return paths
 
 
