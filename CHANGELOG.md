@@ -2,19 +2,62 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
-<!-- START SILENT CHANGELOG ENTRY -->
-
 ## 5.8.1
 
-<!-- END SILENT CHANGELOG ENTRY -->
+Fixes a regression in 5.8.0 for code which may assume SYSTEM_CONFIG_PATH is non-empty (Jupyter Server).
+
+([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.8.0...de1fe1fdfb2aeba5a492d047c9e800ce79158d40))
+
+### Bugs fixed
+
+- Convert license settings into PEP-639 format [#431](https://github.com/jupyter/jupyter_core/pull/431) ([@jbedorf](https://github.com/jbedorf))
+- use env config path for system config path when no system config path [#430](https://github.com/jupyter/jupyter_core/pull/430) ([@minrk](https://github.com/minrk))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2025-05-26&to=2025-05-27&type=c))
+
+[@jbedorf](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ajbedorf+updated%3A2025-05-26..2025-05-27&type=Issues) | [@minrk](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Aminrk+updated%3A2025-05-26..2025-05-27&type=Issues)
 
 <!-- <END NEW CHANGELOG ENTRY> -->
 
-<!-- START SILENT CHANGELOG ENTRY -->
-
 ## 5.8.0
 
-<!-- END SILENT CHANGELOG ENTRY -->
+([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.7.2...23150c018f00101d5459d3fa228498bea9be7279))
+
+### Security
+
+- Fixes CVE-2025-30167 / GHSA-33p9-3p43-82vq on Windows (advisory to be published 2025-06-02)
+
+### Bugs fixed
+
+- fix: handle RuntimeError correctly in run_sync [#425](https://github.com/jupyter/jupyter_core/pull/425) ([@hugokerstens](https://github.com/hugokerstens))
+
+### Maintenance and upkeep improvements
+
+- add security.md [#422](https://github.com/jupyter/jupyter_core/pull/422) ([@Carreau](https://github.com/Carreau))
+- chore: update pre-commit hooks [#421](https://github.com/jupyter/jupyter_core/pull/421) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- Bump actions/create-github-app-token from 1 to 2 in the actions group [#420](https://github.com/jupyter/jupyter_core/pull/420) ([@dependabot](https://github.com/dependabot))
+- fix package_spec in downstream tests [#419](https://github.com/jupyter/jupyter_core/pull/419) ([@minrk](https://github.com/minrk))
+- chore: hatch run run docs:api [#418](https://github.com/jupyter/jupyter_core/pull/418) ([@minrk](https://github.com/minrk))
+- narrow type of envset when it can't be None [#417](https://github.com/jupyter/jupyter_core/pull/417) ([@minrk](https://github.com/minrk))
+- update pre-commit [#416](https://github.com/jupyter/jupyter_core/pull/416) ([@Carreau](https://github.com/Carreau))
+- Update Pyproject metadata [#414](https://github.com/jupyter/jupyter_core/pull/414) ([@Carreau](https://github.com/Carreau))
+- remove donwstream check [#413](https://github.com/jupyter/jupyter_core/pull/413) ([@Carreau](https://github.com/Carreau))
+- A bunch of pre-commit and CI upgrade. [#412](https://github.com/jupyter/jupyter_core/pull/412) ([@Carreau](https://github.com/Carreau))
+- AssertionErrors should not be manually raised. [#411](https://github.com/jupyter/jupyter_core/pull/411) ([@Carreau](https://github.com/Carreau))
+- Build docs on ubuntu [#403](https://github.com/jupyter/jupyter_core/pull/403) ([@blink1073](https://github.com/blink1073))
+- Bump the actions group with 1 update [#395](https://github.com/jupyter/jupyter_core/pull/395) ([@dependabot](https://github.com/dependabot))
+
+### Documentation improvements
+
+- Miscelaneous docs update. [#401](https://github.com/jupyter/jupyter_core/pull/401) ([@Carreau](https://github.com/Carreau))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2024-03-12&to=2025-05-26&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ablink1073+updated%3A2024-03-12..2025-05-26&type=Issues) | [@Carreau](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3ACarreau+updated%3A2024-03-12..2025-05-26&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Adependabot+updated%3A2024-03-12..2025-05-26&type=Issues) | [@hugokerstens](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Ahugokerstens+updated%3A2024-03-12..2025-05-26&type=Issues) | [@minrk](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Aminrk+updated%3A2024-03-12..2025-05-26&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Akrassowski+updated%3A2024-03-12..2025-05-26&type=Issues)
 
 ## 5.7.2
 
