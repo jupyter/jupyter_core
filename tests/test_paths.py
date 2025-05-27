@@ -400,6 +400,14 @@ def test_jupyter_config_path_env():
     assert path[:2] == [pjoin("foo", "bar"), pjoin("bar", "baz")]
 
 
+def test_jupyter_config_path_duplicate_sys_env():
+    # make sure we don't repeat duplicate system/env paths
+    with patch("jupyter_core.paths.SYSTEM_CONFIG_PATH", paths.ENV_CONFIG_PATH):
+        config_path = jupyter_config_path()
+    for path in paths.ENV_CONFIG_PATH:
+        assert config_path.count(path) == 1
+
+
 def test_prefer_environment_over_user():
     with prefer_env:
         assert prefer_environment_over_user() is True
@@ -621,7 +629,7 @@ def test_windows_programdata(request, tmp_path, use_programdata, use_platformdir
         # SIM300 (yoda conditions) gets false positives
         # when the 'variable' we are testing looks like a constant
         if use_programdata in {"0", None}:
-            assert paths.SYSTEM_CONFIG_PATH == []
+            assert paths.SYSTEM_CONFIG_PATH == paths.ENV_CONFIG_PATH
             assert paths.SYSTEM_JUPYTER_PATH == [str(Path(sys.prefix, "share", "jupyter"))]  # noqa:SIM300
         # use_programdata is True
         elif use_platformdirs == "1":
