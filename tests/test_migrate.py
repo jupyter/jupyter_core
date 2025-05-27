@@ -132,9 +132,8 @@ def test_migrate_one(td):
         called["migrate_dir"] = True
         return migrate_dir(src, dst)
 
-    with (
-        patch.object(migrate_mod, "migrate_file", notice_m_file),
-        patch.object(migrate_mod, "migrate_dir", notice_m_dir),
+    with patch.object(migrate_mod, "migrate_file", notice_m_file), patch.object(
+        migrate_mod, "migrate_dir", notice_m_dir
     ):
         assert migrate_one(src, dst)
         assert called == {"migrate_file": True}
