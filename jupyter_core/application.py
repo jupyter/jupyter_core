@@ -158,7 +158,7 @@ class JupyterApp(Application):
                 return
 
         config_text = self.generate_config_file()
-        print("Writing default config to: {config_file!r}")
+        print(f"Writing default config to: {config_file!r}")
         ensure_dir_exists(Path(config_file).parent.resolve(), 0o700)
         with Path.open(Path(config_file), mode="w", encoding="utf-8") as f:
             f.write(config_text)
