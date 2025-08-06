@@ -150,9 +150,15 @@ def run_sync(coro: Callable[..., Awaitable[T]]) -> Callable[..., T]:
     def wrapped(*args: Any, **kwargs: Any) -> Any:
         name = threading.current_thread().name
         inner = coro(*args, **kwargs)
+
+        loop_running = False
         try:
             asyncio.get_running_loop()
+            loop_running = True
         except RuntimeError:
+            pass
+
+        if not loop_running:
             # No loop running, run the loop for this thread.
             loop = ensure_event_loop()
             return loop.run_until_complete(inner)
