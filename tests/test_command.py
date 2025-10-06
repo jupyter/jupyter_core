@@ -254,3 +254,65 @@ print(sys.argv[0])
 
 def test_version():
     assert isinstance(__version__, str)
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows-specific test")
+def test_execvp_quotes_path_with_parentheses():
+    """Test that _execvp properly quotes paths with parentheses on Windows"""
+    from jupyter_core.command import _execvp
+
+    # Test path: C:\Users\JohnDoe(TEST)\AppData\Local\env\tools\python.exe
+    test_path = r"C:\Users\JohnDoe(TEST)\AppData\Local\env\tools\python.exe"
+
+    with patch("jupyter_core.command.which", return_value=test_path), patch(
+        "jupyter_core.command.Popen"
+    ) as mock_popen, patch("jupyter_core.command.signal"), patch.object(sys, "exit"):
+        mock_process = mock_popen.return_value
+        mock_process.returncode = 0
+
+        _execvp("python", ["python"])
+
+        called_cmd = mock_popen.call_args[0][0]
+        expected = f'"{test_path}"'
+        assert called_cmd == expected, f"Expected: {expected!r}, Got: {called_cmd!r}"
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows-specific test")
+def test_execvp_quotes_simple_path():
+    """Test that _execvp properly quotes simple paths on Windows"""
+    from jupyter_core.command import _execvp
+
+    # Test path: C:\Users\JohnDoe\python.exe
+    test_path = r"C:\Users\JohnDoe\python.exe"
+
+    with patch("jupyter_core.command.which", return_value=test_path), patch(
+        "jupyter_core.command.Popen"
+    ) as mock_popen, patch("jupyter_core.command.signal"), patch.object(sys, "exit"):
+        mock_process = mock_popen.return_value
+        mock_process.returncode = 0
+
+        _execvp("python", ["python"])
+
+        called_cmd = mock_popen.call_args[0][0]
+        expected = f'"{test_path}"'
+        assert called_cmd == expected, f"Expected: {expected!r}, Got: {called_cmd!r}"
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows-specific test")
+def test_execvp_quotes_path_and_arguments():
+    """Test that _execvp quotes both path and arguments with spaces on Windows"""
+    from jupyter_core.command import _execvp
+
+    test_path = r"C:\Users\JohnDoe(TEST)\AppData\Local\env\tools\python.exe"
+
+    with patch("jupyter_core.command.which", return_value=test_path), patch(
+        "jupyter_core.command.Popen"
+    ) as mock_popen, patch("jupyter_core.command.signal"), patch.object(sys, "exit"):
+        mock_process = mock_popen.return_value
+        mock_process.returncode = 0
+
+        _execvp("python", ["python", "--config", "my config.py", "--flag"])
+
+        called_cmd = mock_popen.call_args[0][0]
+        expected = f'"{test_path}" "--config" "my config.py" "--flag"'
+        assert called_cmd == expected, f"Expected: {expected!r}, Got: {called_cmd!r}"
