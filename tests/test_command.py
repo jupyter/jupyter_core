@@ -265,9 +265,11 @@ def test_execvp_quotes_path_with_parentheses():
     test_path = r"C:\Users\JohnDoe(TEST)\AppData\Local\env\tools\python.exe"
     test_cmd = "python"
 
-    with patch("sys.platform", "win32"), patch("jupyter_core.command.which", return_value=test_path) as mock_which, patch(
-        "jupyter_core.command.Popen"
-    ) as mock_popen, patch("signal.signal"), patch.object(sys, "exit"):
+    with patch("sys.platform", "win32"), patch(
+        "jupyter_core.command.which", return_value=test_path
+    ) as mock_which, patch("jupyter_core.command.Popen") as mock_popen, patch(
+        "signal.signal"
+    ), patch.object(sys, "exit"):
         mock_process = mock_popen.return_value
         mock_process.returncode = 0
 
@@ -275,14 +277,14 @@ def test_execvp_quotes_path_with_parentheses():
 
         # Verify which() was called with the correct command
         mock_which.assert_called_once_with(test_cmd)
-        
+
         # Verify Popen was called with properly quoted command
         called_cmd = mock_popen.call_args[0][0]
         expected = f'"{test_path}"'
         assert called_cmd == expected, f"Expected: {expected!r}, Got: {called_cmd!r}"
 
 
-@pytest.mark.skipif(sys.platform != "win32", reason="Windows-specific test") 
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows-specific test")
 def test_execvp_quotes_simple_path():
     """Test that _execvp properly quotes simple paths on Windows"""
     from jupyter_core.command import _execvp
@@ -291,9 +293,11 @@ def test_execvp_quotes_simple_path():
     test_path = r"C:\Users\JohnDoe\python.exe"
     test_cmd = "python"
 
-    with patch("sys.platform", "win32"), patch("jupyter_core.command.which", return_value=test_path) as mock_which, patch(
-        "jupyter_core.command.Popen"
-    ) as mock_popen, patch("signal.signal"), patch.object(sys, "exit"):
+    with patch("sys.platform", "win32"), patch(
+        "jupyter_core.command.which", return_value=test_path
+    ) as mock_which, patch("jupyter_core.command.Popen") as mock_popen, patch(
+        "signal.signal"
+    ), patch.object(sys, "exit"):
         mock_process = mock_popen.return_value
         mock_process.returncode = 0
 
@@ -301,7 +305,7 @@ def test_execvp_quotes_simple_path():
 
         # Verify which() was called with the correct command
         mock_which.assert_called_once_with(test_cmd)
-        
+
         # Verify Popen was called with properly quoted command
         called_cmd = mock_popen.call_args[0][0]
         expected = f'"{test_path}"'
@@ -327,7 +331,7 @@ def test_execvp_quotes_path_and_arguments():
 
         # Verify which() was called with the correct command
         mock_which.assert_called_once_with(test_cmd)
-        
+
         # Verify Popen was called with properly quoted command and arguments
         called_cmd = mock_popen.call_args[0][0]
         expected = f'"{test_path}" "--config" "my config.py" "--flag"'
@@ -344,7 +348,7 @@ def test_execvp_command_not_found():
     with patch("jupyter_core.command.which", return_value=None):
         with pytest.raises(OSError) as exc_info:
             _execvp(test_cmd, [test_cmd])
-        
+
         assert "not found" in str(exc_info.value)
 
 
@@ -370,8 +374,10 @@ def test_execvp_different_commands():
 
             # Verify which() was called with the correct command
             mock_which.assert_called_once_with(test_cmd)
-            
+
             # Verify Popen was called with properly quoted command
             called_cmd = mock_popen.call_args[0][0]
             expected = f'"{test_path}" "--help"'
-            assert called_cmd == expected, f"For cmd {test_cmd}: Expected: {expected!r}, Got: {called_cmd!r}"
+            assert called_cmd == expected, (
+                f"For cmd {test_cmd}: Expected: {expected!r}, Got: {called_cmd!r}"
+            )
