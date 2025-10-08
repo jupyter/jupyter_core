@@ -123,7 +123,9 @@ def _execvp(cmd: str, argv: list[str]) -> None:
         if cmd_path is None:
             msg = f"{cmd!r} not found"
             raise OSError(msg, errno.ENOENT)
-        p = Popen([cmd_path] + argv[1:])  # noqa: S603
+        # Quoting path in Windows
+        cmd_line = f'"{cmd_path}"' + "".join(f' "{arg}"' for arg in argv[1:])
+        p = Popen(cmd_line)  # noqa: S603
         # Don't raise KeyboardInterrupt in the parent process.
         # Set this after spawning, to avoid subprocess inheriting handler.
         import signal
