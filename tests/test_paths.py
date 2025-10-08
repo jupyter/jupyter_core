@@ -301,7 +301,7 @@ def test_jupyter_path_user_site():
                 ]
             )
         )
-        for p, v in zip(path, values):
+        for p, v in zip(path, values, strict=False):
             assert p == v
 
 
@@ -358,7 +358,7 @@ def test_jupyter_config_path():
             ]
         )
     )
-    for p, v in zip(path, values):
+    for p, v in zip(path, values, strict=False):
         assert p == v
 
 
@@ -383,7 +383,7 @@ def test_jupyter_config_path_prefer_env():
             ]
         )
     )
-    for p, v in zip(path, values):
+    for p, v in zip(path, values, strict=False):
         assert p == v
 
 
