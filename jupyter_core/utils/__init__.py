@@ -9,10 +9,11 @@ import inspect
 import sys
 import threading
 import warnings
+from collections.abc import Awaitable, Callable
 from contextvars import ContextVar
 from pathlib import Path
 from types import FrameType
-from typing import Any, Awaitable, Callable, TypeVar, cast
+from typing import Any, TypeVar, cast
 
 
 def ensure_dir_exists(path: str | Path, mode: int = 0o777) -> None:
