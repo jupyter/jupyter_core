@@ -9,10 +9,11 @@ import inspect
 import sys
 import threading
 import warnings
+from collections.abc import Awaitable, Callable
 from contextvars import ContextVar
 from pathlib import Path
 from types import FrameType
-from typing import Any, Awaitable, Callable, TypeVar, cast
+from typing import Any, TypeVar, cast
 
 
 def ensure_dir_exists(path: str | Path, mode: int = 0o777) -> None:
@@ -182,7 +183,17 @@ def ensure_event_loop(prefer_selector_loop: bool = False) -> asyncio.AbstractEve
         loop = asyncio.get_running_loop()
     except RuntimeError:
         if sys.platform == "win32" and prefer_selector_loop:
-            loop = asyncio.WindowsSelectorEventLoopPolicy().new_event_loop()
+            if (3, 14) <= sys.version_info < (3, 15):
+                # ignore deprecation only for 3.14 and revisit later.
+                with warnings.catch_warnings():
+                    warnings.filterwarnings(
+                        "ignore",
+                        DeprecationWarning,
+                        message=".*WindowsSelectorEventLoopPolicy.*",
+                    )
+                    loop = asyncio.WindowsSelectorEventLoopPolicy().new_event_loop()
+            else:
+                loop = asyncio.WindowsSelectorEventLoopPolicy().new_event_loop()
         else:
             loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)

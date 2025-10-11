@@ -65,7 +65,7 @@ def write_executable(path, source):
 
     if sys.platform == "win32":
         try:
-            import importlib.resources
+            import importlib.resources  # noqa: PLC0415
 
             if not hasattr(importlib.resources, "files"):
                 raise ImportError
@@ -152,7 +152,7 @@ def test_subcommand_not_found():
     assert "Jupyter command `jupyter-nonexistant-subcommand` not found." in stderr
 
 
-@patch.object(sys, "argv", [__file__] + sys.argv[1:])
+@patch.object(sys, "argv", [__file__, *sys.argv[1:]])
 def test_subcommand_list(tmpdir):
     a = tmpdir.mkdir("a")
     for cmd in ("jupyter-foo-bar", "jupyter-xyz", "jupyter-babel-fish"):

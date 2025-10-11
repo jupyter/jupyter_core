@@ -301,7 +301,7 @@ def test_jupyter_path_user_site():
                 ]
             )
         )
-        for p, v in zip(path, values):
+        for p, v in zip(path, values, strict=False):
             assert p == v
 
 
@@ -358,7 +358,7 @@ def test_jupyter_config_path():
             ]
         )
     )
-    for p, v in zip(path, values):
+    for p, v in zip(path, values, strict=False):
         assert p == v
 
 
@@ -383,7 +383,7 @@ def test_jupyter_config_path_prefer_env():
             ]
         )
     )
-    for p, v in zip(path, values):
+    for p, v in zip(path, values, strict=False):
         assert p == v
 
 
@@ -499,7 +499,7 @@ def test_is_hidden_win32_cpython():
     reason="only run on windows/pypy < 7.3.6: https://foss.heptapod.net/pypy/pypy/-/issues/3469",
 )
 def test_is_hidden_win32_pypy():
-    import ctypes  # noqa: F401
+    import ctypes  # noqa: F401, PLC0415
 
     with tempfile.TemporaryDirectory() as root:
         subdir1 = os.path.join(root, "subdir")

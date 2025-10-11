@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import os
 import shutil
+import sys
 from tempfile import mkdtemp
 from unittest.mock import patch
 
@@ -179,6 +180,7 @@ class AsyncTornadoApp(AsyncApp):
     _prefer_selector_loop = True
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
 def test_async_tornado_app():
     AsyncTornadoApp.launch_instance([])
     app = AsyncApp.instance()
