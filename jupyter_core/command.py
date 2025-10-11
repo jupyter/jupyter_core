@@ -43,7 +43,7 @@ class JupyterParser(argparse.ArgumentParser):
     def argcomplete(self) -> None:
         """Trigger auto-completion, if enabled"""
         try:
-            import argcomplete
+            import argcomplete  # noqa: PLC0415
 
             argcomplete.autocomplete(self)
         except ImportError:
@@ -123,10 +123,10 @@ def _execvp(cmd: str, argv: list[str]) -> None:
         if cmd_path is None:
             msg = f"{cmd!r} not found"
             raise OSError(msg, errno.ENOENT)
-        p = Popen([cmd_path] + argv[1:])  # noqa: S603
+        p = Popen([cmd_path, *argv[1:]])  # noqa: S603
         # Don't raise KeyboardInterrupt in the parent process.
         # Set this after spawning, to avoid subprocess inheriting handler.
-        import signal
+        import signal  # noqa: PLC0415
 
         signal.signal(signal.SIGINT, signal.SIG_IGN)
         p.wait()
@@ -203,7 +203,7 @@ def _evaluate_argcomplete(parser: JupyterParser) -> list[str]:
     try:
         # traitlets >= 5.8 provides some argcomplete support,
         # use helper methods to jump to argcomplete
-        from traitlets.config.argcomplete_config import (
+        from traitlets.config.argcomplete_config import (  # noqa: PLC0415
             get_argcomplete_cwords,
             increment_argcomplete_index,
         )
@@ -237,7 +237,7 @@ def main() -> None:
         # Avoids argparse gobbling up args passed to subcommand, such as `-h`.
         subcommand = argv[1]
     else:
-        args, opts = parser.parse_known_args()
+        args, _opts = parser.parse_known_args()
         subcommand = args.subcommand
         if args.version:
             print("Selected Jupyter core packages...")
@@ -399,7 +399,7 @@ def main() -> None:
         sys.exit(str(e))
 
     try:
-        _execvp(command, [command] + argv[2:])
+        _execvp(command, [command, *argv[2:]])
     except OSError as e:
         sys.exit(f"Error executing Jupyter command {subcommand!r}: {e}")
 

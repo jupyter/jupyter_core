@@ -10,10 +10,10 @@ import os
 import platform
 import subprocess
 import sys
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 
-def subs(cmd: Union[list[str], str]) -> Optional[str]:
+def subs(cmd: Union[list[str], str]) -> str | None:
     """
     get data from commands that we need to run outside of python
     """
