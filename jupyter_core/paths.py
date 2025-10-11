@@ -15,9 +15,10 @@ import stat
 import sys
 import tempfile
 import warnings
+from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Iterator, Literal, Optional, overload
+from typing import Any, overload
 
 import platformdirs
 
@@ -43,10 +44,10 @@ def envset(name: str, default: bool = False) -> bool: ...
 
 
 @overload
-def envset(name: str, default: Literal[None]) -> Optional[bool]: ...
+def envset(name: str, default: None) -> bool | None: ...
 
 
-def envset(name: str, default: Optional[bool] = False) -> Optional[bool]:
+def envset(name: str, default: bool | None = False) -> bool | None:
     """Return the boolean value of a given environment variable.
 
     An environment variable is considered set if it is assigned to a value
@@ -182,12 +183,14 @@ def jupyter_data_dir() -> str:
 
     if sys.platform == "darwin":
         return str(Path(home, "Library", "Jupyter"))
+    # Bug in mypy which thinks it's unreachable: https://github.com/python/mypy/issues/10773
     if sys.platform == "win32":
         appdata = os.environ.get("APPDATA", None)
         if appdata:
             return str(Path(appdata, "jupyter").resolve())
         return pjoin(jupyter_config_dir(), "data")
     # Linux, non-OS X Unix, AIX, etc.
+    # Bug in mypy which thinks it's unreachable: https://github.com/python/mypy/issues/10773
     xdg = env.get("XDG_DATA_HOME", None)
     if not xdg:
         xdg = pjoin(home, ".local", "share")
@@ -303,7 +306,7 @@ def jupyter_path(*subdirs: str) -> list[str]:
     if site.ENABLE_USER_SITE:
         # Check if site.getuserbase() exists to be compatible with virtualenv,
         # which often does not have this method.
-        userbase: Optional[str]
+        userbase: str | None
         userbase = site.getuserbase() if hasattr(site, "getuserbase") else site.USER_BASE
 
         if userbase:
@@ -400,7 +403,7 @@ def jupyter_config_path() -> list[str]:
     # Next is environment or user, depending on the JUPYTER_PREFER_ENV_PATH flag
     user = [jupyter_config_dir()]
     if site.ENABLE_USER_SITE:
-        userbase: Optional[str]
+        userbase: str | None
         # Check if site.getuserbase() exists to be compatible with virtualenv,
         # which often does not have this method.
         userbase = site.getuserbase() if hasattr(site, "getuserbase") else site.USER_BASE
@@ -442,7 +445,7 @@ def exists(path: str) -> bool:
     return True
 
 
-def is_file_hidden_win(abs_path: str, stat_res: Optional[Any] = None) -> bool:
+def is_file_hidden_win(abs_path: str, stat_res: Any | None = None) -> bool:
     """Is a file hidden?
 
     This only checks the file itself; it should be called in combination with
@@ -487,7 +490,7 @@ def is_file_hidden_win(abs_path: str, stat_res: Optional[Any] = None) -> bool:
     return False
 
 
-def is_file_hidden_posix(abs_path: str, stat_res: Optional[Any] = None) -> bool:
+def is_file_hidden_posix(abs_path: str, stat_res: Any | None = None) -> bool:
     """Is a file hidden?
 
     This only checks the file itself; it should be called in combination with
@@ -602,12 +605,12 @@ def win32_restrict_file_to_user(fname: str) -> None:
         The path to the file to secure
     """
     try:
-        import win32api
+        import win32api  # noqa: PLC0415
     except ImportError:
         return _win32_restrict_file_to_user_ctypes(fname)
 
-    import ntsecuritycon as con
-    import win32security
+    import ntsecuritycon as con  # noqa: PLC0415
+    import win32security  # noqa: PLC0415
 
     # everyone, _domain, _type = win32security.LookupAccountName("", "Everyone")
     admins = win32security.CreateWellKnownSid(win32security.WinBuiltinAdministratorsSid)
@@ -646,8 +649,8 @@ def _win32_restrict_file_to_user_ctypes(fname: str) -> None:
     fname : unicode
         The path to the file to secure
     """
-    import ctypes
-    from ctypes import wintypes
+    import ctypes  # noqa: PLC0415
+    from ctypes import wintypes  # noqa: PLC0415
 
     advapi32 = ctypes.WinDLL("advapi32", use_last_error=True)  # type:ignore[attr-defined]
     secur32 = ctypes.WinDLL("secur32", use_last_error=True)  # type:ignore[attr-defined]

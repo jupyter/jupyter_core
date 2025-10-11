@@ -177,7 +177,7 @@ class JupyterApp(Application):
             f_marker.close()
             return  # so we must have already migrated -> bail out
 
-        from .migrate import get_ipython_dir, migrate
+        from .migrate import get_ipython_dir, migrate  # noqa: PLC0415
 
         # No IPython dir, nothing to migrate
         if not Path(get_ipython_dir()).exists():
@@ -264,7 +264,7 @@ class JupyterApp(Application):
     def start(self) -> None:
         """Start the whole thing"""
         if self.subcommand:
-            os.execv(self.subcommand, [self.subcommand] + self.argv[1:])  # noqa: S606
+            os.execv(self.subcommand, [self.subcommand, *self.argv[1:]])  # noqa: S606
             raise NoStart()
 
         if self.subapp:

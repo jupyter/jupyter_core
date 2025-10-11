@@ -96,7 +96,7 @@ dependencies = ["pre-commit"]
 detached = true
 [tool.hatch.envs.lint.scripts]
 build = [
-  "pre-commit run --all-files ruff",
+  "pre-commit run --all-files ruff-check",
   "pre-commit run --all-files ruff-format"
 ]
 
@@ -110,6 +110,11 @@ disallow_incomplete_defs = true
 disallow_untyped_defs = true
 warn_redundant_casts = true
 disallow_untyped_calls = true
+# This is a workaround for a mypy bug which is incapable of treating sys.platform
+# correctly https://github.com/python/mypy/issues/10773
+# With pre-commit running on user platform and linux on CI you can't get the
+# types right, so we pin platform to linux
+platform = "linux"
 
 [tool.pytest.ini_options]
 minversion = "7.0"
