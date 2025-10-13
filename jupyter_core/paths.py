@@ -22,8 +22,6 @@ from typing import Any, overload
 
 import platformdirs
 
-from .utils import deprecation
-
 pjoin = os.path.join
 
 # Capitalize Jupyter in paths only on Windows and MacOS (when not in Homebrew)
@@ -64,8 +62,7 @@ def envset(name: str, default: bool | None = False) -> bool | None:
 def use_platform_dirs() -> bool:
     """Determine if platformdirs should be used for system-specific paths.
 
-    We plan for this to default to False in jupyter_core version 5 and to True
-    in jupyter_core version 6.
+    The default is False.
     """
     return envset("JUPYTER_PLATFORM_DIRS", False)
 
@@ -229,14 +226,8 @@ if use_platform_dirs():
         SYSTEM_JUPYTER_PATH = platformdirs.site_data_dir(
             APPNAME, appauthor=False, multipath=True
         ).split(os.pathsep)
-else:
-    deprecation(
-        "Jupyter is migrating its paths to use standard platformdirs\n"
-        "given by the platformdirs library.  To remove this warning and\n"
-        "see the appropriate new directories, set the environment variable\n"
-        "`JUPYTER_PLATFORM_DIRS=1` and then run `jupyter --paths`.\n"
-        "The use of platformdirs will be the default in `jupyter_core` v6"
-    )
+else:  # noqa: PLR5501
+    # default dirs
     if os.name == "nt":
         # PROGRAMDATA is not defined by default on XP, and not safe by default
         if _win_programdata:
