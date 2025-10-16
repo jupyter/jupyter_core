@@ -188,7 +188,7 @@ def ensure_event_loop(prefer_selector_loop: bool = False) -> asyncio.AbstractEve
                 with warnings.catch_warnings():
                     warnings.filterwarnings(
                         "ignore",
-                        DeprecationWarning,
+                        category=DeprecationWarning,
                         message=".*WindowsSelectorEventLoopPolicy.*",
                     )
                     loop = asyncio.WindowsSelectorEventLoopPolicy().new_event_loop()
