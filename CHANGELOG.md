@@ -21,7 +21,7 @@
 - remove deprecation warning, platformdirs won't become default [#447](https://github.com/jupyter/jupyter_core/pull/447) ([@minrk](https://github.com/minrk))
 - Bump github/codeql-action from 3 to 4 in the actions group [#446](https://github.com/jupyter/jupyter_core/pull/446) ([@dependabot](https://github.com/dependabot))
 - require python 3.10, start to test on 3.14 and 3.14-free-threaded [#445](https://github.com/jupyter/jupyter_core/pull/445) ([@Carreau](https://github.com/Carreau))
-- remove pywin32 dependancy so free-threading can fly (like pypy) [#441](https://github.com/jupyter/jupyter_core/pull/441) ([@stonebig](https://github.com/stonebig))
+- remove pywin32 dependency so free-threading can fly (like pypy) [#441](https://github.com/jupyter/jupyter_core/pull/441) ([@stonebig](https://github.com/stonebig))
 - Bump the actions group across 1 directory with 2 updates [#440](https://github.com/jupyter/jupyter_core/pull/440) ([@dependabot](https://github.com/dependabot))
 
 ### Documentation improvements
