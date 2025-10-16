@@ -2,13 +2,45 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 5.9.0
+
+([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.8.1...735131c141102c376539303564f5d305dc666333))
+
+### Enhancements made
+
+- nicer traceback in missing loop case outside except in run_sync [#437](https://github.com/jupyter/jupyter_core/pull/437) ([@AThePeanut4](https://github.com/AThePeanut4))
+
+### Bugs fixed
+
+- Fix missing `f` specifier in f-string used to print config file path [#433](https://github.com/jupyter/jupyter_core/pull/433) ([@krassowski](https://github.com/krassowski))
+- validate inputs to is_hidden [#429](https://github.com/jupyter/jupyter_core/pull/429) ([@minrk](https://github.com/minrk))
+
+### Maintenance and upkeep improvements
+
+- try to fix some downstream tests [#448](https://github.com/jupyter/jupyter_core/pull/448) ([@Carreau](https://github.com/Carreau))
+- remove deprecation warning, platformdirs won't become default [#447](https://github.com/jupyter/jupyter_core/pull/447) ([@minrk](https://github.com/minrk))
+- Bump github/codeql-action from 3 to 4 in the actions group [#446](https://github.com/jupyter/jupyter_core/pull/446) ([@dependabot](https://github.com/dependabot))
+- require python 3.10, start to test on 3.14 and 3.14-free-threaded [#445](https://github.com/jupyter/jupyter_core/pull/445) ([@Carreau](https://github.com/Carreau))
+- remove pywin32 dependancy so free-threading can fly (like pypy) [#441](https://github.com/jupyter/jupyter_core/pull/441) ([@stonebig](https://github.com/stonebig))
+- Bump the actions group across 1 directory with 2 updates [#440](https://github.com/jupyter/jupyter_core/pull/440) ([@dependabot](https://github.com/dependabot))
+
+### Documentation improvements
+
+- [Docs] Use extension:filetype mapping in sphinx configuration [#443](https://github.com/jupyter/jupyter_core/pull/443) ([@Carreau](https://github.com/Carreau))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2025-05-27&to=2025-10-16&type=c))
+
+[@AThePeanut4](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3AAThePeanut4+updated%3A2025-05-27..2025-10-16&type=Issues) | [@Carreau](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3ACarreau+updated%3A2025-05-27..2025-10-16&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Adependabot+updated%3A2025-05-27..2025-10-16&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Akrassowski+updated%3A2025-05-27..2025-10-16&type=Issues) | [@minrk](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Aminrk+updated%3A2025-05-27..2025-10-16&type=Issues) | [@nikimagic](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Anikimagic+updated%3A2025-05-27..2025-10-16&type=Issues) | [@stonebig](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Astonebig+updated%3A2025-05-27..2025-10-16&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 <!-- START SILENT CHANGELOG ENTRY -->
 
 ## 5.8.1
 
 <!-- END SILENT CHANGELOG ENTRY -->
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 <!-- START SILENT CHANGELOG ENTRY -->
 
