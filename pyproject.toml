@@ -27,7 +27,7 @@ name = "Jupyter Development Team"
 email = "jupyter@googlegroups.org"
 
 [project.readme]
-text = "There is no reason to install this package on its own."
+text = "Jupyter core package. A base package on which Jupyter projects rely."
 content-type = "text/plain"
 
 [project.urls]
