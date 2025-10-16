@@ -2,6 +2,14 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+<!-- START SILENT CHANGELOG ENTRY -->
+
+## 5.9.1
+
+<!-- END SILENT CHANGELOG ENTRY -->
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 5.9.0
 
 ([Full Changelog](https://github.com/jupyter/jupyter_core/compare/v5.8.1...735131c141102c376539303564f5d305dc666333))
@@ -33,8 +41,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter/jupyter_core/graphs/contributors?from=2025-05-27&to=2025-10-16&type=c))
 
 [@AThePeanut4](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3AAThePeanut4+updated%3A2025-05-27..2025-10-16&type=Issues) | [@Carreau](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3ACarreau+updated%3A2025-05-27..2025-10-16&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Adependabot+updated%3A2025-05-27..2025-10-16&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Akrassowski+updated%3A2025-05-27..2025-10-16&type=Issues) | [@minrk](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Aminrk+updated%3A2025-05-27..2025-10-16&type=Issues) | [@nikimagic](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Anikimagic+updated%3A2025-05-27..2025-10-16&type=Issues) | [@stonebig](https://github.com/search?q=repo%3Ajupyter%2Fjupyter_core+involves%3Astonebig+updated%3A2025-05-27..2025-10-16&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 <!-- START SILENT CHANGELOG ENTRY -->
 
