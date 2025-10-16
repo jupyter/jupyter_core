@@ -65,6 +65,7 @@ jobs:
         uses: jupyterlab/maintainer-tools/.github/actions/downstream-test@v1
         with:
           package_name: jupyter_client
+          package_spec: ".[test]"
 
   pytest_jupyter:
     runs-on: ubuntu-latest
