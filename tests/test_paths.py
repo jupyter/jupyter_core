@@ -118,7 +118,7 @@ def test_config_dir():
 def test_config_dir_darwin():
     config = jupyter_config_dir()
 
-    assert config == realpath("~/Library/Application Support/Jupyter")
+    assert config == realpath(f"~/Library/Application Support/{paths.APPNAME}")
 
 
 @windows
@@ -173,7 +173,7 @@ def test_data_dir_darwin_legacy():
 @use_platformdirs
 def test_data_dir_darwin():
     data = jupyter_data_dir()
-    assert data == realpath("~/Library/Application Support/Jupyter")
+    assert data == realpath(f"~/Library/Application Support/{paths.APPNAME}")
 
 
 @windows
@@ -238,9 +238,9 @@ def test_runtime_dir_darwin_legacy():
 def test_runtime_dir_darwin():
     runtime = jupyter_runtime_dir()
     if __version_info__[0] < 3:
-        assert runtime == realpath("~/Library/Preferences/Jupyter/runtime")
+        assert runtime == realpath(f"~/Library/Preferences/{paths.APPNAME}/runtime")
         return
-    assert runtime == realpath("~/Library/Application Support/Jupyter/runtime")
+    assert runtime == realpath(f"~/Library/Application Support/{paths.APPNAME}/runtime")
 
 
 @windows
