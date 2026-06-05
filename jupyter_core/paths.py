@@ -25,9 +25,8 @@ import platformdirs
 pjoin = os.path.join
 
 # Capitalize Jupyter in paths only on Windows and MacOS (when not in Homebrew)
-if sys.platform == "win32" or (
-    sys.platform == "darwin" and not sys.prefix.startswith("/opt/homebrew")
-):
+_is_apple_silicon_homebrew = sys.platform == "darwin" and sys.prefix.startswith("/opt/homebrew")
+if sys.platform == "win32" or (sys.platform == "darwin" and not _is_apple_silicon_homebrew):
     APPNAME = "Jupyter"
 else:
     APPNAME = "jupyter"
@@ -239,6 +238,9 @@ else:  # noqa: PLR5501
             "/usr/local/share/jupyter",
             "/usr/share/jupyter",
         ]
+        # Apple Silicon Homebrew uses /opt/homebrew.
+        if _is_apple_silicon_homebrew:
+            SYSTEM_JUPYTER_PATH.insert(0, "/opt/homebrew/share/jupyter")
 
 ENV_JUPYTER_PATH: list[str] = [str(Path(sys.prefix, "share", "jupyter"))]
 
@@ -354,6 +356,8 @@ else:
         "/usr/local/etc/jupyter",
         "/etc/jupyter",
     ]
+    if _is_apple_silicon_homebrew:
+        SYSTEM_CONFIG_PATH.insert(0, "/opt/homebrew/etc/jupyter")
 
 
 def jupyter_config_path() -> list[str]:
