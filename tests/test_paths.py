@@ -625,6 +625,34 @@ def test_insecure_write_warning():
         issue_insecure_write_warning()
 
 
+@pytest.mark.parametrize(
+    ("prefix", "expect_homebrew"),
+    [
+        ("/opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13", True),
+        (
+            "/opt/homebrew/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13",
+            True,
+        ),
+        ("/Library/Frameworks/Python.framework/Versions/3.13", False),
+        ("/usr/local/opt/python@3.13/Frameworks/Python.framework/Versions/3.13", False),
+    ],
+)
+def test_apple_silicon_homebrew_system_paths(request, prefix, expect_homebrew):
+    """Verify SYSTEM_*_PATH includes /opt/homebrew on Apple Silicon Homebrew Python.
+
+    See https://github.com/jupyter/jupyter_core/issues/250.
+    """
+    request.addfinalizer(lambda: reload(paths))
+    with patch.object(sys, "platform", "darwin"), patch.object(sys, "prefix", prefix):
+        reload(paths)
+        if expect_homebrew:
+            assert "/opt/homebrew/share/jupyter" in paths.SYSTEM_JUPYTER_PATH
+            assert "/opt/homebrew/etc/jupyter" in paths.SYSTEM_CONFIG_PATH
+        else:
+            assert "/opt/homebrew/share/jupyter" not in paths.SYSTEM_JUPYTER_PATH
+            assert "/opt/homebrew/etc/jupyter" not in paths.SYSTEM_CONFIG_PATH
+
+
 @windows
 @pytest.mark.parametrize("use_programdata", ["1", "0", None])
 @pytest.mark.parametrize("use_platformdirs", ["1", "0"])
