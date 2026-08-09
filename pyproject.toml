@@ -39,6 +39,7 @@ Tracker = "https://github.com/jupyter/jupyter_core/issues"
 [project.optional-dependencies]
 test = [
   "ipykernel",
+  "pip",
   "pre-commit",
   "pytest<9",
   "pytest-cov",
