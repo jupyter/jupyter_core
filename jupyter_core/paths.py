@@ -625,9 +625,7 @@ def win32_restrict_file_to_user(fname: str) -> None:
 
     # everyone, _domain, _type = win32security.LookupAccountName("", "Everyone")
     admins = win32security.CreateWellKnownSid(win32security.WinBuiltinAdministratorsSid)
-    user, _domain, _type = win32security.LookupAccountName(
-        "", win32api.GetUserNameEx(win32api.NameSamCompatible)
-    )
+    user, _domain, _type = win32security.LookupAccountName("", win32api.GetUserName())
 
     sd = win32security.GetFileSecurity(fname, win32security.DACL_SECURITY_INFORMATION)
 
