@@ -40,7 +40,7 @@ Tracker = "https://github.com/jupyter/jupyter_core/issues"
 test = [
   "ipykernel",
   "pre-commit",
-  "pytest<9",
+  "pytest<10",
   "pytest-cov",
   "pytest-timeout"
 ]
