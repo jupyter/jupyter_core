@@ -106,6 +106,28 @@ def test_load_config_no_cwd():
     shutil.rmtree(wd)
 
 
+def test_load_config_environ(monkeypatch):
+    if not hasattr(JupyterApp, "load_config_environ"):
+        pytest.skip("requires traitlets 5.14 or newer")
+
+    monkeypatch.setenv("DUMMY_APP__DummyApp__n", "30")
+    app = DummyApp()
+    app.initialize([])
+
+    assert app.n == 30
+
+
+def test_command_line_overrides_config_environ(monkeypatch):
+    if not hasattr(JupyterApp, "load_config_environ"):
+        pytest.skip("requires traitlets 5.14 or newer")
+
+    monkeypatch.setenv("DUMMY_APP__DummyApp__n", "30")
+    app = DummyApp()
+    app.initialize(["--DummyApp.n=20"])
+
+    assert app.n == 20
+
+
 def test_load_bad_config():
     config_dir = mkdtemp()
     os.environ["JUPYTER_CONFIG_PATH"] = str(config_dir)

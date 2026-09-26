@@ -256,6 +256,12 @@ class JupyterApp(Application):
             return
         self.migrate_config()
         self.load_config_file()
+        # Traitlets added environment-backed configuration in 5.14. Keep
+        # compatibility with older supported Traitlets versions while using
+        # the feature whenever it is available.
+        load_config_environ = getattr(self, "load_config_environ", None)
+        if load_config_environ is not None:
+            load_config_environ()
         # enforce cl-opts override configfile opts:
         self.update_config(cl_config)
         if allow_insecure_writes:
