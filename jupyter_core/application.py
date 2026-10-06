@@ -147,7 +147,7 @@ class JupyterApp(Application):
                 try:
                     return input(prompt).lower() or "n"
                 except KeyboardInterrupt:
-                    print("")  # empty line
+                    print()  # empty line
                     return "n"
 
             answer = ask()
