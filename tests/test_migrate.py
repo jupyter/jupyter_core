@@ -7,6 +7,8 @@ from __future__ import annotations
 import os
 import re
 import shutil
+import stat
+import subprocess
 from tempfile import mkdtemp
 from unittest.mock import patch
 
@@ -244,3 +246,39 @@ def test_app_migrate_skip_unwritable_marker(env):
     app.initialize([])
     assert os.listdir(env["JUPYTER_CONFIG_DIR"]) == ["migrated"]
     assert not os.path.exists(env["JUPYTER_DATA_DIR"])
+
+
+def _deny_directory_write(path: str) -> None:
+    """Make an existing directory reject new files on this platform."""
+    if os.name == "nt":
+        user = os.environ["USERNAME"]
+        subprocess.check_call(
+            ["icacls", path, "/deny", f"{user}:(W)"],
+            stdout=subprocess.DEVNULL,
+        )
+        return
+    os.chmod(path, stat.S_IRUSR | stat.S_IXUSR)
+
+
+def _allow_directory_write(path: str) -> None:
+    """Restore write permission so temporary directories can be removed."""
+    if os.name == "nt":
+        user = os.environ["USERNAME"]
+        subprocess.check_call(
+            ["icacls", path, "/remove:d", user],
+            stdout=subprocess.DEVNULL,
+        )
+        return
+    os.chmod(path, stat.S_IRWXU)
+
+
+def test_migrate_readonly_config_dir_skips_marker(env):
+    """migrate() must not raise when the Jupyter config dir is read-only."""
+    config_dir = env["JUPYTER_CONFIG_DIR"]
+    os.makedirs(config_dir)
+    _deny_directory_write(config_dir)
+    try:
+        assert migrate() is False
+    finally:
+        _allow_directory_write(config_dir)
+    assert not os.path.exists(pjoin(config_dir, "migrated"))
