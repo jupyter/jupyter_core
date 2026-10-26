@@ -10,7 +10,6 @@ import sys
 import threading
 import warnings
 from collections.abc import Awaitable, Callable
-from contextvars import ContextVar
 from pathlib import Path
 from types import FrameType
 from typing import Any, TypeVar, cast
@@ -129,7 +128,7 @@ class _TaskRunner:
 
 
 _runner_map: dict[str, _TaskRunner] = {}
-_loop: ContextVar[asyncio.AbstractEventLoop | None] = ContextVar("_loop", default=None)
+_loop = threading.local()
 
 
 def run_sync(coro: Callable[..., Awaitable[T]]) -> Callable[..., T]:
@@ -176,7 +175,7 @@ def run_sync(coro: Callable[..., Awaitable[T]]) -> Callable[..., T]:
 
 def ensure_event_loop(prefer_selector_loop: bool = False) -> asyncio.AbstractEventLoop:
     # Get the loop for this thread, or create a new one.
-    loop = _loop.get()
+    loop: asyncio.AbstractEventLoop | None = getattr(_loop, "loop", None)
     if loop is not None and not loop.is_closed():
         return loop
     try:
@@ -197,7 +196,7 @@ def ensure_event_loop(prefer_selector_loop: bool = False) -> asyncio.AbstractEve
         else:
             loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-    _loop.set(loop)
+    _loop.loop = loop
     return loop
 
 
