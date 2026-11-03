@@ -7,6 +7,7 @@ from __future__ import annotations
 import os
 import re
 import shutil
+from pathlib import Path
 from tempfile import mkdtemp
 from unittest.mock import patch
 
@@ -179,6 +180,59 @@ def test_migrate_config(td):
     with open(pjoin(jpy, "jupyter_test_config.py"), encoding="utf-8") as f:
         text = f.read()
     assert text == "c.Replaced.trait = 5\n"
+
+
+def test_migrate_config_preserves_non_ascii(td):
+    """A config file using non-ASCII characters must survive migration unchanged.
+
+    ipython_*_config.py files are read as UTF-8 by the loaders, so rewriting one must not depend on the
+    locale's preferred encoding: on a cp1252/cp936/cp932 system the round trip through the default
+    encoding either raises UnicodeDecodeError or replaces the characters.
+    """
+    profile = pjoin(td, "profile")
+    jpy = pjoin(td, "jupyter_config")
+    ensure_dir_exists(profile)
+
+    env = {
+        "profile": profile,
+        "jupyter_config": jpy,
+    }
+    content = 'c.Klass.banner = "r\u00e9sum\u00e9 \u2014 \u4e2d\u6587"\n'
+    cfg_py = pjoin(profile, "ipython_test_config.py")
+    touch(cfg_py, content)
+
+    with patch.dict(migrate_mod.config_substitutions, {re.compile(r"\bKlass\b"): "Replaced"}):
+        assert migrate_config("test", env)
+
+    with open(pjoin(jpy, "jupyter_test_config.py"), encoding="utf-8") as f:
+        text = f.read()
+    assert text == content.replace("Klass", "Replaced")
+
+
+def test_migrate_file_rewrites_with_explicit_utf8(td, monkeypatch):
+    """The substitution rewrite must ask for UTF-8 instead of taking the locale encoding.
+
+    The test above only fails on a machine whose preferred encoding is not UTF-8, so it passes on a
+    UTF-8 CI either way. This one asserts the handles themselves, which does not depend on the locale
+    running the tests: rewriting a file opened with no encoding uses
+    ``locale.getpreferredencoding(False)``, which the loaders do not use for these files.
+    """
+    opened = []
+    original_open = Path.open
+
+    def recording_open(self, mode="r", *args, **kwargs):
+        opened.append((mode, kwargs.get("encoding")))
+        return original_open(self, mode, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", recording_open)
+
+    src = pjoin(td, "ipython_test_config.py")
+    touch(src, "c.Klass.trait = 5\n")
+
+    assert migrate_file(src, pjoin(td, "jupyter_test_config.py"), {re.compile(r"\bKlass\b"): "Replaced"})
+
+    assert ("r", "utf-8") in opened, f"read handle did not use UTF-8: {opened}"
+    assert ("w", "utf-8") in opened, f"write handle did not use UTF-8: {opened}"
 
 
 def test_migrate_custom_default(td):
