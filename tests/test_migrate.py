@@ -229,7 +229,9 @@ def test_migrate_file_rewrites_with_explicit_utf8(td, monkeypatch):
     src = pjoin(td, "ipython_test_config.py")
     touch(src, "c.Klass.trait = 5\n")
 
-    assert migrate_file(src, pjoin(td, "jupyter_test_config.py"), {re.compile(r"\bKlass\b"): "Replaced"})
+    assert migrate_file(
+        src, pjoin(td, "jupyter_test_config.py"), {re.compile(r"\bKlass\b"): "Replaced"}
+    )
 
     assert ("r", "utf-8") in opened, f"read handle did not use UTF-8: {opened}"
     assert ("w", "utf-8") in opened, f"write handle did not use UTF-8: {opened}"
