@@ -5,8 +5,10 @@
 from __future__ import annotations
 
 import asyncio
+import contextvars
 import os
 import tempfile
+from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 
@@ -91,3 +93,26 @@ def test_ensure_event_loop():
 
     inner_sync = run_sync(inner)
     assert inner_sync() == loop
+
+
+def test_event_loop_does_not_follow_copied_context_into_thread():
+    parent_loop = ensure_event_loop()
+    context = contextvars.copy_context()
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        worker_loop = executor.submit(context.run, ensure_event_loop).result()
+    try:
+        assert worker_loop is not parent_loop
+    finally:
+        worker_loop.close()
+        parent_loop.close()
+
+
+def test_event_loop_reused_across_fresh_contexts_in_worker():
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        first = executor.submit(contextvars.Context().run, ensure_event_loop).result()
+        second = executor.submit(contextvars.Context().run, ensure_event_loop).result()
+    try:
+        assert second is first
+    finally:
+        first.close()
+        second.close()
