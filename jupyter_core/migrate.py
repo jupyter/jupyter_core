@@ -118,11 +118,12 @@ def migrate_file(src: str | Path, dst: str | Path, substitutions: Any = None) ->
     ensure_dir_exists(dst_path.parent)
     shutil.copy(src, dst)
     if substitutions:
-        with dst_path.open() as f:
+        # config files are read and written as UTF-8, so the rewrite must not use the locale encoding
+        with dst_path.open(encoding="utf-8") as f:
             text = f.read()
         for pat, replacement in substitutions.items():
             text = pat.sub(replacement, text)
-        with dst_path.open("w") as f:
+        with dst_path.open("w", encoding="utf-8") as f:
             f.write(text)
     return True
 
