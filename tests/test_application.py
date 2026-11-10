@@ -197,6 +197,7 @@ def test_config_dir_is_file(monkeypatch, tmp_path):
     config_file.write_text("not a directory", encoding="utf-8")
     monkeypatch.setenv("JUPYTER_CONFIG_DIR", str(config_file))
 
+
 app = DummyApp()
 with pytest.raises(TraitError, match="exists but is not a directory"):
     _ = app.config_dir
@@ -210,6 +211,7 @@ def test_config_dir_is_file_initialize_exits(monkeypatch, tmp_path):
     config_file = tmp_path / ".jupyter"
     config_file.write_text("not a directory", encoding="utf-8")
     monkeypatch.setenv("JUPYTER_CONFIG_DIR", str(config_file))
+
 
 app = DummyApp()
 with pytest.raises(SystemExit) as exc_info:
