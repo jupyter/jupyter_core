@@ -16,7 +16,7 @@ from copy import deepcopy
 from pathlib import Path
 from shutil import which
 
-from traitlets import Bool, List, Unicode, observe
+from traitlets import Bool, List, TraitError, Unicode, observe
 from traitlets.config.application import Application, catch_config_error
 from traitlets.config.loader import ConfigFileNotFound
 
@@ -87,7 +87,15 @@ class JupyterApp(Application):
     config_dir = Unicode()
 
     def _config_dir_default(self) -> str:
-        return jupyter_config_dir()
+        d = jupyter_config_dir()
+        if Path(d).exists() and not Path(d).is_dir():
+                msg = (
+                        f"Jupyter config directory {d!r} exists but is not a directory. "
+                    "Please remove or rename it so Jupyter can use it as its "
+                    "configuration directory."
+                )
+            raise TraitError(msg)
+    return d
 
     @property
     def config_file_paths(self) -> list[str]:
