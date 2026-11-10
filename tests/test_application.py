@@ -8,7 +8,7 @@ from tempfile import mkdtemp
 from unittest.mock import patch
 
 import pytest
-from traitlets import Integer
+from traitlets import Integer, TraitError
 
 from jupyter_core.application import JupyterApp, JupyterAsyncApp, NoStart
 from jupyter_core.utils import ensure_event_loop
@@ -186,3 +186,32 @@ def test_async_tornado_app():
     app = AsyncApp.instance()
     assert app._prefer_selector_loop is True
     AsyncTornadoApp.clear_instance()
+
+
+def test_config_dir_is_file(monkeypatch, tmp_path):
+    """Config dir that exists as a file must fail with a clear error.
+
+    Regression test for https://github.com/jupyter/jupyter_core/issues/123
+    """
+    config_file = tmp_path / ".jupyter"
+    config_file.write_text("not a directory", encoding="utf-8")
+    monkeypatch.setenv("JUPYTER_CONFIG_DIR", str(config_file))
+
+app = DummyApp()
+with pytest.raises(TraitError, match="exists but is not a directory"):
+    _ = app.config_dir
+
+
+def test_config_dir_is_file_initialize_exits(monkeypatch, tmp_path):
+    """App startup with a file as config dir exits(1) with a clear message.
+
+    Regression test for https://github.com/jupyter/jupyter_core/issues/123
+    """
+    config_file = tmp_path / ".jupyter"
+    config_file.write_text("not a directory", encoding="utf-8")
+    monkeypatch.setenv("JUPYTER_CONFIG_DIR", str(config_file))
+
+app = DummyApp()
+with pytest.raises(SystemExit) as exc_info:
+    app.initialize([])
+assert exc_info.value.code == 1
