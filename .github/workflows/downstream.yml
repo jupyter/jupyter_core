@@ -5,6 +5,9 @@ on:
     branches: ["main"]
   pull_request:
 
+permissions:
+  contents: read
+
 concurrency:
   group: downstream-${{ github.ref }}
   cancel-in-progress: true
@@ -14,9 +17,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
-      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
-      - uses: jupyterlab/maintainer-tools/.github/actions/downstream-test@v1
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@b9d5c28489f8b460cef48868f303b97c20f8fe1b # v1.1.2
+      - uses: jupyterlab/maintainer-tools/.github/actions/downstream-test@b9d5c28489f8b460cef48868f303b97c20f8fe1b # v1.1.2
         with:
           package_name: ipykernel
 
@@ -24,9 +29,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
-      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
-      - uses: jupyterlab/maintainer-tools/.github/actions/downstream-test@v1
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@b9d5c28489f8b460cef48868f303b97c20f8fe1b # v1.1.2
+      - uses: jupyterlab/maintainer-tools/.github/actions/downstream-test@b9d5c28489f8b460cef48868f303b97c20f8fe1b # v1.1.2
         with:
           package_name: nbclient
           env_values: IPYKERNEL_CELL_NAME=\<IPY-INPUT\>
@@ -35,9 +42,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
-      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
-      - uses: jupyterlab/maintainer-tools/.github/actions/downstream-test@v1
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@b9d5c28489f8b460cef48868f303b97c20f8fe1b # v1.1.2
+      - uses: jupyterlab/maintainer-tools/.github/actions/downstream-test@b9d5c28489f8b460cef48868f303b97c20f8fe1b # v1.1.2
         with:
           package_name: nbconvert
           package_spec: -e ".[test]"
@@ -46,9 +55,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
-      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
-      - uses: jupyterlab/maintainer-tools/.github/actions/downstream-test@v1
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@b9d5c28489f8b460cef48868f303b97c20f8fe1b # v1.1.2
+      - uses: jupyterlab/maintainer-tools/.github/actions/downstream-test@b9d5c28489f8b460cef48868f303b97c20f8fe1b # v1.1.2
         with:
           package_name: jupyter_server
 
@@ -56,13 +67,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
 
       - name: Base Setup
-        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@b9d5c28489f8b460cef48868f303b97c20f8fe1b # v1.1.2
 
       - name: Run Test
-        uses: jupyterlab/maintainer-tools/.github/actions/downstream-test@v1
+        uses: jupyterlab/maintainer-tools/.github/actions/downstream-test@b9d5c28489f8b460cef48868f303b97c20f8fe1b # v1.1.2
         with:
           package_name: jupyter_client
           package_spec: "anyio .[test]"
@@ -71,13 +84,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
 
       - name: Base Setup
-        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@b9d5c28489f8b460cef48868f303b97c20f8fe1b # v1.1.2
 
       - name: Run Test
-        uses: jupyterlab/maintainer-tools/.github/actions/downstream-test@v1
+        uses: jupyterlab/maintainer-tools/.github/actions/downstream-test@b9d5c28489f8b460cef48868f303b97c20f8fe1b # v1.1.2
         with:
           package_name: pytest_jupyter
           package_spec: -e ".[test,client,server]"

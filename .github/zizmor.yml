@@ -1,0 +1,11 @@
+rules:
+  archived-uses:
+    ignore:
+      # pre-commit/mirrors-prettier is archived; it is only a local/pre-commit.ci
+      # formatting hook and has no official replacement.
+      - .pre-commit-config.yaml:35
+  github-app:
+    ignore:
+      # See the comment above this step: the app installation's permissions
+      # are not visible from this repository, so the token is left unscoped.
+      - publish-release.yml:27
