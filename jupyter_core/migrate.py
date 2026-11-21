@@ -25,6 +25,7 @@ Migrations:
 # Distributed under the terms of the Modified BSD License.
 from __future__ import annotations
 
+import errno
 import os
 import re
 import shutil
@@ -241,10 +242,18 @@ def migrate() -> bool:
     if Path(custom_src).exists() and migrate_static_custom(custom_src, custom_dst):
         migrated = True
 
-    # write a marker to avoid re-running migration checks
-    ensure_dir_exists(env["jupyter_config"])
-    with Path.open(Path(env["jupyter_config"], "migrated"), "w", encoding="utf-8") as f:
-        f.write(datetime.now(tz=timezone.utc).isoformat())
+    # write a marker to avoid re-running migration checks.
+    # A read-only config directory cannot store the marker; skip it instead of
+    # failing jupyter-migrate or application startup.
+    marker = Path(env["jupyter_config"], "migrated")
+    try:
+        ensure_dir_exists(env["jupyter_config"])
+        with marker.open("w", encoding="utf-8") as f:
+            f.write(datetime.now(tz=timezone.utc).isoformat())
+    except OSError as exc:
+        if not isinstance(exc, PermissionError) and exc.errno != errno.EROFS:
+            raise
+        get_logger().debug("Could not write migration marker at %s", marker)
 
     return migrated
 
