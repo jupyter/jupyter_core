@@ -41,7 +41,7 @@ test = [
   "ipykernel",
   "pip",
   "pre-commit",
-  "pytest<9",
+  "pytest<10",
   "pytest-cov",
   "pytest-timeout"
 ]
