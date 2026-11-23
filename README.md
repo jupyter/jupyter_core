@@ -78,6 +78,20 @@ Point your browser to the following URL to access the generated documentation:
 
 _file:///my/projects/jupyter_core/docs/\_build/html/index.html_
 
+## Checking which Python a kernel uses
+
+The environment that provides the `jupyter` command can differ from the one
+that runs a notebook or console kernel. In the shell you launch Jupyter from,
+run `command -v jupyter` on macOS or Linux, or `where.exe jupyter` on Windows,
+to see how the launcher is found on your `PATH`.
+
+If Jupyter Client is installed, run `jupyter kernelspec list --json`. Find the
+selected kernel in the result and inspect its `spec.argv`, the command used
+to start that kernel. To confirm the interpreter of a running Python kernel,
+run `import sys; print(sys.executable)` in a cell or at the console prompt.
+The output of `jupyter --paths` lists the directories Jupyter searches for
+files, including kernel specifications in its data directories.
+
 ## About the Jupyter Development Team
 
 The Jupyter Development Team is the set of all contributors to the Jupyter
