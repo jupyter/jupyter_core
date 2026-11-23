@@ -5,8 +5,21 @@
 
 Core common functionality of Jupyter projects.
 
-This package contains base application classes and configuration inherited by other projects.
-It doesn't do much on its own.
+This package contains base application classes and configuration inherited by other projects. It also provides
+the `jupyter` command, which dispatches subcommands supplied by other packages.
+
+## Using the launcher in an isolated tool environment
+
+Install Jupyter Core in the same tool environment as the application whose subcommand
+you want to run. For example, to use the JupyterLab subcommand through uv:
+
+```sh
+uv tool install jupyter-core --with jupyterlab
+jupyter lab --version
+```
+
+Here, uv exposes the `jupyter` launcher supplied by Jupyter Core, and the launcher
+finds `jupyter-lab` in its tool environment.
 
 # Development Setup
 
