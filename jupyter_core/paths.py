@@ -161,11 +161,16 @@ def jupyter_config_dir() -> str:
 
 
 def jupyter_data_dir() -> str:
-    """Get the config directory for Jupyter data files for this platform and user.
+    """Return the default directory for this user's Jupyter data files.
 
-    These are non-transient, non-configuration files.
+    These are non-transient, non-configuration files. A non-empty
+    ``JUPYTER_DATA_DIR`` takes precedence over the platform default.
 
-    Returns JUPYTER_DATA_DIR if defined, else a platform-appropriate path.
+    This function only computes a path. If you write data outside a Jupyter
+    application, create the directory first. When working with an existing
+    ``JupyterApp``, use its ``data_dir`` attribute to honor any value supplied
+    to the application. The application creates the directory when it
+    resolves its default value.
     """
     env = os.environ
 
