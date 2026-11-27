@@ -245,6 +245,35 @@ else:  # noqa: PLR5501
 ENV_JUPYTER_PATH: list[str] = [str(Path(sys.prefix, "share", "jupyter"))]
 
 
+def _append_env_user_system(
+    paths: list[str],
+    user: list[str],
+    env_paths: list[str],
+    system_paths: list[str],
+) -> None:
+    """Append environment, user, and system paths in priority order without system duplicates."""
+    prefer_env = prefer_environment_over_user()
+    # Windows usually doesn't have a 'system' prefix,
+    # so 'system' and 'env' are the same.
+    # Make sure that env can still be preferred in this case or when env is a subset of system.
+    if prefer_env or env_paths == system_paths:
+        env = env_paths
+    else:
+        env = [p for p in env_paths if p not in system_paths]
+
+    if prefer_env:
+        paths.extend(env)
+        paths.extend(user)
+    else:
+        paths.extend(user)
+        paths.extend(env)
+
+    # Finally, add system paths (can overlap with env, so avoid duplicates)
+    for _path in system_paths:
+        if _path not in paths:
+            paths.append(_path)
+
+
 def jupyter_path(*subdirs: str) -> list[str]:
     """Return a list of directories to search for data files.
 
@@ -307,25 +336,7 @@ def jupyter_path(*subdirs: str) -> list[str]:
             if userdir not in user:
                 user.append(userdir)
 
-    # Windows usually doesn't have a 'system' prefix,
-    # so 'system' and 'env' are the same
-    # make sure that env can still be preferred in this case
-    if ENV_JUPYTER_PATH == SYSTEM_JUPYTER_PATH:
-        env = ENV_JUPYTER_PATH
-    else:
-        env = [p for p in ENV_JUPYTER_PATH if p not in SYSTEM_JUPYTER_PATH]
-
-    if prefer_environment_over_user():
-        paths.extend(env)
-        paths.extend(user)
-    else:
-        paths.extend(user)
-        paths.extend(env)
-
-    # finally, add system paths (can overlap with env, so avoid duplicates)
-    for _path in SYSTEM_JUPYTER_PATH:
-        if _path not in paths:
-            paths.append(_path)
+    _append_env_user_system(paths, user, ENV_JUPYTER_PATH, SYSTEM_JUPYTER_PATH)
 
     # add subdir, if requested
     if subdirs:
@@ -408,24 +419,7 @@ def jupyter_config_path() -> list[str]:
             if userdir not in user:
                 user.append(userdir)
 
-    # Windows usually doesn't have a 'system' prefix,
-    # so 'system' and 'env' are the same
-    # make sure that env can still be preferred in this case
-    if ENV_CONFIG_PATH == SYSTEM_CONFIG_PATH:
-        env = ENV_CONFIG_PATH
-    else:
-        env = [p for p in ENV_CONFIG_PATH if p not in SYSTEM_CONFIG_PATH]
-
-    if prefer_environment_over_user():
-        paths.extend(env)
-        paths.extend(user)
-    else:
-        paths.extend(user)
-        paths.extend(env)
-
-    # Finally, system path
-    if ENV_CONFIG_PATH != SYSTEM_CONFIG_PATH:
-        paths.extend(SYSTEM_CONFIG_PATH)
+    _append_env_user_system(paths, user, ENV_CONFIG_PATH, SYSTEM_CONFIG_PATH)
     return paths
 
 
