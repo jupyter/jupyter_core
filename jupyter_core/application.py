@@ -163,8 +163,20 @@ class JupyterApp(Application):
         with Path.open(Path(config_file), mode="w", encoding="utf-8") as f:
             f.write(config_text)
 
+    def _check_config_dir(self) -> None:
+        if not self.config_dir:
+            return
+        config_dir = Path(self.config_dir)
+        if (config_dir.exists() or config_dir.is_symlink()) and not config_dir.is_dir():
+            msg = (
+                f"Jupyter config_dir {self.config_dir!r} exists but is not a directory. "
+                "Remove or rename this file so Jupyter can use it as a directory."
+            )
+            raise NotADirectoryError(msg)
+
     def migrate_config(self) -> None:
         """Migrate config/data from IPython 3"""
+        self._check_config_dir()
         try:  # let's see if we can open the marker file
             # for reading and updating (writing)
             f_marker = Path.open(Path(self.config_dir, "migrated"), "r+")
@@ -254,6 +266,7 @@ class JupyterApp(Application):
         cl_config = deepcopy(self.config)
         if self._dispatching:
             return
+        self._check_config_dir()
         self.migrate_config()
         self.load_config_file()
         # enforce cl-opts override configfile opts:
