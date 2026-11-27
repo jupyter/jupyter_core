@@ -130,6 +130,21 @@ def test_runtime_dir_changed():
     shutil.rmtree(td)
 
 
+def test_config_dir_is_file(tmp_path):
+    cfg_file = tmp_path / ".jupyter"
+    cfg_file.write_text("not a directory", encoding="utf-8")
+    app = DummyApp(
+        config_dir=str(cfg_file),
+        data_dir=str(tmp_path / "data"),
+        runtime_dir=str(tmp_path / "runtime"),
+    )
+    with pytest.raises(NotADirectoryError, match="not a directory"):
+        app.initialize([])
+
+    with pytest.raises(NotADirectoryError, match="not a directory"):
+        app.migrate_config()
+
+
 class AsyncioRunApp(JupyterApp):
     async def _inner(self):
         pass

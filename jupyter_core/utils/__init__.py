@@ -23,14 +23,19 @@ def ensure_dir_exists(path: str | Path, mode: int = 0o777) -> None:
     if another process is doing the same.
     The default permissions are determined by the current umask.
     """
+    p = Path(path)
     try:
-        Path(path).mkdir(parents=True, mode=mode)
+        p.mkdir(parents=True, mode=mode)
     except OSError as e:
-        if e.errno != errno.EEXIST:
+        if e.errno not in (errno.EEXIST, errno.ENOTDIR):
             raise
-    if not Path(path).is_dir():
+    if not p.is_dir():
+        for candidate in (p, *p.parents):
+            if (candidate.exists() or candidate.is_symlink()) and not candidate.is_dir():
+                msg = f"{str(candidate)!r} exists but is not a directory"
+                raise NotADirectoryError(msg)
         msg = f"{path!r} exists but is not a directory"
-        raise OSError(msg)
+        raise NotADirectoryError(msg)
 
 
 def _get_frame(level: int) -> FrameType | None:

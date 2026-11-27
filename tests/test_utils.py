@@ -25,6 +25,17 @@ def test_ensure_dir_exists():
         ensure_dir_exists(os.path.join(str(td), "foo"), 0o777)
 
 
+def test_ensure_dir_exists_parent_is_file(tmp_path):
+    file_path = tmp_path / ".jupyter"
+    file_path.write_text("not a directory", encoding="utf-8")
+
+    with pytest.raises(NotADirectoryError, match=r"\.jupyter.*not a directory"):
+        ensure_dir_exists(file_path)
+
+    with pytest.raises(NotADirectoryError, match=r"\.jupyter.*not a directory"):
+        ensure_dir_exists(file_path / "sub")
+
+
 def test_deprecation():
     with pytest.deprecated_call():
         deprecation("foo")
