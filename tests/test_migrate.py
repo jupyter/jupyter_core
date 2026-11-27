@@ -91,6 +91,23 @@ def test_migrate_file(td):
     assert_files_equal(src, dst)
 
 
+def test_migrate_file_readonly_src_with_substitutions(td):
+    src = pjoin(td, "readonly_src.py")
+    dst = pjoin(td, "readonly_dst.py")
+    touch(src, "c.IPythonWidget.x = 1\n")
+    os.chmod(src, 0o444)
+    try:
+        assert migrate_file(
+            src, dst, substitutions={re.compile(r"\bIPythonWidget\b"): "JupyterWidget"}
+        )
+        with open(dst, encoding="utf-8") as f:
+            assert f.read() == "c.JupyterWidget.x = 1\n"
+    finally:
+        os.chmod(src, 0o644)
+        if os.path.exists(dst):
+            os.chmod(dst, 0o644)
+
+
 def test_migrate_dir(td):
     src = pjoin(td, "src")
     dst = pjoin(td, "dst")

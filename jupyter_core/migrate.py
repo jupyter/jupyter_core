@@ -116,14 +116,16 @@ def migrate_file(src: str | Path, dst: str | Path, substitutions: Any = None) ->
         return False
     log.info("Copying %s -> %s", src, dst)
     ensure_dir_exists(dst_path.parent)
-    shutil.copy(src, dst)
     if substitutions:
-        with dst_path.open() as f:
+        with Path(src).open() as f:
             text = f.read()
         for pat, replacement in substitutions.items():
             text = pat.sub(replacement, text)
         with dst_path.open("w") as f:
             f.write(text)
+        shutil.copymode(src, dst)
+    else:
+        shutil.copy(src, dst)
     return True
 
 
