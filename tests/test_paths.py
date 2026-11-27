@@ -319,6 +319,21 @@ def test_jupyter_path_prefer_env():
         assert path[1] == jupyter_data_dir()
 
 
+def test_jupyter_path_prefer_env_subset_of_system():
+    env_path = ["/usr/share/jupyter"]
+    system_path = ["/usr/local/share/jupyter", "/usr/share/jupyter"]
+    with (
+        prefer_env,
+        patch.object(paths, "ENV_JUPYTER_PATH", env_path),
+        patch.object(paths, "SYSTEM_JUPYTER_PATH", system_path),
+    ):
+        path = jupyter_path()
+        assert path[0] == env_path[0]
+        assert path[1] == jupyter_data_dir()
+        assert path.count(env_path[0]) == 1
+        assert "/usr/local/share/jupyter" in path
+
+
 def test_jupyter_path_env():
     path_env = os.pathsep.join(
         [
@@ -406,6 +421,21 @@ def test_jupyter_config_path_duplicate_sys_env():
         config_path = jupyter_config_path()
     for path in paths.ENV_CONFIG_PATH:
         assert config_path.count(path) == 1
+
+
+def test_jupyter_config_path_prefer_env_subset_of_system():
+    env_path = ["/usr/local/etc/jupyter"]
+    system_path = ["/usr/local/etc/jupyter", "/etc/jupyter"]
+    with (
+        prefer_env,
+        patch.object(paths, "ENV_CONFIG_PATH", env_path),
+        patch.object(paths, "SYSTEM_CONFIG_PATH", system_path),
+    ):
+        config_path = jupyter_config_path()
+        assert config_path[0] == env_path[0]
+        assert config_path[1] == jupyter_config_dir()
+        assert config_path.count(env_path[0]) == 1
+        assert "/etc/jupyter" in config_path
 
 
 def test_prefer_environment_over_user():
